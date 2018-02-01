@@ -1,4 +1,4 @@
-package friederikewild.me.demo.recyclerview.overview;
+package me.friederikewild.demo.touchnote.overview;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import friederikewild.me.demo.recyclerview.R;
+import me.friederikewild.demo.touchnote.R;
 
 public class OverviewFragment extends Fragment implements OverviewContract.View
 {

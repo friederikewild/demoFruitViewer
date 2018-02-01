@@ -1,4 +1,4 @@
-package friederikewild.me.demo.recyclerview;
+package me.friederikewild.demo.touchnote;
 
 import org.junit.Test;
 

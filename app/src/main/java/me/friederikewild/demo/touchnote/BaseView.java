@@ -1,4 +1,4 @@
-package friederikewild.me.demo.recyclerview;
+package me.friederikewild.demo.touchnote;
 
 /**
  * Reusable view interface linked to a matching presenter.

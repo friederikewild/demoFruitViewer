@@ -1,4 +1,4 @@
-package friederikewild.me.demo.recyclerview.overview;
+package me.friederikewild.demo.touchnote.overview;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;

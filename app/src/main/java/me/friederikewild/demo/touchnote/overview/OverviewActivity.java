@@ -1,4 +1,4 @@
-package friederikewild.me.demo.recyclerview.overview;
+package me.friederikewild.demo.touchnote.overview;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import friederikewild.me.demo.recyclerview.R;
+import me.friederikewild.demo.touchnote.R;
 
 public class OverviewActivity extends AppCompatActivity
 {

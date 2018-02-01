@@ -1,7 +1,7 @@
-package friederikewild.me.demo.recyclerview.overview;
+package me.friederikewild.demo.touchnote.overview;
 
-import friederikewild.me.demo.recyclerview.BasePresenter;
-import friederikewild.me.demo.recyclerview.BaseView;
+import me.friederikewild.demo.touchnote.BasePresenter;
+import me.friederikewild.demo.touchnote.BaseView;
 
 /**
  * Contract between view and presenter for the overview screen.

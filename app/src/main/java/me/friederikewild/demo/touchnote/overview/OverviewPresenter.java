@@ -1,4 +1,4 @@
-package friederikewild.me.demo.recyclerview.overview;
+package me.friederikewild.demo.touchnote.overview;
 
 import android.support.annotation.NonNull;
 
