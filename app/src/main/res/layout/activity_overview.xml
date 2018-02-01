@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="friederikewild.me.demo.recyclerview.overview.OverviewActivity">
+    tools:context="me.friederikewild.demo.touchnote.overview.OverviewActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
