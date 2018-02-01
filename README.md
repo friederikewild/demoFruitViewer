@@ -1,4 +1,4 @@
-# README #
+# README # [![CircleCI](https://circleci.com/bb/eyewellbeing/touchnotedemo.svg?style=svg&circle-token=6df3bafb890a179ecdbee3196ad2f434e4dcacad)](https://circleci.com/bb/eyewellbeing/touchnotedemo)
 
 Android assignment for Touchnote by Friederike Wild.
 
@@ -9,3 +9,4 @@ Android assignment for Touchnote by Friederike Wild.
 * **Detail** provides larger image of one entry
 
 ### NOTES ###
+* Implemented following MVP architecture
