@@ -1,0 +1,86 @@
+# built application files
+# We want to store the release apk! *.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+gen*
+
+# Local configuration file (sdk path, etc)
+*local.properties
+
+# User files
+*.keystore
+.DS_Store
+*~
+
+# Android Studio
+.idea/
+.gradle/
+out
+build/
+/*/build/
+/*/production
+*.iws
+*.swp
+
+#Maven
+target
+release.properties
+pom.xml.*
+
+# Other version controls
+*.svn
+
+#Personal Files
+signing.properties
+/bin
+
+
+
+# Log Files
+*.log
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+
+
+
+# Keystore files
+# Uncomment the following line if you do not want to check your keystore files in.
+.jks
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Freeline
+freeline.py
+freeline/
+freeline_project_description.json
+
+
+# Crashlytics configuations
+com_crashlytics_export_strings.xml
+
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
