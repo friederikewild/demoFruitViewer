@@ -30,6 +30,7 @@ build/
 /*/production
 *.iws
 *.swp
+*.iml
 
 #Maven
 target
