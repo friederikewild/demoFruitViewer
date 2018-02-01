@@ -12,6 +12,8 @@ import friederikewild.me.demo.recyclerview.R;
 
 public class OverviewActivity extends AppCompatActivity
 {
+    private OverviewPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -31,6 +33,8 @@ public class OverviewActivity extends AppCompatActivity
             overviewFragment = OverviewFragment.newInstance();
             addFragmentToActivity(fragmentManager, overviewFragment, R.id.contentFrame);
         }
+
+        presenter = new OverviewPresenter(overviewFragment);
     }
 
     public void addFragmentToActivity(@NonNull FragmentManager fragmentManager,

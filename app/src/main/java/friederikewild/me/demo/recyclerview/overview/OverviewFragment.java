@@ -11,11 +11,19 @@ import android.view.ViewGroup;
 
 import friederikewild.me.demo.recyclerview.R;
 
-public class OverviewFragment extends Fragment
+public class OverviewFragment extends Fragment implements OverviewContract.View
 {
+    private OverviewContract.Presenter presenter;
+
     public static OverviewFragment newInstance()
     {
         return new OverviewFragment();
+    }
+
+    @Override
+    public void setPresenter(OverviewContract.Presenter presenter)
+    {
+        this.presenter = presenter;
     }
 
     @Nullable
@@ -39,5 +47,12 @@ public class OverviewFragment extends Fragment
         refreshLayout.setRefreshing(true);
 
         return root;
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        presenter.start();
     }
 }
