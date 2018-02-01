@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Basic 8dp raster support -->
+    <dimen name="zero">0dp</dimen>
+    <dimen name="dot_quarter">2dp</dimen>
+    <dimen name="dot_half">4dp</dimen>
+    <dimen name="dot">8dp</dimen>
+    <dimen name="dot_double">16dp</dimen>
+
+</resources>
