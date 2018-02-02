@@ -1,9 +1,11 @@
 package me.friederikewild.demo.touchnote.data.datasource.cache;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import java.util.WeakHashMap;
 
+import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
@@ -27,6 +29,7 @@ public class CacheItemDataStore implements ItemCache
     private long lastUpdatedTimeMillis = 0;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
+    @VisibleForTesting
     CacheItemDataStore(@NonNull CurrentTimeProvider timeProvider)
     {
         itemCache = new WeakHashMap<>(20);
@@ -43,7 +46,9 @@ public class CacheItemDataStore implements ItemCache
     }
 
     @Override
-    public void getItem(@NonNull String itemId, @NonNull GetEntityItemCallback callback)
+    public void getItem(@NonNull String itemId,
+                        @NonNull GetEntityItemCallback callback,
+                        @NonNull GetNoDataCallback errorCallback)
     {
         if (isCached(itemId))
         {
@@ -51,7 +56,7 @@ public class CacheItemDataStore implements ItemCache
         }
         else
         {
-            callback.onNoDataAvailable();
+            errorCallback.onNoDataAvailable();
         }
     }
 

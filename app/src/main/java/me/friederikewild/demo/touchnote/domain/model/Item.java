@@ -1,7 +1,9 @@
 package me.friederikewild.demo.touchnote.domain.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +26,21 @@ public class Item
     private List<String> tags;
     @NonNull
     private String imageUrl;
+
+    /**
+     * Special testing constructor for simplified test object creation
+     * @param testString Test string for all string fields
+     */
+    @VisibleForTesting
+    public Item(@NonNull String testString)
+    {
+        this.id = testString;
+        this.title = testString;
+        this.description = testString;
+        this.date = testString;
+        this.tags = new ArrayList<>();
+        this.imageUrl = testString;
+    }
 
     public Item(@NonNull String id, @NonNull String title, @NonNull String description, @NonNull String date,
                 @NonNull List<String> tags, @NonNull String imageUrl)

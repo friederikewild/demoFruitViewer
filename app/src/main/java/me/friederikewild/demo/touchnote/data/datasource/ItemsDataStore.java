@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Collection;
 
+import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
@@ -14,14 +15,14 @@ public interface ItemsDataStore extends ItemDataStore
     interface GetEntityItemsCallback
     {
         void onItemsLoaded(@NonNull Collection<ItemEntity> items);
-
-        void onNoDataAvailable();
     }
 
     /**
      * Request list of items and get them via provided callback
      *
-     * @param callback Callback for updates on loaded or error
+     * @param callback      Callback for updates
+     * @param errorCallback Callback for error e.g. no data available
      */
-    void getItems(@NonNull GetEntityItemsCallback callback);
+    void getItems(@NonNull GetEntityItemsCallback callback,
+                  @NonNull GetNoDataCallback errorCallback);
 }

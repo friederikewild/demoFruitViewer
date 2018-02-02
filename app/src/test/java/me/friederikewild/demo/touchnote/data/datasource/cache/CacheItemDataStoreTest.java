@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.data.datasource.ItemDataStore;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
@@ -30,7 +31,9 @@ public class CacheItemDataStoreTest
     private CurrentTimeProvider currentTimeProviderMock;
 
     @Mock
-    ItemDataStore.GetEntityItemCallback itemCallbackMock;
+    private ItemDataStore.GetEntityItemCallback itemCallbackMock;
+    @Mock
+    private GetNoDataCallback errorCallbackMock;
 
     @Before
     public void setup()
@@ -70,10 +73,10 @@ public class CacheItemDataStoreTest
     public void givenEmptyCache_ThenNoDataCallbackOnRequest()
     {
         // When
-        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock);
+        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock, errorCallbackMock);
 
         // Then
-        verify(itemCallbackMock).onNoDataAvailable();
+        verify(errorCallbackMock).onNoDataAvailable();
         verify(itemCallbackMock, never()).onItemLoaded(any(ItemEntity.class));
     }
 
@@ -85,11 +88,11 @@ public class CacheItemDataStoreTest
         cacheItemDataStore.putItem(entity);
 
         // When
-        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock);
+        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock, errorCallbackMock);
 
         // Then
         verify(itemCallbackMock).onItemLoaded(entity);
-        verify(itemCallbackMock, never()).onNoDataAvailable();
+        verify(errorCallbackMock, never()).onNoDataAvailable();
     }
 
     @Test
