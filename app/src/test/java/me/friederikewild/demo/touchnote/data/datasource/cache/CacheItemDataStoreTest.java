@@ -5,11 +5,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import me.friederikewild.demo.touchnote.data.datasource.ItemDataStore;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -23,8 +26,11 @@ public class CacheItemDataStoreTest
     // Cache data store under test
     private CacheItemDataStore cacheItemDataStore;
 
-    @Mock()
+    @Mock
     private CurrentTimeProvider currentTimeProviderMock;
+
+    @Mock
+    ItemDataStore.GetEntityItemCallback itemCallbackMock;
 
     @Before
     public void setup()
@@ -61,6 +67,17 @@ public class CacheItemDataStoreTest
     }
 
     @Test
+    public void givenEmptyCache_ThenNoDataCallbackOnRequest()
+    {
+        // When
+        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock);
+
+        // Then
+        verify(itemCallbackMock).onNoDataAvailable();
+        verify(itemCallbackMock, never()).onItemLoaded(any(ItemEntity.class));
+    }
+
+    @Test
     public void givenPutItemToCache_ThenItemIsEqualFromCache()
     {
         // Given
@@ -68,11 +85,11 @@ public class CacheItemDataStoreTest
         cacheItemDataStore.putItem(entity);
 
         // When
-        final ItemEntity cachedEntity = cacheItemDataStore.getItem(FAKE_ID);
+        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock);
 
         // Then
-        assertNotNull(cachedEntity);
-        assertThat(cachedEntity, is(entity));
+        verify(itemCallbackMock).onItemLoaded(entity);
+        verify(itemCallbackMock, never()).onNoDataAvailable();
     }
 
     @Test

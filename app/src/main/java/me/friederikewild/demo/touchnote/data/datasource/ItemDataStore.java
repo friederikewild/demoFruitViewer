@@ -1,7 +1,6 @@
 package me.friederikewild.demo.touchnote.data.datasource;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
@@ -10,12 +9,18 @@ import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
  */
 public interface ItemDataStore
 {
+    interface GetEntityItemCallback
+    {
+        void onItemLoaded(@NonNull ItemEntity item);
+
+        void onNoDataAvailable();
+    }
+
     /**
-     * Get concrete item for specific id
+     * Request concrete item for specific id and get it via provided callback
      *
-     * @param itemId Id to look up in cache
-     * @return The cached item or {@code null} in case not cached
+     * @param itemId   Id to look up in cache
+     * @param callback Callback for updates on loaded or error
      */
-    @Nullable
-    ItemEntity getItem(@NonNull String itemId);
+    void getItem(@NonNull String itemId, @NonNull GetEntityItemCallback callback);
 }

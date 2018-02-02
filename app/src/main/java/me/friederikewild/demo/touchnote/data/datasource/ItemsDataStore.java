@@ -7,15 +7,21 @@ import java.util.Collection;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
- * Define data layer access to items.
+ * Define data layer access to items as collection and specific items via id.
  */
-public interface ItemsDataStore
+public interface ItemsDataStore extends ItemDataStore
 {
+    interface GetEntityItemsCallback
+    {
+        void onItemsLoaded(@NonNull Collection<ItemEntity> items);
+
+        void onNoDataAvailable();
+    }
+
     /**
-     * Get list of items
+     * Request list of items and get them via provided callback
      *
-     * @return Collection with all items
+     * @param callback Callback for updates on loaded or error
      */
-    @NonNull
-    Collection<ItemEntity> getItems();
+    void getItems(@NonNull GetEntityItemsCallback callback);
 }
