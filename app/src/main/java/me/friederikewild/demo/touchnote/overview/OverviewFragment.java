@@ -1,6 +1,7 @@
 package me.friederikewild.demo.touchnote.overview;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -10,7 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import me.friederikewild.demo.touchnote.R;
+import me.friederikewild.demo.touchnote.domain.model.Item;
+import timber.log.Timber;
 
 public class OverviewFragment extends Fragment implements OverviewContract.View
 {
@@ -101,4 +106,13 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
             refreshLayout.setRefreshing(true);
         }
     }
+
+    @Override
+    public void showItems(@NonNull List<Item> items)
+    {
+        // TODO: Update adapter
+
+        Timber.i("View - Show %d items %s", items.size(), items);
+    }
+
 }
