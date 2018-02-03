@@ -12,7 +12,6 @@ import me.friederikewild.demo.touchnote.domain.model.Item;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -36,19 +35,6 @@ public class ItemEntityDataMapperTest
     public void setupDataMapper()
     {
         mapper = new ItemEntityDataMapper();
-    }
-
-    @Test
-    public void givenTransformNullItem_ThenModelIsNull()
-    {
-        // Given
-        final ItemEntity entity = null;
-
-        // When
-        final Item itemModel = mapper.transform(entity);
-
-        // Then
-        assertThat(itemModel, is(nullValue()));
     }
 
     @Test
@@ -143,7 +129,7 @@ public class ItemEntityDataMapperTest
         entity.setTitle(FAKE_TITLE);
         entity.setDescription(FAKE_DESCRIPTION);
         entity.setDate(FAKE_DATE);
-        entity.setTags(new ArrayList<String>());
+        entity.setTags(new ArrayList<>());
         entity.setImageUrl(FAKE_IMAGE_URL);
         return entity;
     }

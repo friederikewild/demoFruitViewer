@@ -1,7 +1,6 @@
 package me.friederikewild.demo.touchnote.data.entity.mapper;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,20 +17,15 @@ import me.friederikewild.demo.touchnote.domain.model.Item;
  */
 public class ItemEntityDataMapper
 {
-    @Nullable
-    public Item transform(@Nullable ItemEntity itemEntity)
+    @NonNull
+    public Item transform(@NonNull ItemEntity itemEntity)
     {
-        Item item = null;
-        if (itemEntity != null)
-        {
-            item = new Item(itemEntity.getId(),
-                            itemEntity.getTitle(),
-                            itemEntity.getDescription(),
-                            itemEntity.getDate(),
-                            itemEntity.getTags(),
-                            itemEntity.getImageUrl());
-        }
-        return item;
+        return new Item(itemEntity.getId(),
+                        itemEntity.getTitle(),
+                        itemEntity.getDescription(),
+                        itemEntity.getDate(),
+                        itemEntity.getTags(),
+                        itemEntity.getImageUrl());
     }
 
     @NonNull
@@ -41,9 +35,9 @@ public class ItemEntityDataMapper
 
         for (ItemEntity entity : itemEntities)
         {
-            final Item item = transform(entity);
-            if (item != null)
+            if (entity != null)
             {
+                final Item item = transform(entity);
                 items.add(item);
             }
         }

@@ -1,8 +1,12 @@
 package me.friederikewild.demo.touchnote.data.entity;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +32,27 @@ public class ItemEntity
     @SerializedName("image")
     @Expose
     private String imageUrl;
+
+    public ItemEntity()
+    {
+        // Nothing
+    }
+
+    /**
+     * Special testing constructor for simplified test object creation
+     *
+     * @param testString Test string for all string fields
+     */
+    @VisibleForTesting
+    public ItemEntity(@NonNull String testString)
+    {
+        this.id = testString;
+        this.title = testString;
+        this.description = testString;
+        this.date = testString;
+        this.tags = new ArrayList<>();
+        this.imageUrl = testString;
+    }
 
     public String getId()
     {

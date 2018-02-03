@@ -2,7 +2,7 @@ package me.friederikewild.demo.touchnote.domain;
 
 import android.support.annotation.NonNull;
 
-import java.util.Collection;
+import java.util.List;
 
 import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.domain.model.Item;
@@ -15,7 +15,7 @@ public interface ItemsRepository
 {
     interface GetItemsCallback
     {
-        void onItemsLoaded(@NonNull Collection<Item> items);
+        void onItemsLoaded(@NonNull List<Item> items);
     }
 
     interface GetItemCallback
@@ -40,4 +40,9 @@ public interface ItemsRepository
      */
     void getItem(@NonNull String itemId, @NonNull GetItemCallback callback,
                  @NonNull GetNoDataCallback errorCallback);
+
+    /**
+     * Request a fresh set of data
+     */
+    void refreshData();
 }

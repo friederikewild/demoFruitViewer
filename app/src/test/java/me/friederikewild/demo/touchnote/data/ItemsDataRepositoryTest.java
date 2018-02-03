@@ -6,13 +6,15 @@ import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import me.friederikewild.demo.touchnote.data.datasource.ItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.touchnote.data.datasource.cache.CurrentTimeProvider;
 import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
@@ -20,6 +22,7 @@ import me.friederikewild.demo.touchnote.domain.model.Item;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,16 +35,17 @@ public class ItemsDataRepositoryTest
     private static final String FAKE_ID2 = "456";
     private static final String FAKE_ID3 = "789";
 
-    private static List<Item> ITEMS = Lists.newArrayList(
-            new Item(FAKE_ID),
-            new Item(FAKE_ID2),
-            new Item(FAKE_ID3));
+    private static List<ItemEntity> ITEMS = Lists.newArrayList(
+            new ItemEntity(FAKE_ID),
+            new ItemEntity(FAKE_ID2),
+            new ItemEntity(FAKE_ID3));
 
     // Repository under test
     private ItemsDataRepository repository;
 
-    @Mock
-    private ItemEntityDataMapper mapperMock;
+    // Directly use mapping helper
+    private ItemEntityDataMapper dataMapper;
+
     @Mock
     private ItemsDataStore remoteMock;
     @Mock
@@ -56,19 +60,65 @@ public class ItemsDataRepositoryTest
     @Mock
     private GetNoDataCallback noItemCallbackMock;
 
-    @Mock
-    private CurrentTimeProvider currentTimeProviderMock;
+    @Captor
+    private ArgumentCaptor<ItemsDataStore.GetEntityItemsCallback> itemsCallbackCaptor;
+    @Captor
+    private ArgumentCaptor<ItemDataStore.GetEntityItemCallback> itemCallbackCaptor;
+    @Captor
+    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
 
     @Before
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
+        dataMapper = new ItemEntityDataMapper();
 
-        repository = new ItemsDataRepository(mapperMock, remoteMock, cacheMock);
+        repository = new ItemsDataRepository(dataMapper, remoteMock, cacheMock);
     }
 
     @Test
-    public void givenCacheIsEmpty_ThenRemoteRequested()
+    public void givenRequestItems_ThenRemoteListRequested()
+    {
+        // Given
+        setupCacheEmpty();
+
+        // When
+        repository.getItems(itemsCallbackMock, noItemCallbackMock);
+
+        // Then
+        verify(remoteMock).getItems(any(), any());
+    }
+
+    @Test
+    public void givenRequestItemsWithoutConnection_ThenNotAvailableCallbackIsNotified()
+    {
+        // Given
+        repository.getItems(itemsCallbackMock, noItemCallbackMock);
+
+        // When remote has no data
+        setItemsRemoteNotAvailable();
+
+        // Then
+        verify(noItemCallbackMock).onNoDataAvailable();
+    }
+
+    @Test
+    public void givenRequestItems_ThenItemsRetrievedFromRemote()
+    {
+        // Given
+        setupCacheEmpty();
+        repository.getItems(itemsCallbackMock, noItemCallbackMock);
+
+        // When remote has data available
+        setItemsRemoteAvailable(ITEMS);
+
+        // Then
+        final List<Item> expectedItems = dataMapper.transform(ITEMS);
+        verify(itemsCallbackMock).onItemsLoaded(expectedItems);
+    }
+
+    @Test
+    public void givenCacheIsEmpty_ThenRemoteListRequested()
     {
         // Given
         setupCacheEmpty();
@@ -77,7 +127,7 @@ public class ItemsDataRepositoryTest
         repository.getItem(FAKE_ID, itemCallbackMock, noItemCallbackMock);
 
         // Then
-        verify(remoteMock).getItem(eq(FAKE_ID), any(), any());
+        verify(remoteMock).getItems(any(), any());
     }
 
     @Test
@@ -93,6 +143,45 @@ public class ItemsDataRepositoryTest
         verify(cacheMock).getItem(eq(FAKE_ID), any(), any());
     }
 
+    @Test
+    public void givenItemNotFound_ThenNotAvailableCallbackIsNotified()
+    {
+        // Given
+        setupCacheEmpty();
+
+        // When
+        repository.getItem(FAKE_ID, itemCallbackMock, noItemCallbackMock);
+        setItemsRemoteNotAvailable();
+
+        // Then
+        verify(noItemCallbackMock).onNoDataAvailable();
+    }
+
+    @Test
+    public void givenRemoteItemsFetched_ThenCacheUpdated()
+    {
+        // Given
+        repository.getItems(itemsCallbackMock, noItemCallbackMock);
+
+        // When remote has data available
+        setItemsRemoteAvailable(ITEMS);
+
+        // Then cache cleared and given amount of items saved
+        verify(cacheMock).clearAll();
+        verify(cacheMock, times(ITEMS.size())).putItem(any(ItemEntity.class));
+    }
+
+    @Test
+    public void givenRefreshRequest_ThenCacheIsCleared()
+    {
+        // When
+        repository.refreshData();
+
+        // Then
+        verify(cacheMock).clearAll();
+    }
+
+
     private void setupCacheEmpty()
     {
         when(cacheMock.isExpired()).thenReturn(false);
@@ -105,16 +194,15 @@ public class ItemsDataRepositoryTest
         when(cacheMock.isCached(id)).thenReturn(true);
     }
 
-    private Item createFakeItem(final String id)
+    private void setItemsRemoteAvailable(@NonNull List<ItemEntity> items)
     {
-        // Using special test constructor
-        return new Item(id);
+        verify(remoteMock).getItems(itemsCallbackCaptor.capture(), any());
+        itemsCallbackCaptor.getValue().onItemsLoaded(items);
     }
 
-    private ItemEntity createFakeItemEntity(@NonNull final String id)
+    private void setItemsRemoteNotAvailable()
     {
-        ItemEntity entity = new ItemEntity();
-        entity.setId(id);
-        return entity;
+        verify(remoteMock).getItems(any(), noDataCallbackCaptor.capture());
+        noDataCallbackCaptor.getValue().onNoDataAvailable();
     }
 }

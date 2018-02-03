@@ -8,9 +8,9 @@ import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
- * Define data layer access to items as collection and specific items via id.
+ * Define data layer access to items as collection
  */
-public interface ItemsDataStore extends ItemDataStore
+public interface ItemsDataStore
 {
     interface GetEntityItemsCallback
     {
