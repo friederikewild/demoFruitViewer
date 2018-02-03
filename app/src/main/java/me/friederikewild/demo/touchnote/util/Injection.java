@@ -1,8 +1,9 @@
 package me.friederikewild.demo.touchnote.util;
 
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
+import me.friederikewild.demo.touchnote.data.datasource.remote.ItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RemoteItemsDataStore;
-import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitProvider;
+import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
@@ -23,9 +24,9 @@ public class Injection
         return new ItemEntityDataMapper();
     }
 
-    public static RetrofitProvider provideItemsApiProvider()
+    public static ItemsApiProvider provideItemsApiProvider()
     {
-        return RetrofitProvider.getInstance();
+        return RetrofitItemsApiProvider.getInstance();
     }
 
     public static RemoteItemsDataStore provideRemoteItemsDataStore()
