@@ -15,6 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 /**
  * Facade wrapper for retrofitClient as concrete implementation of {@link ItemsApiProvider}
@@ -69,7 +70,14 @@ public class RetrofitItemsApiProvider implements ItemsApiProvider
     @NonNull
     private HttpLoggingInterceptor createHttpLoggingInterceptor()
     {
-        final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        // Custom logger to get output on Logcat instead of terminal
+        final HttpLoggingInterceptor.Logger logger = message ->
+        {
+            Timber.tag("RemoteApi");
+            Timber.d("OkHttp: %s", message);
+        };
+
+        final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(logger);
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return loggingInterceptor;
     }
