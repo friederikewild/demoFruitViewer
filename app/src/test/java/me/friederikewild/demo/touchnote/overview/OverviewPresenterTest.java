@@ -14,6 +14,7 @@ import java.util.List;
 
 import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.TestUseCaseScheduler;
+import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.domain.ItemsRepository;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
@@ -43,6 +44,8 @@ public class OverviewPresenterTest
 
     @Captor
     private ArgumentCaptor<ItemsRepository.GetItemsCallback> itemsCallbackCaptor;
+    @Captor
+    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
 
 
     @Before
@@ -132,9 +135,42 @@ public class OverviewPresenterTest
         verify(overviewViewMock).showItems(TestMockData.ITEMS);
     }
 
+    @Test
+    public void givenLoadItemsNoneAvailable_ThenViewShowsEmptyHint()
+    {
+        // Given
+        presenter.loadItems(true);
+
+        // When
+        setItemsRemoteAvailable(TestMockData.EMPTY_ITEMS);
+
+        // Then
+        verify(overviewViewMock).showNoItemsAvailable();
+    }
+
+    @Test
+    public void givenLoadItemsNoConnection_ThenViewShowsEmptyHint()
+    {
+        // Given
+        presenter.loadItems(true);
+
+        // When
+        setItemsRemoteNotAvailable();
+
+        // Then
+        verify(overviewViewMock).showLoadingItemsError();
+    }
+
+
     private void setItemsRemoteAvailable(@NonNull List<Item> items)
     {
         verify(repositoryMock).getItems(itemsCallbackCaptor.capture(), any());
         itemsCallbackCaptor.getValue().onItemsLoaded(items);
+    }
+
+    private void setItemsRemoteNotAvailable()
+    {
+        verify(repositoryMock).getItems(any(), noDataCallbackCaptor.capture());
+        noDataCallbackCaptor.getValue().onNoDataAvailable();
     }
 }

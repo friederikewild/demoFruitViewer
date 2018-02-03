@@ -20,6 +20,10 @@ public interface OverviewContract
         void setLoadingIndicator(boolean active);
 
         void showItems(@NonNull List<Item> items);
+
+        void showNoItemsAvailable();
+
+        void showLoadingItemsError();
     }
 
     interface Presenter extends BasePresenter

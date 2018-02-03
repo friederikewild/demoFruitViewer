@@ -16,6 +16,9 @@ public interface TestMockData
     String FAKE_ID2 = "456";
     String FAKE_ID3 = "789";
 
+
+    List<Item> EMPTY_ITEMS = Lists.newArrayList();
+
     List<Item> ITEMS = Lists.newArrayList(
             new Item(FAKE_ID),
             new Item(FAKE_ID2),

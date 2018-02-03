@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -23,8 +24,9 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
     private ItemsAdapter itemsAdapter;
 
-    private RecyclerView recyclerView;
     private RecyclerView.LayoutManager currentLayoutManager;
+    private RecyclerView recyclerView;
+    private TextView hintNoItemsTextView;
 
     private EnhancedSwipeRefreshLayout refreshLayout;
 
@@ -52,11 +54,13 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     {
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        recyclerView = rootView.findViewById(R.id.itemsList);
+        recyclerView = rootView.findViewById(R.id.overviewItemsList);
         setupRecyclerView();
 
-        refreshLayout = rootView.findViewById(R.id.refreshLayout);
+        refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
         setupRefreshLayout();
+
+        hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
 
         return rootView;
     }
@@ -103,7 +107,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     {
         if (refreshLayout != null)
         {
-            refreshLayout.setRefreshing(true);
+            refreshLayout.setRefreshing(active);
         }
     }
 
@@ -113,6 +117,27 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         // TODO: Update adapter
 
         Timber.i("View - Show %d items %s", items.size(), items);
+
+        hintNoItemsTextView.setVisibility(View.GONE);
+
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void showNoItemsAvailable()
+    {
+        recyclerView.setVisibility(View.GONE);
+
+        hintNoItemsTextView.setVisibility(View.VISIBLE);
+        hintNoItemsTextView.setText(R.string.overview_hint_empty);
+    }
+
+    @Override
+    public void showLoadingItemsError()
+    {
+        recyclerView.setVisibility(View.GONE);
+
+        hintNoItemsTextView.setVisibility(View.VISIBLE);
+        hintNoItemsTextView.setText(R.string.overview_hint_error);
+    }
 }

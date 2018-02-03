@@ -3,21 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/refreshLayout"
+    android:id="@+id/overviewRefreshLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="me.friederikewild.demo.touchnote.overview.OverviewActivity">
 
     <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="me.friederikewild.demo.touchnote.overview.OverviewActivity">
+        android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/itemsList"
+            android:id="@+id/overviewItemsList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/zero"
@@ -25,11 +22,12 @@
             tools:listitem="@layout/item_col_layout_list" />
 
         <TextView
-            android:id="@+id/noItems"
+            android:id="@+id/overviewHintNoItems"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/overview_hint_empty"
+            android:text="@string/overview_hint_error"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

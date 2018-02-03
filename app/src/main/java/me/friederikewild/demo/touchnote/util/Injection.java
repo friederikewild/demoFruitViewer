@@ -1,6 +1,7 @@
 package me.friederikewild.demo.touchnote.util;
 
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
+import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.ItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RemoteItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitItemsApiProvider;
@@ -27,6 +28,14 @@ public class Injection
     public static ItemsApiProvider provideItemsApiProvider()
     {
         return RetrofitItemsApiProvider.getInstance();
+    }
+
+    /**
+     * Alternative to test handling receiving an empty list from remote
+     */
+    public static ItemsApiProvider provideEmptyItemsApiProvider()
+    {
+        return new EmptyItemsApiProvider();
     }
 
     public static RemoteItemsDataStore provideRemoteItemsDataStore()

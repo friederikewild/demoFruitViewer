@@ -65,38 +65,47 @@ public class OverviewPresenter implements OverviewContract.Presenter
                                    public void onSuccess(@NonNull GetItemsUseCase.Result result)
                                    {
                                        final List<Item> items = result.getItems();
-                                       // Check if view is still able to handle UI updates
-                                       if (!overviewView.isActive())
-                                       {
-                                           return;
-                                       }
-
-                                       if (showLoadingUI)
-                                       {
-                                           overviewView.setLoadingIndicator(false);
-                                       }
-
                                        updateUiWithItems(items);
                                    }
 
                                    @Override
                                    public void onError()
                                    {
-                                       // TODO: view error
+                                       updateUiWithLoadingError();
                                    }
                                });
-
     }
 
     private void updateUiWithItems(@NonNull List<Item> items)
     {
+        // Check if view is still able to handle UI updates
+        if (!overviewView.isActive())
+        {
+            return;
+        }
+
+        overviewView.setLoadingIndicator(false);
+
         if (items.isEmpty())
         {
-            // TODO: view hint
+            overviewView.showNoItemsAvailable();
         }
         else
         {
             overviewView.showItems(items);
         }
+    }
+
+    private void updateUiWithLoadingError()
+    {
+        // Check if view is still able to handle UI updates
+        if (!overviewView.isActive())
+        {
+            return;
+        }
+
+        overviewView.setLoadingIndicator(false);
+
+        overviewView.showLoadingItemsError();
     }
 }
