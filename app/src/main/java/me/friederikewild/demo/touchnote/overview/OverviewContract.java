@@ -10,11 +10,13 @@ public interface OverviewContract
 {
     interface View extends BaseView<Presenter>
     {
+        boolean isActive();
 
+        void setLoadingIndicator(boolean active);
     }
 
     interface Presenter extends BasePresenter
     {
-
+        void loadItems(boolean forceUpdate);
     }
 }

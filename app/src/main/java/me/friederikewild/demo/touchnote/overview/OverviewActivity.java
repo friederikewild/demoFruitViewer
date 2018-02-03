@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import me.friederikewild.demo.touchnote.R;
+import me.friederikewild.demo.touchnote.util.Injection;
 
 public class OverviewActivity extends AppCompatActivity
 {
@@ -34,7 +35,11 @@ public class OverviewActivity extends AppCompatActivity
             addFragmentToActivity(fragmentManager, overviewFragment, R.id.contentFrame);
         }
 
-        presenter = new OverviewPresenter(overviewFragment);
+        presenter = new OverviewPresenter(
+                overviewFragment,
+                Injection.provideUseCaseHandler(),
+                Injection.provideGetItemsUseCase()
+        );
     }
 
     public void addFragmentToActivity(@NonNull FragmentManager fragmentManager,

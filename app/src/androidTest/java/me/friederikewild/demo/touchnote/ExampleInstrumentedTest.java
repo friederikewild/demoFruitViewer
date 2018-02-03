@@ -23,6 +23,6 @@ public class ExampleInstrumentedTest
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("friederikewild.me.demo.recyclerview", appContext.getPackageName());
+        assertEquals("me.friederikewild.demo.touchnote", appContext.getPackageName());
     }
 }

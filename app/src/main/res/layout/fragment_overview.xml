@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:padding="@dimen/zero"
             android:layout_margin="@dimen/zero"
-            tools:listitem="@layout/item_line" />
+            tools:listitem="@layout/item_col_layout_list" />
 
         <TextView
             android:id="@+id/noItems"
