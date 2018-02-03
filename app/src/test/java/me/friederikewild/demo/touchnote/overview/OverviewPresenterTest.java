@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -13,10 +14,10 @@ import static org.mockito.Mockito.verify;
 public class OverviewPresenterTest
 {
     // Presenter under test
-    OverviewContract.Presenter presenter;
+    private OverviewPresenter presenter;
 
     @Mock
-    OverviewContract.View overviewViewMock;
+    private OverviewContract.View overviewViewMock;
 
     @Before
     public void setupOverviewPresenter()
@@ -25,20 +26,21 @@ public class OverviewPresenterTest
         presenter = givenOverviewPresenter();
     }
 
+    private OverviewPresenter givenOverviewPresenter()
+    {
+        return new OverviewPresenter(overviewViewMock);
+    }
+
     @Test
     public void givenCreatePresenter_ThenViewReceivesPresenter()
     {
-        // Given
+        // Given we start with fresh mock
+        reset(overviewViewMock);
+
+        // When
         presenter = givenOverviewPresenter();
 
         // Then
         verify(overviewViewMock).setPresenter(presenter);
-    }
-
-    private OverviewPresenter givenOverviewPresenter()
-    {
-        OverviewPresenter presenter = new OverviewPresenter(overviewViewMock);
-        // TODO: Create further needed mocks
-        return presenter;
     }
 }
