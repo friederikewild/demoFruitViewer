@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.data.datasource.ItemDataStore;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.when;
 public class CacheItemDataStoreTest
 {
     private static final long NOW = 1000;
-    private static final String FAKE_ID = "123";
 
     // Cache data store under test
     private CacheItemDataStore cacheItemDataStore;
@@ -49,7 +49,7 @@ public class CacheItemDataStoreTest
     public void givenEmptyCache_ThenItemNotCached()
     {
         // When
-        final boolean isCached = cacheItemDataStore.isCached(FAKE_ID);
+        final boolean isCached = cacheItemDataStore.isCached(TestMockData.FAKE_ID);
 
         // Then
         assertThat(isCached, is(false));
@@ -63,7 +63,7 @@ public class CacheItemDataStoreTest
 
         // When
         cacheItemDataStore.putItem(entity);
-        final boolean isCached = cacheItemDataStore.isCached(FAKE_ID);
+        final boolean isCached = cacheItemDataStore.isCached(TestMockData.FAKE_ID);
 
         // Then
         assertThat(isCached, is(true));
@@ -73,7 +73,7 @@ public class CacheItemDataStoreTest
     public void givenEmptyCache_ThenNoDataCallbackOnRequest()
     {
         // When
-        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock, errorCallbackMock);
+        cacheItemDataStore.getItem(TestMockData.FAKE_ID, itemCallbackMock, errorCallbackMock);
 
         // Then
         verify(errorCallbackMock).onNoDataAvailable();
@@ -88,7 +88,7 @@ public class CacheItemDataStoreTest
         cacheItemDataStore.putItem(entity);
 
         // When
-        cacheItemDataStore.getItem(FAKE_ID, itemCallbackMock, errorCallbackMock);
+        cacheItemDataStore.getItem(TestMockData.FAKE_ID, itemCallbackMock, errorCallbackMock);
 
         // Then
         verify(itemCallbackMock).onItemLoaded(entity);
@@ -131,7 +131,7 @@ public class CacheItemDataStoreTest
         // When
         updateCurrentTime(CacheItemDataStore.EXPIRATION_TIME + 1);
         cacheItemDataStore.isExpired();
-        final boolean isCached = cacheItemDataStore.isCached(FAKE_ID);
+        final boolean isCached = cacheItemDataStore.isCached(TestMockData.FAKE_ID);
 
         // Then
         assertThat(isCached, is(false));
@@ -140,7 +140,7 @@ public class CacheItemDataStoreTest
     private ItemEntity createFakeItemEntity()
     {
         ItemEntity entity = new ItemEntity();
-        entity.setId(FAKE_ID);
+        entity.setId(TestMockData.FAKE_ID);
         return entity;
     }
 

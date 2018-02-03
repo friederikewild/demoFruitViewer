@@ -2,8 +2,6 @@ package me.friederikewild.demo.touchnote.data;
 
 import android.support.annotation.NonNull;
 
-import com.google.common.collect.Lists;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import me.friederikewild.demo.touchnote.data.datasource.ItemDataStore;
+import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
@@ -31,15 +29,6 @@ import static org.mockito.Mockito.when;
  */
 public class ItemsDataRepositoryTest
 {
-    private static final String FAKE_ID = "123";
-    private static final String FAKE_ID2 = "456";
-    private static final String FAKE_ID3 = "789";
-
-    private static List<ItemEntity> ITEMS = Lists.newArrayList(
-            new ItemEntity(FAKE_ID),
-            new ItemEntity(FAKE_ID2),
-            new ItemEntity(FAKE_ID3));
-
     // Repository under test
     private ItemsDataRepository repository;
 
@@ -54,16 +43,12 @@ public class ItemsDataRepositoryTest
     @Mock
     private ItemsDataRepository.GetItemsCallback itemsCallbackMock;
     @Mock
-    private GetNoDataCallback noItemsCallbackMock;
-    @Mock
     private ItemsDataRepository.GetItemCallback itemCallbackMock;
     @Mock
     private GetNoDataCallback noItemCallbackMock;
 
     @Captor
     private ArgumentCaptor<ItemsDataStore.GetEntityItemsCallback> itemsCallbackCaptor;
-    @Captor
-    private ArgumentCaptor<ItemDataStore.GetEntityItemCallback> itemCallbackCaptor;
     @Captor
     private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
 
@@ -110,10 +95,10 @@ public class ItemsDataRepositoryTest
         repository.getItems(itemsCallbackMock, noItemCallbackMock);
 
         // When remote has data available
-        setItemsRemoteAvailable(ITEMS);
+        setItemsRemoteAvailable(TestMockData.ENTITY_ITEMS);
 
         // Then
-        final List<Item> expectedItems = dataMapper.transform(ITEMS);
+        final List<Item> expectedItems = dataMapper.transform(TestMockData.ENTITY_ITEMS);
         verify(itemsCallbackMock).onItemsLoaded(expectedItems);
     }
 
@@ -124,7 +109,7 @@ public class ItemsDataRepositoryTest
         setupCacheEmpty();
 
         // When
-        repository.getItem(FAKE_ID, itemCallbackMock, noItemCallbackMock);
+        repository.getItem(TestMockData.FAKE_ID, itemCallbackMock, noItemCallbackMock);
 
         // Then
         verify(remoteMock).getItems(any(), any());
@@ -134,13 +119,13 @@ public class ItemsDataRepositoryTest
     public void givenItemIsCached_ThenCacheRequested()
     {
         // Given
-        setupCachePutItem(FAKE_ID);
+        setupCachePutItem(TestMockData.FAKE_ID);
 
         // When
-        repository.getItem(FAKE_ID, itemCallbackMock, noItemCallbackMock);
+        repository.getItem(TestMockData.FAKE_ID, itemCallbackMock, noItemCallbackMock);
 
         // Then
-        verify(cacheMock).getItem(eq(FAKE_ID), any(), any());
+        verify(cacheMock).getItem(eq(TestMockData.FAKE_ID), any(), any());
     }
 
     @Test
@@ -150,7 +135,7 @@ public class ItemsDataRepositoryTest
         setupCacheEmpty();
 
         // When
-        repository.getItem(FAKE_ID, itemCallbackMock, noItemCallbackMock);
+        repository.getItem(TestMockData.FAKE_ID, itemCallbackMock, noItemCallbackMock);
         setItemsRemoteNotAvailable();
 
         // Then
@@ -164,11 +149,11 @@ public class ItemsDataRepositoryTest
         repository.getItems(itemsCallbackMock, noItemCallbackMock);
 
         // When remote has data available
-        setItemsRemoteAvailable(ITEMS);
+        setItemsRemoteAvailable(TestMockData.ENTITY_ITEMS);
 
         // Then cache cleared and given amount of items saved
         verify(cacheMock).clearAll();
-        verify(cacheMock, times(ITEMS.size())).putItem(any(ItemEntity.class));
+        verify(cacheMock, times(TestMockData.ENTITY_ITEMS.size())).putItem(any(ItemEntity.class));
     }
 
     @Test
