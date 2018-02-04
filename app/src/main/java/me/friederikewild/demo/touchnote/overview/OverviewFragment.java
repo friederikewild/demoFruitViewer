@@ -29,8 +29,6 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     private RecyclerView recyclerView;
     private TextView hintNoItemsTextView;
 
-    private EnhancedSwipeRefreshLayout refreshLayout;
-
     public static OverviewFragment newInstance()
     {
         return new OverviewFragment();
@@ -58,8 +56,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView = rootView.findViewById(R.id.overviewItemsList);
         setupRecyclerView();
 
-        refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
-        setupRefreshLayout();
+        EnhancedSwipeRefreshLayout refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
+        setupRefreshLayout(refreshLayout);
 
         hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
 
@@ -71,7 +69,6 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     {
         super.onDestroyView();
         recyclerView = null;
-        refreshLayout = null;
         hintNoItemsTextView = null;
     }
 
@@ -84,7 +81,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView.setAdapter(itemsAdapter);
     }
 
-    private void setupRefreshLayout()
+    private void setupRefreshLayout(EnhancedSwipeRefreshLayout refreshLayout)
     {
         // Set the actual scrollable child view
         refreshLayout.setScrollableChildView(recyclerView);
@@ -115,10 +112,15 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     @Override
     public void setLoadingIndicator(boolean active)
     {
-        if (refreshLayout != null)
+        if (getView() == null)
         {
-            refreshLayout.setRefreshing(active);
+            return;
         }
+
+        final EnhancedSwipeRefreshLayout refreshLayout = getView().findViewById(R.id.overviewRefreshLayout);
+
+        // Ensure to call setRefreshing after layout is done
+        refreshLayout.post(() -> refreshLayout.setRefreshing(active));
     }
 
     @Override
