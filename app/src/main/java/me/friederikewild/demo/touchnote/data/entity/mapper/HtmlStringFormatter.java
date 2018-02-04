@@ -7,6 +7,10 @@ import android.text.Spanned;
 /**
  * Facade wrapper for {@link android.text.Html} calls to get current time.
  * This allows for easy mocking during tests.
+ *
+ * NOTE: Current mock server response doesn't actually contain html elements.
+ * Created this setup remembering it contained line breaks, keeping it now since working.
+ *
  * Setup as a singleton.
  */
 public class HtmlStringFormatter
@@ -35,17 +39,19 @@ public class HtmlStringFormatter
      * @return String representation with displayable styled text
      */
     @SuppressWarnings("deprecation")
-    public String formatHtml(@NonNull String html)
+    public String formatHtml(@NonNull final String html)
     {
+        // Also support line breaks in ascii form
+        final String convertLineBreaks = html.replace("\n", "<br />");
+
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
         {
-            // also test with FROM_HTML_MODE_COMPACT
-            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+            result = Html.fromHtml(convertLineBreaks, Html.FROM_HTML_MODE_COMPACT);
         }
         else
         {
-            result = Html.fromHtml(html);
+            result = Html.fromHtml(convertLineBreaks);
         }
 
         return result.toString();
