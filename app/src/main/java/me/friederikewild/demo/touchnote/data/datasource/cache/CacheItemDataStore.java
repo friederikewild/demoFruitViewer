@@ -36,11 +36,11 @@ public class CacheItemDataStore implements ItemCache
         this.timeProvider = timeProvider;
     }
 
-    public static CacheItemDataStore getInstance()
+    public static CacheItemDataStore getInstance(@NonNull CurrentTimeProvider timeProvider)
     {
         if (INSTANCE == null)
         {
-            INSTANCE = new CacheItemDataStore(new CurrentTimeProvider());
+            INSTANCE = new CacheItemDataStore(timeProvider);
         }
         return INSTANCE;
     }

@@ -31,13 +31,13 @@ public class UseCaseHandler
             final UseCase<T, R> useCase, T values, UseCase.UseCaseCallback<R> callback)
     {
         useCase.setRequestValues(values);
-        useCase.setUseCaseCallback(new UiCallbackWrapper(callback, this));
+        useCase.setUseCaseCallback(new UiCallbackWrapper<>(callback, this));
 
         useCaseScheduler.execute(useCase::run);
     }
 
-    public <V extends UseCase.Result> void notifyResponse(final V response,
-                                                          final UseCase.UseCaseCallback<V> useCaseCallback)
+    private <V extends UseCase.Result> void notifyResponse(final V response,
+                                                           final UseCase.UseCaseCallback<V> useCaseCallback)
     {
         useCaseScheduler.notifyResponse(response, useCaseCallback);
     }

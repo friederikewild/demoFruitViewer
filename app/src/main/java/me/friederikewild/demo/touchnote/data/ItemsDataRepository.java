@@ -25,10 +25,10 @@ public class ItemsDataRepository implements ItemsRepository
 {
     private static ItemsDataRepository INSTANCE;
 
-    private ItemEntityDataMapper mapper;
+    private final ItemEntityDataMapper mapper;
 
-    private ItemsDataStore remoteItemsStore;
-    private ItemCache cacheItemStore;
+    private final ItemsDataStore remoteItemsStore;
+    private final ItemCache cacheItemStore;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
     @VisibleForTesting
@@ -43,14 +43,15 @@ public class ItemsDataRepository implements ItemsRepository
     }
 
     public static ItemsDataRepository getInstance(@NonNull final ItemEntityDataMapper mapper,
-                                                  @NonNull final ItemsDataStore remoteItemsStore)
+                                                  @NonNull final ItemsDataStore remoteItemsStore,
+                                                  @NonNull final CacheItemDataStore cacheItemDataStore)
     {
         if (INSTANCE == null)
         {
             INSTANCE = new ItemsDataRepository(
                     mapper,
                     remoteItemsStore,
-                    CacheItemDataStore.getInstance());
+                    cacheItemDataStore);
         }
         return INSTANCE;
     }

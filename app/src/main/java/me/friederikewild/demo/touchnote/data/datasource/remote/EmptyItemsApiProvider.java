@@ -3,7 +3,7 @@ package me.friederikewild.demo.touchnote.data.datasource.remote;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
@@ -18,6 +18,6 @@ public class EmptyItemsApiProvider implements ItemsApiProvider
     public void enqueueGetItems(@NonNull ItemsDataStore.GetEntityItemsCallback callback,
                                 @NonNull GetNoDataCallback errorCallback)
     {
-        callback.onItemsLoaded(Lists.newArrayList());
+        callback.onItemsLoaded(new ArrayList<>());
     }
 }

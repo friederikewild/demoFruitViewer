@@ -1,10 +1,14 @@
 package me.friederikewild.demo.touchnote.util;
 
+
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
+import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
+import me.friederikewild.demo.touchnote.data.datasource.cache.CurrentTimeProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.ItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RemoteItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitItemsApiProvider;
+import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
@@ -17,12 +21,24 @@ public class Injection
 {
     public static ItemsDataRepository provideItemsDataRepository()
     {
-        return ItemsDataRepository.getInstance(provideItemEntityDataMapper(), provideRemoteItemsDataStore());
+        return ItemsDataRepository.getInstance(provideItemEntityDataMapper(),
+                                               provideRemoteItemsDataStore(),
+                                               provideCacheItemDataStore());
     }
 
     public static ItemEntityDataMapper provideItemEntityDataMapper()
     {
-        return new ItemEntityDataMapper();
+        return ItemEntityDataMapper.getInstance(provideHtmlStringFormatter());
+    }
+
+    public static HtmlStringFormatter provideHtmlStringFormatter()
+    {
+        return HtmlStringFormatter.getInstance();
+    }
+
+    public static RemoteItemsDataStore provideRemoteItemsDataStore()
+    {
+        return RemoteItemsDataStore.getInstance(provideItemsApiProvider());
     }
 
     public static ItemsApiProvider provideItemsApiProvider()
@@ -38,9 +54,14 @@ public class Injection
         return new EmptyItemsApiProvider();
     }
 
-    public static RemoteItemsDataStore provideRemoteItemsDataStore()
+    public static CacheItemDataStore provideCacheItemDataStore()
     {
-        return RemoteItemsDataStore.getInstance(provideItemsApiProvider());
+        return CacheItemDataStore.getInstance(provideCurrentTimeProvider());
+    }
+
+    public static CurrentTimeProvider provideCurrentTimeProvider()
+    {
+        return CurrentTimeProvider.getInstance();
     }
 
     public static UseCaseHandler provideUseCaseHandler()

@@ -15,10 +15,13 @@ import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
+import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,6 +42,8 @@ public class ItemsDataRepositoryTest
     private ItemsDataStore remoteMock;
     @Mock
     private ItemCache cacheMock;
+    @Mock
+    private HtmlStringFormatter htmlStringFormatterMock;
 
     @Mock
     private ItemsDataRepository.GetItemsCallback itemsCallbackMock;
@@ -56,7 +61,9 @@ public class ItemsDataRepositoryTest
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
-        dataMapper = new ItemEntityDataMapper();
+        dataMapper = new ItemEntityDataMapper(htmlStringFormatterMock);
+        // No special formatting done for tests
+        when(htmlStringFormatterMock.formatHtml(anyString())).then(returnsFirstArg());
 
         repository = new ItemsDataRepository(dataMapper, remoteMock, cacheMock);
     }
