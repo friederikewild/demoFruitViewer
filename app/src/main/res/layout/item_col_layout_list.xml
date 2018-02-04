@@ -1,18 +1,59 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/dot_double"
-    android:paddingRight="@dimen/dot_double"
-    android:paddingTop="@dimen/dot"
-    android:paddingBottom="@dimen/dot">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dot"
+    style="@style/CardView.Light"
+    tools:ignore="ContentDescription"
+    tools:showIn="@layout/fragment_overview">
 
-    <TextView
-        android:id="@+id/overviewItemTitle"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        android:layout_margin="@dimen/dot_double">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/overviewItemThumbnail"
+            android:layout_width="@dimen/thumb_icon_size"
+            android:layout_height="@dimen/thumb_icon_size"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/overviewItemDescriptionText"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:srcCompat="@drawable/thumbnail_placeholder" />
+
+        <TextView
+            android:id="@+id/overviewItemTitle"
+            android:layout_width="@dimen/match_constraints"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dot_double"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/colorPrimaryText"
+            app:layout_constraintTop_toTopOf="@+id/overviewItemThumbnail"
+            app:layout_constraintStart_toEndOf="@+id/overviewItemThumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/overviewItemThumbnail"
+            tools:text="@string/app_name" />
+
+        <TextView
+            android:id="@+id/overviewItemDescriptionText"
+            android:layout_width="@dimen/match_constraints"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dot_double"
+            android:lineSpacingExtra="@dimen/dot_half"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/colorPrimaryText"
+            app:layout_constraintTop_toBottomOf="@+id/overviewItemThumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="@string/overview_hint_error"
+            tools:visibility="visible" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

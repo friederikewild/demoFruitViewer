@@ -22,12 +22,11 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private UseCaseHandler useCaseHandler;
 
     // Simple flag to check to keep track if ever loaded data
-    @VisibleForTesting
-    boolean isFirstLoading = true;
+    private boolean isFirstLoading = true;
 
-    public OverviewPresenter(@NonNull OverviewContract.View view,
-                             @NonNull UseCaseHandler handler,
-                             @NonNull GetItemsUseCase getItems)
+    OverviewPresenter(@NonNull OverviewContract.View view,
+                      @NonNull UseCaseHandler handler,
+                      @NonNull GetItemsUseCase getItems)
     {
         useCaseHandler = handler;
         getItemsUseCase = getItems;
@@ -66,16 +65,47 @@ public class OverviewPresenter implements OverviewContract.Presenter
                                    public void onSuccess(@NonNull GetItemsUseCase.Result result)
                                    {
                                        final List<Item> items = result.getItems();
-
-                                       // TODO: Update View
+                                       updateUiWithItems(items);
                                    }
 
                                    @Override
                                    public void onError()
                                    {
-                                       // TODO: Update View
+                                       updateUiWithLoadingError();
                                    }
                                });
+    }
 
+    private void updateUiWithItems(@NonNull List<Item> items)
+    {
+        // Check if view is still able to handle UI updates
+        if (!overviewView.isActive())
+        {
+            return;
+        }
+
+        overviewView.setLoadingIndicator(false);
+
+        if (items.isEmpty())
+        {
+            overviewView.showNoItemsAvailable();
+        }
+        else
+        {
+            overviewView.showItems(items);
+        }
+    }
+
+    private void updateUiWithLoadingError()
+    {
+        // Check if view is still able to handle UI updates
+        if (!overviewView.isActive())
+        {
+            return;
+        }
+
+        overviewView.setLoadingIndicator(false);
+
+        overviewView.showLoadingItemsError();
     }
 }

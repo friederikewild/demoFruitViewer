@@ -1,17 +1,29 @@
 package me.friederikewild.demo.touchnote.overview;
 
+import android.support.annotation.NonNull;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
+import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.TestUseCaseScheduler;
+import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.domain.ItemsRepository;
+import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -29,6 +41,12 @@ public class OverviewPresenterTest
     private OverviewContract.View overviewViewMock;
     @Mock
     private ItemsRepository repositoryMock;
+
+    @Captor
+    private ArgumentCaptor<ItemsRepository.GetItemsCallback> itemsCallbackCaptor;
+    @Captor
+    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
+
 
     @Before
     public void setupOverviewPresenter()
@@ -84,5 +102,75 @@ public class OverviewPresenterTest
 
         // Then
         verify(overviewViewMock, never()).setLoadingIndicator(anyBoolean());
+    }
+
+
+    @Test
+    public void givenLoadItemsReceivesData_ThenViewUpdatedToStartAndStopShowLoading()
+    {
+        // Given
+        presenter.loadItems(true);
+
+        // When
+        setItemsRemoteAvailable(TestMockData.ITEMS);
+
+        // Then first loading indicator is shown
+        InOrder inOrder = inOrder(overviewViewMock);
+        inOrder.verify(overviewViewMock).setLoadingIndicator(true);
+
+        // Then loading indicator is hidden
+        inOrder.verify(overviewViewMock).setLoadingIndicator(false);
+    }
+
+    @Test
+    public void givenLoadItemsReceivesData_ThenViewIsUpdated()
+    {
+        // Given
+        presenter.loadItems(true);
+
+        // When
+        setItemsRemoteAvailable(TestMockData.ITEMS);
+
+        // Then
+        verify(overviewViewMock).showItems(TestMockData.ITEMS);
+    }
+
+    @Test
+    public void givenLoadItemsNoneAvailable_ThenViewShowsEmptyHint()
+    {
+        // Given
+        presenter.loadItems(true);
+
+        // When
+        setItemsRemoteAvailable(TestMockData.EMPTY_ITEMS);
+
+        // Then
+        verify(overviewViewMock).showNoItemsAvailable();
+    }
+
+    @Test
+    public void givenLoadItemsNoConnection_ThenViewShowsEmptyHint()
+    {
+        // Given
+        presenter.loadItems(true);
+
+        // When
+        setItemsRemoteNotAvailable();
+
+        // Then
+        verify(overviewViewMock).showLoadingItemsError();
+    }
+
+
+    private void setItemsRemoteAvailable(@NonNull List<Item> items)
+    {
+        verify(repositoryMock).getItems(itemsCallbackCaptor.capture(), any());
+        itemsCallbackCaptor.getValue().onItemsLoaded(items);
+    }
+
+    private void setItemsRemoteNotAvailable()
+    {
+        verify(repositoryMock).getItems(any(), noDataCallbackCaptor.capture());
+        noDataCallbackCaptor.getValue().onNoDataAvailable();
     }
 }
