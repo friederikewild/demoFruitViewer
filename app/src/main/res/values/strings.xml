@@ -4,4 +4,7 @@
     <string name="overview_hint_empty">Currently no data available to show.</string>
     <string name="overview_hint_error">No data found. \nCheck your internet connection and pull screen to refresh.</string>
 
+    <string name="menu_view_list">List View</string>
+    <string name="menu_view_grid">Grid View</string>
+
 </resources>

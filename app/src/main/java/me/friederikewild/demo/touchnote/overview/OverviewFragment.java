@@ -8,6 +8,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -61,6 +64,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
         hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 
@@ -81,7 +86,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView.setAdapter(itemsAdapter);
     }
 
-    private void setupRefreshLayout(EnhancedSwipeRefreshLayout refreshLayout)
+    private void setupRefreshLayout(@NonNull final EnhancedSwipeRefreshLayout refreshLayout)
     {
         // Set the actual scrollable child view
         refreshLayout.setScrollableChildView(recyclerView);
@@ -94,6 +99,27 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         );
 
         refreshLayout.setOnRefreshListener(() -> presenter.loadItems(false));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.overview_fragment_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+//        switch (item.getItemId())
+//        {
+//            case R.id.menu_list:
+//                presenter.setListPresentation();
+//                break;
+//            case R.id.menu_grid:
+//                presenter.setGridPresentation();
+//                break;
+//        }
+        return true;
     }
 
     @Override
