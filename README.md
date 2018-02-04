@@ -2,12 +2,14 @@
 
 Android assignment for Touchnote by Friederike Wild.
 
-### RecyclerView Demo App ###
+### RecyclerView Demo App
 
 * Fetch provided json test data
 * **Overview** provides list and grid display option
 * **Detail** provides larger image of one entry
 
-### NOTES ###
+### Notes
 * Implemented following MVP architecture
 * Asynchronous Domain Layer Use Case handling inspired by [Google Android Architecture Blueprints](https://github.com/googlesamples/android-architecture)
+* Using CardView for items in list since content is more than three lines of text
+* Card layouts follow [Material Design Guidelines](https://material.io/guidelines/components/cards.html#cards-content)

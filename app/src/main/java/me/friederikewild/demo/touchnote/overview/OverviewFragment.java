@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.friederikewild.demo.touchnote.R;
@@ -45,7 +46,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        itemsAdapter = new ItemsAdapter();
+        itemsAdapter = new ItemsAdapter(new ArrayList<>());
     }
 
     @Nullable
@@ -63,6 +64,15 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        recyclerView = null;
+        refreshLayout = null;
+        hintNoItemsTextView = null;
     }
 
     private void setupRecyclerView()
@@ -114,9 +124,9 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     @Override
     public void showItems(@NonNull List<Item> items)
     {
-        // TODO: Update adapter
-
         Timber.i("View - Show %d items %s", items.size(), items);
+
+        itemsAdapter.replaceData(items);
 
         hintNoItemsTextView.setVisibility(View.GONE);
 
