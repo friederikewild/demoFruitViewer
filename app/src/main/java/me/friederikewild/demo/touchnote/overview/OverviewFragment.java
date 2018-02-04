@@ -61,7 +61,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
         recyclerView = rootView.findViewById(R.id.overviewItemsList);
-        setupRecyclerView();
+        // Use list style as default
+        setListLayout();
 
         EnhancedSwipeRefreshLayout refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
         setupRefreshLayout(refreshLayout);
@@ -80,15 +81,6 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView = null;
         hintNoItemsTextView = null;
         currentLayoutManager = null;
-    }
-
-    private void setupRecyclerView()
-    {
-        // Use list style as default
-        currentLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(currentLayoutManager);
-
-        recyclerView.setAdapter(itemsAdapter);
     }
 
     private void setupRefreshLayout(@NonNull final EnhancedSwipeRefreshLayout refreshLayout)
@@ -197,7 +189,10 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     @Override
     public void setListLayout()
     {
-        // TODO
+        currentLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(currentLayoutManager);
+
+        recyclerView.setAdapter(itemsAdapter);
     }
 
     @Override
