@@ -10,7 +10,7 @@ jobs:
   build:
     docker:
       # Android the primary container
-      - image: circleci/android:api-26-alpha
+      - image: circleci/android:api-26-node8-alpha
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
