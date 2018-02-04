@@ -59,7 +59,7 @@ jobs:
 
       - run:
           name: Launch emulator
-          command: export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib && emulator64-arm -avd test -no-audio -no-boot-anim -no-window -accel on -no-snapshot-save -gpu host -netfast -camera-back none -verbose
+          command: export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib && emulator64-arm -avd test -no-audio -no-boot-anim -no-window -accel on -snapshot testSnap -netfast -no-snapshot-update-time -camera-back none -verbose
           background: true
 
       - run:
