@@ -2,6 +2,7 @@ package me.friederikewild.demo.touchnote.overview;
 
 import android.support.annotation.NonNull;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -82,13 +83,23 @@ public class OverviewPresenterTest
     }
 
     @Test
-    public void givenStartPresenter_ThenViewShowsLoading()
+    public void givenPresenterStarted_ThenViewShowsLoading()
     {
         // When
         presenter.start();
 
         // Then
         verify(overviewViewMock).setLoadingIndicator(eq(true));
+    }
+
+    @Test
+    public void givenPresenterStarted_ThenViewUpdatesMenuVisibility()
+    {
+        // When
+        presenter.start();
+
+        // Then
+        verify(overviewViewMock).updateMenuItemVisibility();
     }
 
     @Test
@@ -159,6 +170,113 @@ public class OverviewPresenterTest
 
         // Then
         verify(overviewViewMock).showLoadingItemsError();
+    }
+
+    @Test
+    public void givenSetLayoutToList_ThenViewPresentedAsList()
+    {
+        // When
+        presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
+
+        // Then
+        verify(overviewViewMock).setListLayout();
+    }
+
+    @Test
+    public void givenSetLayoutToList_ThenViewMenuUpdated()
+    {
+        // When
+        presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
+
+        // Then
+        verify(overviewViewMock).updateMenuItemVisibility();
+    }
+
+    @Test
+    public void givenSetLayoutToGrid_ThenViewPresentedAsGrid()
+    {
+        // When
+        presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
+
+        // Then
+        verify(overviewViewMock).setGridLayout();
+    }
+
+    @Test
+    public void givenSetLayoutToGrid_ThenViewMenuUpdated()
+    {
+        // When
+        presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
+
+        // Then
+        verify(overviewViewMock).updateMenuItemVisibility();
+    }
+
+    @Test
+    public void givenPresenterHasNoData_ThenListLayoutMenuIsInvisible()
+    {
+        // Given
+        presenter.setViewIsCurrentlyEmpty();
+
+        // When view requests if list menu item is visible
+        final boolean isListOptionAvailable = presenter.isListOptionAvailable();
+
+        // Then
+        Assert.assertFalse("List option not available", isListOptionAvailable);
+    }
+
+    @Test
+    public void givenPresenterHasNoData_ThenGridLayoutMenuIsInvisible()
+    {
+        // Given
+        presenter.setViewIsCurrentlyEmpty();
+
+        // When view requests if grid menu item is visible
+        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+
+        // Then
+        Assert.assertFalse("Grid option not available", isGridOptionAvailable);
+    }
+
+    @Test
+    public void givenPresenterHasDataAndInitialLayout_ThenGridLayoutMenuIsVisible()
+    {
+        // Given
+        presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
+
+        // When view requests if grid menu item is visible
+        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+
+        // Then
+        Assert.assertTrue("Grid option available", isGridOptionAvailable);
+    }
+
+    @Test
+    public void givenPresenterHasDataAndSetListLayout_ThenGridLayoutMenuIsVisible()
+    {
+        // Given
+        presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
+        presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
+
+        // When view requests if grid menu item is visible
+        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+
+        // Then
+        Assert.assertTrue("Grid option available", isGridOptionAvailable);
+    }
+
+    @Test
+    public void givenPresenterHasDataAndSetGridLayout_ThenListLayoutMenuIsVisible()
+    {
+        // Given
+        presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
+        presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
+
+        // When view requests if list menu item is visible
+        final boolean isListOptionAvailable = presenter.isListOptionAvailable();
+
+        // Then
+        Assert.assertTrue("List option available", isListOptionAvailable);
     }
 
 

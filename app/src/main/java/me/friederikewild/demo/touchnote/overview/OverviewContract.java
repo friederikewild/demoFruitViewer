@@ -24,10 +24,22 @@ public interface OverviewContract
         void showNoItemsAvailable();
 
         void showLoadingItemsError();
+
+        void setListLayout();
+
+        void setGridLayout();
+
+        void updateMenuItemVisibility();
     }
 
     interface Presenter extends BasePresenter
     {
         void loadItems(boolean forceUpdate);
+
+        void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
+
+        boolean isListOptionAvailable();
+
+        boolean isGridOptionAvailable();
     }
 }

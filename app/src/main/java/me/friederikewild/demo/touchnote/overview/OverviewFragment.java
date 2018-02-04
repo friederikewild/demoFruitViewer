@@ -3,6 +3,7 @@ package me.friederikewild.demo.touchnote.overview;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,9 @@ import java.util.List;
 import me.friederikewild.demo.touchnote.R;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import timber.log.Timber;
+
+import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
+import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_LAYOUT;
 
 public class OverviewFragment extends Fragment implements OverviewContract.View
 {
@@ -75,6 +79,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         super.onDestroyView();
         recyclerView = null;
         hintNoItemsTextView = null;
+        currentLayoutManager = null;
     }
 
     private void setupRecyclerView()
@@ -108,17 +113,27 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+
+        // Set visible layout option according to presenter
+        menu.findItem(R.id.menu_show_layout_list).setVisible(presenter.isListOptionAvailable());
+        menu.findItem(R.id.menu_show_layout_grid).setVisible(presenter.isGridOptionAvailable());
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-//        switch (item.getItemId())
-//        {
-//            case R.id.menu_list:
-//                presenter.setListPresentation();
-//                break;
-//            case R.id.menu_grid:
-//                presenter.setGridPresentation();
-//                break;
-//        }
+        switch (item.getItemId())
+        {
+            case R.id.menu_show_layout_list:
+                presenter.setLayoutPresentation(LIST_LAYOUT);
+                break;
+            case R.id.menu_show_layout_grid:
+                presenter.setLayoutPresentation(GRID_LAYOUT);
+                break;
+        }
         return true;
     }
 
@@ -177,5 +192,24 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
         hintNoItemsTextView.setVisibility(View.VISIBLE);
         hintNoItemsTextView.setText(R.string.overview_hint_error);
+    }
+
+    @Override
+    public void setListLayout()
+    {
+        // TODO
+    }
+
+    @Override
+    public void setGridLayout()
+    {
+        // TODO
+    }
+
+    @Override
+    public void updateMenuItemVisibility()
+    {
+        // Request update of menu to toggle icon
+        ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 }
