@@ -38,6 +38,17 @@ jobs:
           name: Read key file
           command: ./.circleci/download_keystore.sh
 
+     # Setup and launch emulator as early as possible
+      - run:
+          name: Setup emulator
+          command: sdkmanager "system-images;android-19;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-19;default;armeabi-v7a"
+
+      - run:
+          name: Launch emulator
+          command: export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib && emulator64-arm -avd test -no-audio -no-boot-anim -no-window -accel on -no-snapshot-save -camera-back none -verbose
+          background: true
+          parallel: true
+
       - run:
           name: Run build
           command: ./gradlew clean build
@@ -56,21 +67,12 @@ jobs:
           command: ./gradlew testDebugUnitTest
 
       - run:
-          name: Setup emulator
-          command: sdkmanager "system-images;android-19;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-19;default;armeabi-v7a"
-
-      - run:
-          name: Launch emulator
-          command: export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib && emulator64-arm -avd test -no-audio -no-boot-anim -no-window -accel on -no-snapshot-save -camera-back none -verbose
-          background: true
-
-      - run:
           name: Wait emulator
           command: |
             # wait for it to have booted
             circle-android wait-for-boot
             # unlock the emulator screen
-            sleep 30
+            sleep 5
             adb shell input keyevent 82
 
       - run:
