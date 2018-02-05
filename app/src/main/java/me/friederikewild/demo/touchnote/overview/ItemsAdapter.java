@@ -46,6 +46,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     ItemsAdapter(@NonNull List<Item> items)
     {
         setList(items);
+        setHasStableIds(true);
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        // Simplified usage instead of converting the item.id
+        // Data set is currently read only and always the same size once received
+        return position;
     }
 
     void replaceData(@NonNull List<Item> items)
