@@ -5,12 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import java.io.Serializable;
 import java.util.List;
 
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
+import me.friederikewild.demo.touchnote.util.Bundler;
 
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_LAYOUT;
@@ -29,6 +31,9 @@ public class OverviewPresenter implements OverviewContract.Presenter
     @NonNull
     private UseCaseHandler useCaseHandler;
 
+    @NonNull
+    private Bundler<Serializable> serializableBundler;
+
     // LateInit @NonNull
     private OverviewLayoutType currentLayoutType;
 
@@ -42,10 +47,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
 
     OverviewPresenter(@NonNull final OverviewContract.View view,
                       @NonNull final UseCaseHandler handler,
-                      @NonNull final GetItemsUseCase getItems)
+                      @NonNull final GetItemsUseCase getItems,
+                      @NonNull final Bundler<Serializable> bundler)
     {
         useCaseHandler = handler;
         getItemsUseCase = getItems;
+        serializableBundler = bundler;
 
         overviewView = view;
         overviewView.setPresenter(this);
@@ -57,22 +64,19 @@ public class OverviewPresenter implements OverviewContract.Presenter
     {
         if (currentLayoutType != null)
         {
-            outState.putSerializable(KEY_BUNDLE_LAYOUT_TYPE, currentLayoutType);
+            serializableBundler.put(outState, KEY_BUNDLE_LAYOUT_TYPE, currentLayoutType);
         }
     }
 
     @Override
     public void loadStateFromBundle(@Nullable final Bundle savedState)
     {
-        OverviewLayoutType loadedLayoutType = null;
-
-        if (savedState != null)
-        {
-            loadedLayoutType = (OverviewLayoutType) savedState.getSerializable(KEY_BUNDLE_LAYOUT_TYPE);
-        }
-
         // Use List style as default
-        setLayoutPresentation(loadedLayoutType == null ? LIST_LAYOUT : loadedLayoutType, true);
+        final OverviewLayoutType type = (OverviewLayoutType) serializableBundler.get(savedState,
+                                                                                     KEY_BUNDLE_LAYOUT_TYPE,
+                                                                                     LIST_LAYOUT);
+        // NOTE: Refreshing view for first adapter update
+        setLayoutPresentation(type, true);
     }
     //endregion
 
@@ -248,11 +252,11 @@ public class OverviewPresenter implements OverviewContract.Presenter
         return !isViewCurrentlyEmpty;
     }
 
+    //endregion [OverviewContractPresenter]
+
     @VisibleForTesting
     OverviewLayoutType getCurrentLayoutType()
     {
         return currentLayoutType;
     }
-
-    //endregion [OverviewContractPresenter]
 }

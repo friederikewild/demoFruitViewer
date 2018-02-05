@@ -38,7 +38,8 @@ public class OverviewActivity extends AppCompatActivity
         presenter = new OverviewPresenter(
                 overviewFragment,
                 Injection.provideUseCaseHandler(),
-                Injection.provideGetItemsUseCase()
+                Injection.provideGetItemsUseCase(),
+                Injection.provideSerializableBundler()
         );
     }
 
