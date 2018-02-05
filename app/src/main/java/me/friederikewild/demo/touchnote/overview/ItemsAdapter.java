@@ -62,6 +62,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     @Override
     public int getItemViewType(int position)
     {
+        assertCurrentViewTypeIsValid();
+
+        // All items always have the same viewType
+        return currentViewType;
+    }
+
+    private void assertCurrentViewTypeIsValid()
+    {
         if (currentViewType == INVALID_TYPE)
         {
             final IllegalStateException exception = new IllegalStateException(
@@ -75,9 +83,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
                 Timber.e(exception);
             }
         }
-
-        // All items always have the same viewType
-        return currentViewType;
     }
 
     /**
