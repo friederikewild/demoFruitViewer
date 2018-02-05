@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -189,16 +190,61 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     @Override
     public void setListLayout()
     {
-        currentLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(currentLayoutManager);
+        itemsAdapter.setLayoutType(LIST_LAYOUT);
 
-        recyclerView.setAdapter(itemsAdapter);
+        final RecyclerView.LayoutManager newLayoutManager = new LinearLayoutManager(getActivity());
+        setLayoutManagerToRecyclerView(newLayoutManager);
     }
 
     @Override
     public void setGridLayout()
     {
-        // TODO
+        itemsAdapter.setLayoutType(GRID_LAYOUT);
+
+        final RecyclerView.LayoutManager newLayoutManager = new GridLayoutManager(getActivity(),
+                                                                                  getRowCount());
+        setLayoutManagerToRecyclerView(newLayoutManager);
+    }
+
+    private int getRowCount()
+    {
+        // Basic adjustment based on orientation. Advanced version could calculate optimal count from screen width
+        return getActivity().getResources().getInteger(R.integer.overview_grid_row_count);
+    }
+
+    private void setLayoutManagerToRecyclerView(@NonNull RecyclerView.LayoutManager newLayoutManager)
+    {
+        // Get scroll position in case LayoutManager was set before
+        int scrollPosition = getScrollPosition(recyclerView.getLayoutManager());
+
+        currentLayoutManager = newLayoutManager;
+        recyclerView.setLayoutManager(currentLayoutManager);
+
+        recyclerView.setAdapter(itemsAdapter);
+        recyclerView.setHasFixedSize(true);
+
+        // Set previous scroll position
+        recyclerView.scrollToPosition(scrollPosition);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private int getScrollPosition(@Nullable RecyclerView.LayoutManager layoutManager)
+    {
+        int scrollPosition = 0;
+
+        if (layoutManager != null)
+        {
+            if (layoutManager instanceof LinearLayoutManager)
+            {
+                scrollPosition = ((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+            }
+            else if (layoutManager instanceof GridLayoutManager)
+            {
+                scrollPosition = ((GridLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+            }
+        }
+
+        return scrollPosition;
     }
 
     @Override

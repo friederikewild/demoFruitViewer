@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item type="integer" name="overview_grid_row_count">3</item>
+
+</resources>

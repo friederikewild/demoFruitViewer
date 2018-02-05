@@ -9,5 +9,11 @@
     <color name="colorPrimaryTextLight">#DE000000</color>
     <color name="colorSecondaryTextLight">#8A000000</color>
 
+    <color name="colorPrimaryTextDark">#FFFFFFFF</color>
+    <color name="colorSecondaryTextDark">#B3FFFFFF</color>
+
     <color name="colorScreenBackground">#E4E4E4</color>
+
+    <color name="colorGridTitleBackground">#7F000000</color>
+
 </resources>

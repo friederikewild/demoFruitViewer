@@ -1,6 +1,10 @@
 package me.friederikewild.demo.touchnote.overview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,31 +14,41 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.common.base.Strings;
 
 import java.util.List;
 
+import me.friederikewild.demo.touchnote.BuildConfig;
 import me.friederikewild.demo.touchnote.R;
 import me.friederikewild.demo.touchnote.domain.model.Item;
+import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.bumptech.glide.request.RequestOptions.circleCropTransform;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * RecycleView adapter handling {@link me.friederikewild.demo.touchnote.domain.model.Item}
+ * RecycleView adapter handling {@link me.friederikewild.demo.touchnote.domain.model.Item}.
+ * Layout of elements is different for list and grid.
+ * Look can be switched with {@link #setLayoutType(OverviewLayoutType)}.
+ * Internally using two different ViewType to represent the different look when preparing the views.
  */
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
 {
+    private static final int INVALID_TYPE = -1;
     private List<Item> items;
 
-    public ItemsAdapter(@NonNull List<Item> items)
+    @IdRes
+    private int currentViewType = INVALID_TYPE;
+
+    ItemsAdapter(@NonNull List<Item> items)
     {
         setList(items);
     }
 
-    public void replaceData(@NonNull List<Item> items)
+    void replaceData(@NonNull List<Item> items)
     {
         setList(items);
         notifyDataSetChanged();
@@ -46,34 +60,129 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public int getItemViewType(int position)
+    {
+        if (currentViewType == INVALID_TYPE)
+        {
+            final IllegalStateException exception = new IllegalStateException(
+                    "ItemsAdapter needs initial configuration of current LayoutType before usage!");
+            if (BuildConfig.DEBUG)
+            {
+                throw exception;
+            }
+            else
+            {
+                Timber.e(exception);
+            }
+        }
+
+        // All items always have the same viewType
+        return currentViewType;
+    }
+
+    /**
+     * Change the layout style of the adapter between list and grid
+     *
+     * @param layoutType Requested display style
+     */
+    void setLayoutType(@NonNull OverviewLayoutType layoutType)
+    {
+        switch (layoutType)
+        {
+            case LIST_LAYOUT:
+                currentViewType = R.id.overview_view_type_list;
+                break;
+            case GRID_LAYOUT:
+                currentViewType = R.id.overview_view_type_grid;
+                break;
+            default:
+                currentViewType = INVALID_TYPE;
+                break;
+        }
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, @IdRes int viewType)
     {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View view = inflater.inflate(R.layout.item_col_layout_list, parent, false);
+        final View view = inflater.inflate(getItemLayoutForViewType(viewType), parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
     {
+        final @IdRes int viewType = getItemViewType(position);
         final Item item = getItem(position);
 
+        bindImageView(holder, item, viewType);
+        bindTitleView(holder, item);
+        bindDescriptionView(holder, item);
+    }
+
+    private void bindImageView(@NonNull ViewHolder holder, @NonNull Item item, @IdRes int viewType)
+    {
         final Context context = holder.rootView.getContext();
-        Glide.with(context)
+        final @DrawableRes int placeholderRes = getPlaceholderForViewType(viewType);
+
+        RequestBuilder<Drawable> imageLoaderRequest = Glide.with(context)
                 .load(item.getImageUrl())
-                .apply(new RequestOptions().placeholder(R.drawable.placeholder_thumbnail_circle_primary))
-                .apply(circleCropTransform().circleCrop())
-                .transition(withCrossFade())
-                .into(holder.imageView);
+                .apply(new RequestOptions().placeholder(placeholderRes))
+                .transition(withCrossFade());
 
-        holder.titleTextView.setText(item.getTitle());
-
-        // Description can be empty, hide view in that case
-        boolean isDescriptionEmpty = Strings.isNullOrEmpty(item.getDescription());
-        holder.descriptionTextView.setVisibility(isDescriptionEmpty ? View.GONE : View.VISIBLE);
-        if (!isDescriptionEmpty)
+        if (viewType == R.id.overview_view_type_list)
         {
-            holder.descriptionTextView.setText(item.getDescription());
+            imageLoaderRequest = imageLoaderRequest.apply(circleCropTransform().circleCrop());
+        }
+
+        imageLoaderRequest.into(holder.imageView);
+    }
+
+    private void bindTitleView(@NonNull ViewHolder holder, @NonNull Item item)
+    {
+        holder.titleTextView.setText(item.getTitle());
+    }
+
+    private void bindDescriptionView(@NonNull ViewHolder holder, @NonNull Item item)
+    {
+        // Description view is optional and not available in grid mode
+        if (holder.descriptionTextView != null)
+        {
+            // Description can be empty, hide view in that case
+            boolean isDescriptionEmpty = Strings.isNullOrEmpty(item.getDescription());
+            holder.descriptionTextView.setVisibility(isDescriptionEmpty ? View.GONE : View.VISIBLE);
+            if (!isDescriptionEmpty)
+            {
+                holder.descriptionTextView.setText(item.getDescription());
+            }
+        }
+    }
+
+    @LayoutRes
+    private int getItemLayoutForViewType(@IdRes int viewType)
+    {
+        switch (viewType)
+        {
+            case R.id.overview_view_type_grid:
+                return R.layout.item_col_layout_grid;
+
+            case R.id.overview_view_type_list:
+            default:
+                return R.layout.item_col_layout_list;
+        }
+    }
+
+    @DrawableRes
+    private int getPlaceholderForViewType(@IdRes int viewType)
+    {
+        switch (viewType)
+        {
+            case R.id.overview_view_type_grid:
+                return R.drawable.placeholder_image_square_primary;
+
+            case R.id.overview_view_type_list:
+            default:
+                return R.drawable.placeholder_thumbnail_circle_primary;
         }
     }
 
@@ -92,14 +201,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     /**
      * View Holder per item
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder
+    static class ViewHolder extends RecyclerView.ViewHolder
     {
         final View rootView;
         final TextView titleTextView;
         final TextView descriptionTextView;
         final ImageView imageView;
 
-        public ViewHolder(@NonNull View itemView)
+        ViewHolder(@NonNull View itemView)
         {
             super(itemView);
             rootView = itemView;
