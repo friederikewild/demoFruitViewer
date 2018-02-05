@@ -1,21 +1,27 @@
 package me.friederikewild.demo.touchnote.overview;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import java.io.Serializable;
 import java.util.List;
 
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
+import me.friederikewild.demo.touchnote.util.Bundler;
 
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_LAYOUT;
 
 public class OverviewPresenter implements OverviewContract.Presenter
 {
+    @VisibleForTesting
+    static final String KEY_BUNDLE_LAYOUT_TYPE = "KEY_BUNDLE_LAYOUT_TYPE";
+
     @NonNull
     private OverviewContract.View overviewView;
 
@@ -26,36 +32,60 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private UseCaseHandler useCaseHandler;
 
     @NonNull
+    private Bundler<Serializable> serializableBundler;
+
+    // LateInit @NonNull
     private OverviewLayoutType currentLayoutType;
 
     /**
      * Keep track if data was provided to the view to keep menu icon updated
      */
-    private boolean isViewCurrentlyEmpty = false;
+    private boolean isViewCurrentlyEmpty = true;
 
     // Simple flag to check to keep track if ever loaded data
     private boolean isFirstLoading = true;
 
-    OverviewPresenter(@NonNull OverviewContract.View view,
-                      @NonNull UseCaseHandler handler,
-                      @NonNull GetItemsUseCase getItems)
+    OverviewPresenter(@NonNull final OverviewContract.View view,
+                      @NonNull final UseCaseHandler handler,
+                      @NonNull final GetItemsUseCase getItems,
+                      @NonNull final Bundler<Serializable> bundler)
     {
         useCaseHandler = handler;
         getItemsUseCase = getItems;
+        serializableBundler = bundler;
 
         overviewView = view;
         overviewView.setPresenter(this);
-
-        // TODO: Setup from bundle if available
-        currentLayoutType = OverviewLayoutType.LIST_LAYOUT;
     }
+
+    //region [Savable Presenter]
+    @Override
+    public void saveStateToBundle(@NonNull final Bundle outState)
+    {
+        if (currentLayoutType != null)
+        {
+            serializableBundler.put(outState, KEY_BUNDLE_LAYOUT_TYPE, currentLayoutType);
+        }
+    }
+
+    @Override
+    public void loadStateFromBundle(@Nullable final Bundle savedState)
+    {
+        // Use List style as default
+        final OverviewLayoutType type = (OverviewLayoutType) serializableBundler.get(savedState,
+                                                                                     KEY_BUNDLE_LAYOUT_TYPE,
+                                                                                     LIST_LAYOUT);
+        // NOTE: Refreshing view for first adapter update
+        setLayoutPresentation(type, true);
+    }
+    //endregion
 
     @Override
     public void start()
     {
         loadItems(false);
 
-        // Ensure menu is updated according to layout state of presenter
+        // Ensure menu is updated according to state of presenter and hidden until items are available
         overviewView.updateMenuItemVisibility();
     }
 
@@ -83,12 +113,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
                                new UseCase.UseCaseCallback<GetItemsUseCase.Result>()
                                {
                                    @Override
-                                   public void onSuccess(@NonNull GetItemsUseCase.Result result)
+                                   public void onSuccess(@NonNull final GetItemsUseCase.Result result)
                                    {
                                        final List<Item> items = result.getItems();
                                        setIsViewCurrentlyEmpty(items);
 
-                                       updateUiWithItems(items);
+                                       updateViewWithItems(items);
                                    }
 
                                    @Override
@@ -96,7 +126,7 @@ public class OverviewPresenter implements OverviewContract.Presenter
                                    {
                                        setViewIsCurrentlyEmpty();
 
-                                       updateUiWithLoadingError();
+                                       updateViewWithLoadingError();
                                    }
                                });
     }
@@ -108,12 +138,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
     }
 
     @VisibleForTesting
-    void setIsViewCurrentlyEmpty(@Nullable List<Item> items)
+    void setIsViewCurrentlyEmpty(@Nullable final List<Item> items)
     {
         isViewCurrentlyEmpty = items == null || items.isEmpty();
     }
 
-    private void updateUiWithItems(@NonNull List<Item> items)
+    private void updateViewWithItems(@NonNull final List<Item> items)
     {
         // Check if view is still able to handle UI updates
         if (!overviewView.isActive())
@@ -136,7 +166,7 @@ public class OverviewPresenter implements OverviewContract.Presenter
         overviewView.updateMenuItemVisibility();
     }
 
-    private void updateUiWithLoadingError()
+    private void updateViewWithLoadingError()
     {
         // Check if view is still able to handle UI updates
         if (!overviewView.isActive())
@@ -154,9 +184,29 @@ public class OverviewPresenter implements OverviewContract.Presenter
     //endregion [LoadItems Handling]
 
     @Override
-    public void setLayoutPresentation(@NonNull OverviewLayoutType layoutType)
+    public void setLayoutPresentation(@NonNull final OverviewLayoutType layoutType)
+    {
+        setLayoutPresentation(layoutType, true);
+    }
+
+    private void setLayoutPresentation(@NonNull final OverviewLayoutType layoutType,
+                                       final boolean refreshView)
     {
         currentLayoutType = layoutType;
+
+        if (refreshView)
+        {
+            updateViewSetCurrentLayoutType();
+        }
+    }
+
+    private void updateViewSetCurrentLayoutType()
+    {
+        // Check if view is still able to handle UI updates
+        if (!overviewView.isActive())
+        {
+            return;
+        }
 
         // Update view
         switch (currentLayoutType)
@@ -164,23 +214,22 @@ public class OverviewPresenter implements OverviewContract.Presenter
             case LIST_LAYOUT:
             {
                 overviewView.setListLayout();
-                // Menu item needs to be toggled
-                overviewView.updateMenuItemVisibility();
                 break;
             }
 
             case GRID_LAYOUT:
             {
                 overviewView.setGridLayout();
-                // Menu item needs to be toggled
-                overviewView.updateMenuItemVisibility();
                 break;
             }
         }
+
+        // Menu item needs to be toggled
+        overviewView.updateMenuItemVisibility();
     }
 
     @Override
-    public boolean isListOptionAvailable()
+    public boolean isListLayoutOptionAvailable()
     {
         // Layout option is a toggle. Show the icon of the layout currently NOT shown
         final boolean showListOption = currentLayoutType == GRID_LAYOUT;
@@ -189,7 +238,7 @@ public class OverviewPresenter implements OverviewContract.Presenter
     }
 
     @Override
-    public boolean isGridOptionAvailable()
+    public boolean isGridLayoutOptionAvailable()
     {
         // Layout option is a toggle. Show the icon of the layout currently NOT shown
         final boolean showGridOption = currentLayoutType == LIST_LAYOUT;
@@ -202,5 +251,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
         // Hide option when no data is shown
         return !isViewCurrentlyEmpty;
     }
+
     //endregion [OverviewContractPresenter]
+
+    @VisibleForTesting
+    OverviewLayoutType getCurrentLayoutType()
+    {
+        return currentLayoutType;
+    }
 }

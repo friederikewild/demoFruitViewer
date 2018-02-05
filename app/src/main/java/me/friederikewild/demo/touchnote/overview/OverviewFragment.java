@@ -68,17 +68,20 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
         recyclerView = rootView.findViewById(R.id.overviewItemsList);
-        // Use list style as default
-        setListLayout();
-
-        EnhancedSwipeRefreshLayout refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
-        setupRefreshLayout(refreshLayout);
-
         hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
 
-        setHasOptionsMenu(true);
-
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        EnhancedSwipeRefreshLayout refreshLayout = view.findViewById(R.id.overviewRefreshLayout);
+        setupRefreshLayout(refreshLayout);
+
+        setHasOptionsMenu(true);
     }
 
     private void setupRefreshLayout(@NonNull final EnhancedSwipeRefreshLayout refreshLayout)
@@ -97,10 +100,24 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+        presenter.loadStateFromBundle(savedInstanceState);
+    }
+
+    @Override
     public void onResume()
     {
         super.onResume();
         presenter.start();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        presenter.saveStateToBundle(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -110,6 +127,14 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView = null;
         hintNoItemsTextView = null;
         currentLayoutManager = null;
+        presenter = null;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        itemsAdapter = null;
     }
     //endregion
 
@@ -126,8 +151,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         super.onPrepareOptionsMenu(menu);
 
         // Set visible layout option according to presenter
-        menu.findItem(R.id.menu_show_layout_list).setVisible(presenter.isListOptionAvailable());
-        menu.findItem(R.id.menu_show_layout_grid).setVisible(presenter.isGridOptionAvailable());
+        menu.findItem(R.id.menu_show_layout_list).setVisible(presenter.isListLayoutOptionAvailable());
+        menu.findItem(R.id.menu_show_layout_grid).setVisible(presenter.isGridLayoutOptionAvailable());
     }
 
     @Override
@@ -244,20 +269,16 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView.scrollToPosition(scrollPosition);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private int getScrollPosition(@Nullable RecyclerView.LayoutManager layoutManager)
     {
         int scrollPosition = 0;
 
         if (layoutManager != null)
         {
+            // Works for both since GridLayoutManager extends LinearLayoutManager
             if (layoutManager instanceof LinearLayoutManager)
             {
                 scrollPosition = ((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
-            }
-            else if (layoutManager instanceof GridLayoutManager)
-            {
-                scrollPosition = ((GridLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
             }
         }
 

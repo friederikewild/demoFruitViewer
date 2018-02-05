@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import me.friederikewild.demo.touchnote.BasePresenter;
 import me.friederikewild.demo.touchnote.BaseView;
+import me.friederikewild.demo.touchnote.SavableBasePresenter;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 
 /**
@@ -32,14 +32,14 @@ public interface OverviewContract
         void setGridLayout();
     }
 
-    interface Presenter extends BasePresenter
+    interface Presenter extends SavableBasePresenter
     {
         void loadItems(boolean forceUpdate);
 
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 
-        boolean isListOptionAvailable();
+        boolean isListLayoutOptionAvailable();
 
-        boolean isGridOptionAvailable();
+        boolean isGridLayoutOptionAvailable();
     }
 }

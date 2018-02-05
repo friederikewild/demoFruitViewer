@@ -56,6 +56,7 @@ public class ItemsDataRepository implements ItemsRepository
         return INSTANCE;
     }
 
+    @SuppressWarnings("TrivialMethodReference")
     @Override
     public void getItems(@NonNull GetItemsCallback callback, @NonNull GetNoDataCallback errorCallback)
     {
@@ -109,6 +110,7 @@ public class ItemsDataRepository implements ItemsRepository
      * @param callback      Callback for updates
      * @param errorCallback Callback for error e.g. no data available
      */
+    @SuppressWarnings("TrivialMethodReference")
     private void getItemFromRemoteDataStore(@NonNull String itemId,
                                             @NonNull GetItemCallback callback,
                                             @NonNull GetNoDataCallback errorCallback)

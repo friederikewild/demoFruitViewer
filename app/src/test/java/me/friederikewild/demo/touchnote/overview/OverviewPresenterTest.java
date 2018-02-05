@@ -1,5 +1,6 @@
 package me.friederikewild.demo.touchnote.overview;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import org.junit.Assert;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import me.friederikewild.demo.touchnote.TestMockData;
+import me.friederikewild.demo.touchnote.TestSerializableBundler;
 import me.friederikewild.demo.touchnote.TestUseCaseScheduler;
 import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.domain.ItemsRepository;
@@ -21,6 +23,9 @@ import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
+import static me.friederikewild.demo.touchnote.TestMockData.ITEMS;
+import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
+import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_LAYOUT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,16 +43,19 @@ public class OverviewPresenterTest
     // Presenter under test
     private OverviewPresenter presenter;
 
+    private TestSerializableBundler testSerializableBundler;
+
     @Mock
     private OverviewContract.View overviewViewMock;
     @Mock
     private ItemsRepository repositoryMock;
+    @Mock
+    private Bundle bundleMock;
 
     @Captor
     private ArgumentCaptor<ItemsRepository.GetItemsCallback> itemsCallbackCaptor;
     @Captor
     private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
-
 
     @Before
     public void setupOverviewPresenter()
@@ -55,6 +63,8 @@ public class OverviewPresenterTest
         MockitoAnnotations.initMocks(this);
         // View needs to be active for presenter to call callbacks
         when(overviewViewMock.isActive()).thenReturn(true);
+
+        testSerializableBundler = new TestSerializableBundler();
 
         presenter = givenOverviewPresenter();
     }
@@ -66,7 +76,8 @@ public class OverviewPresenterTest
 
         return new OverviewPresenter(overviewViewMock,
                                      useCaseHandler,
-                                     getItemsUseCase);
+                                     getItemsUseCase,
+                                     testSerializableBundler);
     }
 
     @Test
@@ -102,6 +113,7 @@ public class OverviewPresenterTest
         verify(overviewViewMock).updateMenuItemVisibility();
     }
 
+    //region [Test LoadItems]
     @Test
     public void givenLoadItemsWithoutUiRefresh_ThenShowNoLoading()
     {
@@ -115,7 +127,6 @@ public class OverviewPresenterTest
         verify(overviewViewMock, never()).setLoadingIndicator(anyBoolean());
     }
 
-
     @Test
     public void givenLoadItemsReceivesData_ThenViewUpdatedToStartAndStopShowLoading()
     {
@@ -123,7 +134,7 @@ public class OverviewPresenterTest
         presenter.loadItems(true);
 
         // When
-        setItemsRemoteAvailable(TestMockData.ITEMS);
+        setItemsRemoteAvailable(ITEMS);
 
         // Then first loading indicator is shown
         InOrder inOrder = inOrder(overviewViewMock);
@@ -140,10 +151,10 @@ public class OverviewPresenterTest
         presenter.loadItems(true);
 
         // When
-        setItemsRemoteAvailable(TestMockData.ITEMS);
+        setItemsRemoteAvailable(ITEMS);
 
         // Then
-        verify(overviewViewMock).showItems(TestMockData.ITEMS);
+        verify(overviewViewMock).showItems(ITEMS);
     }
 
     @Test
@@ -171,12 +182,84 @@ public class OverviewPresenterTest
         // Then
         verify(overviewViewMock).showLoadingItemsError();
     }
+    //endregion [Test LoadItems]
 
+
+    //region [Test Save/Load]
+    @Test
+    public void givenSaveFreshPresenter_ThenNothingSaved()
+    {
+        // When
+        presenter.saveStateToBundle(bundleMock);
+
+        // Then
+        Assert.assertTrue(testSerializableBundler.isStorageEmpty());
+    }
+
+    @Test
+    public void givenSavePresenterWithGridLayout_ThenBundlerNotEmpty()
+    {
+        // Given
+        presenter.setLayoutPresentation(GRID_LAYOUT);
+
+        // When
+        presenter.saveStateToBundle(bundleMock);
+
+        // Then
+        Assert.assertFalse(testSerializableBundler.isStorageEmpty());
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    @Test
+    public void givenFreshPresenterInitFromBundle_ThenListLayoutSetAsDefault()
+    {
+        // Given
+        final OverviewLayoutType expectedLayout = LIST_LAYOUT;
+
+        // When
+        presenter.loadStateFromBundle(bundleMock);
+
+        // Then
+        Assert.assertEquals(expectedLayout, presenter.getCurrentLayoutType());
+    }
+
+    @Test
+    public void givenPresenterWithListSavedToBundle_ThenListLayoutRestoredFromBundle()
+    {
+        // Given
+        final OverviewLayoutType expectedLayout = LIST_LAYOUT;
+        presenter.setLayoutPresentation(expectedLayout);
+
+        // When
+        presenter.saveStateToBundle(bundleMock);
+        presenter.loadStateFromBundle(bundleMock);
+
+        // Then
+        Assert.assertEquals(expectedLayout, presenter.getCurrentLayoutType());
+    }
+
+    @Test
+    public void givenPresenterWithGridSavedToBundle_ThenGridLayoutRestoredFromBundle()
+    {
+        // Given
+        final OverviewLayoutType expectedLayout = GRID_LAYOUT;
+        presenter.setLayoutPresentation(expectedLayout);
+
+        // When
+        presenter.saveStateToBundle(bundleMock);
+        presenter.loadStateFromBundle(bundleMock);
+
+        // Then
+        Assert.assertEquals(expectedLayout, presenter.getCurrentLayoutType());
+    }
+    //endregion [Test Save/Load]
+
+    //region [Test Set Correct Presentation]
     @Test
     public void givenSetLayoutToList_ThenViewPresentedAsList()
     {
         // When
-        presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
+        presenter.setLayoutPresentation(LIST_LAYOUT);
 
         // Then
         verify(overviewViewMock).setListLayout();
@@ -186,7 +269,7 @@ public class OverviewPresenterTest
     public void givenSetLayoutToList_ThenViewMenuUpdated()
     {
         // When
-        presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
+        presenter.setLayoutPresentation(LIST_LAYOUT);
 
         // Then
         verify(overviewViewMock).updateMenuItemVisibility();
@@ -196,7 +279,7 @@ public class OverviewPresenterTest
     public void givenSetLayoutToGrid_ThenViewPresentedAsGrid()
     {
         // When
-        presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
+        presenter.setLayoutPresentation(GRID_LAYOUT);
 
         // Then
         verify(overviewViewMock).setGridLayout();
@@ -206,12 +289,14 @@ public class OverviewPresenterTest
     public void givenSetLayoutToGrid_ThenViewMenuUpdated()
     {
         // When
-        presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
+        presenter.setLayoutPresentation(GRID_LAYOUT);
 
         // Then
         verify(overviewViewMock).updateMenuItemVisibility();
     }
+    //endregion [Test Set Correct Presentation]
 
+    //region [Test Menu Visibility]
     @Test
     public void givenPresenterHasNoData_ThenListLayoutMenuIsInvisible()
     {
@@ -219,7 +304,7 @@ public class OverviewPresenterTest
         presenter.setViewIsCurrentlyEmpty();
 
         // When view requests if list menu item is visible
-        final boolean isListOptionAvailable = presenter.isListOptionAvailable();
+        final boolean isListOptionAvailable = presenter.isListLayoutOptionAvailable();
 
         // Then
         Assert.assertFalse("List option not available", isListOptionAvailable);
@@ -232,34 +317,21 @@ public class OverviewPresenterTest
         presenter.setViewIsCurrentlyEmpty();
 
         // When view requests if grid menu item is visible
-        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+        final boolean isGridOptionAvailable = presenter.isGridLayoutOptionAvailable();
 
         // Then
         Assert.assertFalse("Grid option not available", isGridOptionAvailable);
     }
 
     @Test
-    public void givenPresenterHasDataAndInitialLayout_ThenGridLayoutMenuIsVisible()
-    {
-        // Given
-        presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
-
-        // When view requests if grid menu item is visible
-        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
-
-        // Then
-        Assert.assertTrue("Grid option available", isGridOptionAvailable);
-    }
-
-    @Test
     public void givenPresenterHasDataAndSetListLayout_ThenGridLayoutMenuIsVisible()
     {
         // Given
-        presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
-        presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
+        presenter.setIsViewCurrentlyEmpty(ITEMS);
+        presenter.setLayoutPresentation(LIST_LAYOUT);
 
         // When view requests if grid menu item is visible
-        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+        final boolean isGridOptionAvailable = presenter.isGridLayoutOptionAvailable();
 
         // Then
         Assert.assertTrue("Grid option available", isGridOptionAvailable);
@@ -269,15 +341,16 @@ public class OverviewPresenterTest
     public void givenPresenterHasDataAndSetGridLayout_ThenListLayoutMenuIsVisible()
     {
         // Given
-        presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
-        presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
+        presenter.setIsViewCurrentlyEmpty(ITEMS);
+        presenter.setLayoutPresentation(GRID_LAYOUT);
 
         // When view requests if list menu item is visible
-        final boolean isListOptionAvailable = presenter.isListOptionAvailable();
+        final boolean isListOptionAvailable = presenter.isListLayoutOptionAvailable();
 
         // Then
         Assert.assertTrue("List option available", isListOptionAvailable);
     }
+    //endregion [Test Menu Visibility]
 
 
     private void setItemsRemoteAvailable(@NonNull List<Item> items)

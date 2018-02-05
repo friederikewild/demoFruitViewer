@@ -1,6 +1,8 @@
 package me.friederikewild.demo.touchnote.util;
 
 
+import java.io.Serializable;
+
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CurrentTimeProvider;
@@ -72,5 +74,10 @@ public class Injection
     public static GetItemsUseCase provideGetItemsUseCase()
     {
         return new GetItemsUseCase(provideItemsDataRepository());
+    }
+
+    public static Bundler<Serializable> provideSerializableBundler()
+    {
+        return new SerializableBundler();
     }
 }
