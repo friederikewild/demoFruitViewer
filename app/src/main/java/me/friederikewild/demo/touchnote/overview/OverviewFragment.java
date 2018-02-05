@@ -68,8 +68,6 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
         recyclerView = rootView.findViewById(R.id.overviewItemsList);
-        // Use list style as default
-        setListLayout();
         hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
 
         return rootView;
@@ -102,10 +100,24 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+        presenter.loadStateFromBundle(savedInstanceState);
+    }
+
+    @Override
     public void onResume()
     {
         super.onResume();
         presenter.start();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        presenter.saveStateToBundle(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -115,6 +127,14 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         recyclerView = null;
         hintNoItemsTextView = null;
         currentLayoutManager = null;
+        presenter = null;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        itemsAdapter = null;
     }
     //endregion
 

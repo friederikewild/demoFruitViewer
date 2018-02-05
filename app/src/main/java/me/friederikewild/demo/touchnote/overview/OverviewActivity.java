@@ -13,7 +13,7 @@ import me.friederikewild.demo.touchnote.util.Injection;
 
 public class OverviewActivity extends AppCompatActivity
 {
-    private OverviewPresenter presenter;
+    private OverviewContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,8 +42,16 @@ public class OverviewActivity extends AppCompatActivity
         );
     }
 
-    public void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                      @NonNull Fragment fragment, int frameId)
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        presenter = null;
+    }
+
+    // TODO: Make reusable for detail activity
+    private void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+                                       @NonNull Fragment fragment, int frameId)
     {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);

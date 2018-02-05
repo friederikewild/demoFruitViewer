@@ -1,5 +1,6 @@
 package me.friederikewild.demo.touchnote.overview;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -16,6 +17,9 @@ import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_
 
 public class OverviewPresenter implements OverviewContract.Presenter
 {
+    @VisibleForTesting
+    static final String KEY_BUNDLE_LAYOUT_TYPE = "KEY_BUNDLE_LAYOUT_TYPE";
+
     @NonNull
     private OverviewContract.View overviewView;
 
@@ -45,10 +49,32 @@ public class OverviewPresenter implements OverviewContract.Presenter
 
         overviewView = view;
         overviewView.setPresenter(this);
-
-        // TODO: Setup from bundle if available
-        currentLayoutType = OverviewLayoutType.LIST_LAYOUT;
     }
+
+    //region [Savable Presenter]
+    @Override
+    public void saveStateToBundle(@NonNull final Bundle outState)
+    {
+        if (currentLayoutType != null)
+        {
+            outState.putSerializable(KEY_BUNDLE_LAYOUT_TYPE, currentLayoutType);
+        }
+    }
+
+    @Override
+    public void loadStateFromBundle(@Nullable final Bundle savedState)
+    {
+        OverviewLayoutType loadedLayoutType = null;
+
+        if (savedState != null)
+        {
+            loadedLayoutType = (OverviewLayoutType) savedState.getSerializable(KEY_BUNDLE_LAYOUT_TYPE);
+        }
+
+        // Use List style as default
+        setLayoutPresentation(loadedLayoutType == null ? LIST_LAYOUT : loadedLayoutType, true);
+    }
+    //endregion
 
     @Override
     public void start()
