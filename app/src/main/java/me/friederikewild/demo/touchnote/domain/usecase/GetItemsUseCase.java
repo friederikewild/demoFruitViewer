@@ -40,11 +40,6 @@ public class GetItemsUseCase extends UseCase<GetItemsUseCase.RequestParams, GetI
         {
             this.forceUpdate = forceUpdate;
         }
-
-        public boolean isForceUpdate()
-        {
-            return forceUpdate;
-        }
     }
 
     public static final class Result implements UseCase.Result
