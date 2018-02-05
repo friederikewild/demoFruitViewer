@@ -9,17 +9,9 @@
     android:padding="@dimen/zero"
     tools:context=".details.DetailsActivity">
 
-    <ImageView
+    <include
         android:id="@+id/detailsSquareImage"
-        android:layout_width="@dimen/match_constraints"
-        android:layout_height="@dimen/match_constraints"
-        android:layout_margin="@dimen/dot_double"
-        android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="H,1:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/placeholder_image_square_primary" />
+        layout="@layout/include_details_square_image" />
 
     <include
         android:id="@+id/detailsLoadingSpinner"
