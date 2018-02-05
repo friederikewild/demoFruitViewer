@@ -38,6 +38,13 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private OverviewLayoutType currentLayoutType;
 
     /**
+     * This is the Layout Type received as result back from the details screen.
+     * When present this is used instead of Bundle
+     */
+    @Nullable
+    private OverviewLayoutType previousLayoutTypeReturnedFromRequest;
+
+    /**
      * Keep track if data was provided to the view to keep menu icon updated
      */
     private boolean isViewCurrentlyEmpty = true;
@@ -71,12 +78,23 @@ public class OverviewPresenter implements OverviewContract.Presenter
     @Override
     public void loadStateFromBundle(@Nullable final Bundle savedState)
     {
-        // Use List style as default
-        final OverviewLayoutType type = (OverviewLayoutType) serializableBundler.get(savedState,
-                                                                                     KEY_BUNDLE_LAYOUT_TYPE,
-                                                                                     LIST_LAYOUT);
+        OverviewLayoutType newLayoutType = OverviewLayoutType.INVALID_TYPE;
+        if (previousLayoutTypeReturnedFromRequest != null)
+        {
+            newLayoutType = previousLayoutTypeReturnedFromRequest;
+            previousLayoutTypeReturnedFromRequest = null;
+        }
+
+        if (newLayoutType == OverviewLayoutType.INVALID_TYPE)
+        {
+            // NOTE: Use List style as default here sets up presenter + view in correct initial state
+            newLayoutType = (OverviewLayoutType) serializableBundler.get(savedState,
+                                                                         KEY_BUNDLE_LAYOUT_TYPE,
+                                                                         LIST_LAYOUT);
+        }
+
         // NOTE: Refreshing view for first adapter update
-        setLayoutPresentation(type, true);
+        setLayoutPresentation(newLayoutType, true);
     }
     //endregion
 
@@ -259,6 +277,24 @@ public class OverviewPresenter implements OverviewContract.Presenter
     }
 
     //endregion [OverviewContractPresenter]
+
+
+    //region [Handle requests to switch screens]
+    @Override
+    public int getRequestCodeForDetail()
+    {
+        // Use our current layout as request code - this way presenter receives it back before next createFromBundle
+        return currentLayoutType.ordinal();
+    }
+
+    @Override
+    public void onReturnFromRequest(int requestCode)
+    {
+        // Fetch the encoded layout type
+        previousLayoutTypeReturnedFromRequest = OverviewLayoutType.fromOrdinal(requestCode);
+    }
+    //endregion
+
 
     @VisibleForTesting
     OverviewLayoutType getCurrentLayoutType()

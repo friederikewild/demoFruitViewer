@@ -56,6 +56,13 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     //region [Fragment LifeCycle]
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        presenter.onReturnFromRequest(requestCode);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -221,7 +228,9 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
         Intent intent = new Intent(getContext(), DetailsActivity.class);
         intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
-        startActivity(intent);
+
+        // Start for result to allow dealing with last active layout
+        startActivityForResult(intent, presenter.getRequestCodeForDetail());
     }
 
     private void assertItemIdNotNull(final String itemId)

@@ -39,6 +39,21 @@ enum OverviewLayoutType
             default:
                 return R.id.overview_view_type_invalid;
         }
+    }
 
+    /**
+     * Create layout type from a {@link #ordinal()}.
+     *
+     * @param ordinal
+     * @return
+     */
+    @NonNull
+    public static OverviewLayoutType fromOrdinal(int ordinal)
+    {
+        if (ordinal >= values().length)
+        {
+            return INVALID_TYPE;
+        }
+        return values()[ordinal];
     }
 }

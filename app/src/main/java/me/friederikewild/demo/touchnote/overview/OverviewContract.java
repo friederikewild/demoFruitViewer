@@ -43,5 +43,9 @@ public interface OverviewContract
         boolean isListLayoutOptionAvailable();
 
         boolean isGridLayoutOptionAvailable();
+
+        int getRequestCodeForDetail();
+
+        void onReturnFromRequest(int requestCode);
     }
 }

@@ -1,7 +1,9 @@
 package me.friederikewild.demo.touchnote.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.MenuItem;
 
 import me.friederikewild.demo.touchnote.ActivityWithOneFragment;
 import me.friederikewild.demo.touchnote.util.Injection;
@@ -18,6 +20,23 @@ public class DetailsActivity extends ActivityWithOneFragment<DetailsFragment, De
         if (getSupportActionBar() != null)
         {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (item.getItemId() == android.R.id.home)
+        {
+            // Finish Activity since called with forResult.
+
+            Intent result = new Intent((String) null);
+            setResult(RESULT_OK, result);
+            finish();
+            return true;
+        }
+        else
+        {
+            return super.onOptionsItemSelected(item);
         }
     }
 
