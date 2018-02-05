@@ -2,7 +2,9 @@ package me.friederikewild.demo.touchnote.details;
 
 import android.support.annotation.NonNull;
 
+import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
+import me.friederikewild.demo.touchnote.domain.usecase.UseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
 public class DetailsPresenter implements DetailsContract.Presenter
@@ -35,7 +37,59 @@ public class DetailsPresenter implements DetailsContract.Presenter
     @Override
     public void start()
     {
-        detailsView.setLoadingIndicator(true);
+        openItem();
+    }
 
+    private void openItem()
+    {
+        if (detailsView.isActive())
+        {
+            detailsView.setLoadingIndicator(true);
+        }
+
+        final GetItemUseCase.RequestParams params = new GetItemUseCase.RequestParams(itemId);
+        useCaseHandler.execute(getItemUseCase,
+                               params,
+                               new UseCase.UseCaseCallback<GetItemUseCase.Result>()
+                               {
+                                   @Override
+                                   public void onSuccess(@NonNull GetItemUseCase.Result result)
+                                   {
+                                       final Item item = result.getItem();
+                                       updateViewWithItem(item);
+                                   }
+
+                                   @Override
+                                   public void onError()
+                                   {
+                                       updateViewWithError();
+                                   }
+                               });
+    }
+
+    private void updateViewWithItem(@NonNull Item item)
+    {
+        // Check if view is still able to handle UI updates
+        if (!detailsView.isActive())
+        {
+            return;
+        }
+
+        detailsView.setLoadingIndicator(false);
+
+        detailsView.showItem(item);
+    }
+
+    private void updateViewWithError()
+    {
+        // Check if view is still able to handle UI updates
+        if (!detailsView.isActive())
+        {
+            return;
+        }
+
+        detailsView.setLoadingIndicator(false);
+
+        detailsView.showLoadingItemError();
     }
 }

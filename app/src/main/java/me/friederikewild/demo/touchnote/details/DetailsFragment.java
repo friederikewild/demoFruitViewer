@@ -8,8 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import me.friederikewild.demo.touchnote.R;
+import me.friederikewild.demo.touchnote.domain.model.Item;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class DetailsFragment extends Fragment implements DetailsContract.View
 {
@@ -17,6 +23,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 
     private View loadingSpinner;
     private ImageView itemImageView;
+    private TextView hintNoDataTextView;
 
     public DetailsFragment()
     {
@@ -43,6 +50,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 
         loadingSpinner = rootView.findViewById(R.id.detailsLoadingSpinner);
         itemImageView = rootView.findViewById(R.id.detailsSquareImage);
+        hintNoDataTextView = rootView.findViewById(R.id.detailsHintNoItems);
 
         return rootView;
     }
@@ -71,4 +79,24 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 
         loadingSpinner.setVisibility(active ? View.VISIBLE : View.GONE);
     }
+
+    @Override
+    public void showItem(@NonNull Item item)
+    {
+        // Hide error in case visible before
+        hintNoDataTextView.setVisibility(View.GONE);
+
+        Glide.with(getContext())
+                .load(item.getImageUrl())
+                .transition(withCrossFade()).into(itemImageView);
+    }
+
+    @Override
+    public void showLoadingItemError()
+    {
+        // Set background again to make sure we are in the expected tate
+        itemImageView.setBackgroundColor(R.drawable.placeholder_image_square_primary);
+        hintNoDataTextView.setVisibility(View.VISIBLE);
+    }
+
 }
