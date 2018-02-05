@@ -19,6 +19,8 @@ public interface OverviewContract
 
         void setLoadingIndicator(boolean active);
 
+        void updateMenuItemVisibility();
+
         void showItems(@NonNull List<Item> items);
 
         void showNoItemsAvailable();
@@ -28,8 +30,6 @@ public interface OverviewContract
         void setListLayout();
 
         void setGridLayout();
-
-        void updateMenuItemVisibility();
     }
 
     interface Presenter extends BasePresenter

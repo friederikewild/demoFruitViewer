@@ -37,6 +37,11 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     private RecyclerView recyclerView;
     private TextView hintNoItemsTextView;
 
+    public OverviewFragment()
+    {
+        // Empty
+    }
+
     public static OverviewFragment newInstance()
     {
         return new OverviewFragment();
@@ -48,6 +53,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         this.presenter = presenter;
     }
 
+    //region [Fragment LifeCycle]
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -75,15 +81,6 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         return rootView;
     }
 
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-        recyclerView = null;
-        hintNoItemsTextView = null;
-        currentLayoutManager = null;
-    }
-
     private void setupRefreshLayout(@NonNull final EnhancedSwipeRefreshLayout refreshLayout)
     {
         // Set the actual scrollable child view
@@ -99,6 +96,24 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         refreshLayout.setOnRefreshListener(() -> presenter.loadItems(false));
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        presenter.start();
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        recyclerView = null;
+        hintNoItemsTextView = null;
+        currentLayoutManager = null;
+    }
+    //endregion
+
+    //region [OptionMenu Handling]
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -129,14 +144,9 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         }
         return true;
     }
+    //endregion
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        presenter.start();
-    }
-
+    //region [OverviewContract View]
     @Override
     public boolean isActive()
     {
@@ -155,6 +165,13 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
         // Ensure to call setRefreshing after layout is done
         refreshLayout.post(() -> refreshLayout.setRefreshing(active));
+    }
+
+    @Override
+    public void updateMenuItemVisibility()
+    {
+        // Request update of menu to toggle icon
+        ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 
     @Override
@@ -246,11 +263,5 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
         return scrollPosition;
     }
-
-    @Override
-    public void updateMenuItemVisibility()
-    {
-        // Request update of menu to toggle icon
-        ActivityCompat.invalidateOptionsMenu(getActivity());
-    }
+    //endregion
 }

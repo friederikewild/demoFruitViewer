@@ -59,6 +59,9 @@ public class OverviewPresenter implements OverviewContract.Presenter
         overviewView.updateMenuItemVisibility();
     }
 
+    //region [OverviewContractPresenter]
+
+    //region [LoadItems Handling]
     @Override
     public void loadItems(final boolean forceUpdate)
     {
@@ -98,6 +101,18 @@ public class OverviewPresenter implements OverviewContract.Presenter
                                });
     }
 
+    @VisibleForTesting
+    void setViewIsCurrentlyEmpty()
+    {
+        setIsViewCurrentlyEmpty(null);
+    }
+
+    @VisibleForTesting
+    void setIsViewCurrentlyEmpty(@Nullable List<Item> items)
+    {
+        isViewCurrentlyEmpty = items == null || items.isEmpty();
+    }
+
     private void updateUiWithItems(@NonNull List<Item> items)
     {
         // Check if view is still able to handle UI updates
@@ -121,18 +136,6 @@ public class OverviewPresenter implements OverviewContract.Presenter
         overviewView.updateMenuItemVisibility();
     }
 
-    @VisibleForTesting
-    void setViewIsCurrentlyEmpty()
-    {
-        setIsViewCurrentlyEmpty(null);
-    }
-
-    @VisibleForTesting
-    void setIsViewCurrentlyEmpty(@Nullable List<Item> items)
-    {
-        isViewCurrentlyEmpty = items == null || items.isEmpty();
-    }
-
     private void updateUiWithLoadingError()
     {
         // Check if view is still able to handle UI updates
@@ -148,6 +151,7 @@ public class OverviewPresenter implements OverviewContract.Presenter
         // Ensure menu is updated according to items availability
         overviewView.updateMenuItemVisibility();
     }
+    //endregion [LoadItems Handling]
 
     @Override
     public void setLayoutPresentation(@NonNull OverviewLayoutType layoutType)
@@ -198,4 +202,5 @@ public class OverviewPresenter implements OverviewContract.Presenter
         // Hide option when no data is shown
         return !isViewCurrentlyEmpty;
     }
+    //endregion [OverviewContractPresenter]
 }
