@@ -15,13 +15,13 @@ public interface OverviewContract
 {
     interface View extends BaseView<Presenter>
     {
-        boolean isActive();
-
         void setLoadingIndicator(boolean active);
 
         void updateMenuItemVisibility();
 
         void showItems(@NonNull List<Item> items);
+
+        void showDetailsForItem(@NonNull String itemId);
 
         void showNoItemsAvailable();
 
@@ -36,10 +36,16 @@ public interface OverviewContract
     {
         void loadItems(boolean forceUpdate);
 
+        void onItemClicked(@NonNull Item item);
+
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 
         boolean isListLayoutOptionAvailable();
 
         boolean isGridLayoutOptionAvailable();
+
+        int getRequestCodeForDetail();
+
+        void onReturnFromRequest(int requestCode);
     }
 }

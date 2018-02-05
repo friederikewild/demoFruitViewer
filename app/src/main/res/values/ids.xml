@@ -4,5 +4,6 @@
     <!-- Ids used by ItemsAdapter as ViewTypes -->
     <item type="id" name="overview_view_type_list" />
     <item type="id" name="overview_view_type_grid" />
+    <item type="id" name="overview_view_type_invalid" />
 
 </resources>

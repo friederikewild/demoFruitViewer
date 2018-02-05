@@ -12,6 +12,7 @@ import me.friederikewild.demo.touchnote.data.datasource.remote.RemoteItemsDataSt
 import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
+import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
@@ -74,6 +75,11 @@ public class Injection
     public static GetItemsUseCase provideGetItemsUseCase()
     {
         return new GetItemsUseCase(provideItemsDataRepository());
+    }
+
+    public static GetItemUseCase provideGetItemUseCase()
+    {
+        return new GetItemUseCase(provideItemsDataRepository());
     }
 
     public static Bundler<Serializable> provideSerializableBundler()

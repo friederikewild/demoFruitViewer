@@ -7,4 +7,6 @@ package me.friederikewild.demo.touchnote;
 public interface BaseView<T extends BasePresenter>
 {
     void setPresenter(T presenter);
+
+    boolean isActive();
 }

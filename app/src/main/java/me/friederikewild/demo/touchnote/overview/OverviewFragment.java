@@ -1,5 +1,6 @@
 package me.friederikewild.demo.touchnote.overview;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.friederikewild.demo.touchnote.R;
+import me.friederikewild.demo.touchnote.details.DetailsActivity;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import timber.log.Timber;
 
@@ -48,17 +50,25 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
-    public void setPresenter(OverviewContract.Presenter presenter)
+    public void setPresenter(@NonNull OverviewContract.Presenter presenter)
     {
         this.presenter = presenter;
     }
 
     //region [Fragment LifeCycle]
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        presenter.onReturnFromRequest(requestCode);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        itemsAdapter = new ItemsAdapter(new ArrayList<>());
+        itemsAdapter = new ItemsAdapter(new ArrayList<>(),
+                                        item -> presenter.onItemClicked(item));
     }
 
     @Nullable
@@ -209,6 +219,27 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         hintNoItemsTextView.setVisibility(View.GONE);
 
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showDetailsForItem(@NonNull final String itemId)
+    {
+        assertItemIdNotNull(itemId);
+
+        Intent intent = new Intent(getContext(), DetailsActivity.class);
+        intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
+
+        // Start for result to allow dealing with last active layout
+        startActivityForResult(intent, presenter.getRequestCodeForDetail());
+    }
+
+    private void assertItemIdNotNull(final String itemId)
+    {
+        if (itemId == null || itemId.isEmpty())
+        {
+            throw new IllegalStateException(
+                    "ItemsDetails can not be started without an item id!");
+        }
     }
 
     @Override

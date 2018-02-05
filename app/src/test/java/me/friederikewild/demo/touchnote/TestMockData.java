@@ -36,6 +36,8 @@ public interface TestMockData
             new ItemEntity(FAKE_ID2),
             new ItemEntity(FAKE_ID3));
 
+    Item ITEM = new Item(FAKE_ID);
+
     static ItemEntity createFakeItemEntityWithTitleOnly()
     {
         return createFakeItemEntity(

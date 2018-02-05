@@ -37,15 +37,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
 {
-    private static final int INVALID_TYPE = -1;
+
+
     private List<Item> items;
+    @NonNull
+    private ItemClickListener itemClickListener;
 
     @IdRes
-    private int currentViewType = INVALID_TYPE;
+    private int currentViewType = OverviewLayoutType.INVALID_TYPE.getUniqueId();
 
-    ItemsAdapter(@NonNull List<Item> items)
+    ItemsAdapter(@NonNull List<Item> items,
+                 @NonNull ItemClickListener listener)
     {
+        itemClickListener = listener;
         setList(items);
+
         setHasStableIds(true);
     }
 
@@ -79,7 +85,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
 
     private void assertCurrentViewTypeIsValid()
     {
-        if (currentViewType == INVALID_TYPE)
+        if (currentViewType == OverviewLayoutType.INVALID_TYPE.getUniqueId())
         {
             final IllegalStateException exception = new IllegalStateException(
                     "ItemsAdapter needs initial configuration of current LayoutType before usage!");
@@ -101,18 +107,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
      */
     void setLayoutType(@NonNull OverviewLayoutType layoutType)
     {
-        switch (layoutType)
-        {
-            case LIST_LAYOUT:
-                currentViewType = R.id.overview_view_type_list;
-                break;
-            case GRID_LAYOUT:
-                currentViewType = R.id.overview_view_type_grid;
-                break;
-            default:
-                currentViewType = INVALID_TYPE;
-                break;
-        }
+        currentViewType = layoutType.getUniqueId();
     }
 
     @Override
@@ -132,6 +127,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         bindImageView(holder, item, viewType);
         bindTitleView(holder, item);
         bindDescriptionView(holder, item);
+
+        // Make full card clickable
+        holder.rootView.setOnClickListener(view -> itemClickListener.onItemClicked(item));
     }
 
     private void bindImageView(@NonNull ViewHolder holder, @NonNull Item item, @IdRes int viewType)
