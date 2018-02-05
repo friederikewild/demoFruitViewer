@@ -19,12 +19,24 @@ public class OverviewActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_overview);
+        setContentView(R.layout.activity_one_fragment);
 
         // Setup toolbar
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        setupViewAndPresenter();
+    }
+
+    private void setupViewAndPresenter()
+    {
+        OverviewFragment overviewFragment = initContentFragment();
+        presenter = createPresenter(overviewFragment);
+    }
+
+    @NonNull
+    private OverviewFragment initContentFragment()
+    {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         OverviewFragment overviewFragment = (OverviewFragment) fragmentManager.findFragmentById(
                 R.id.contentFrame);
@@ -34,8 +46,13 @@ public class OverviewActivity extends AppCompatActivity
             overviewFragment = OverviewFragment.newInstance();
             addFragmentToActivity(fragmentManager, overviewFragment, R.id.contentFrame);
         }
+        return overviewFragment;
+    }
 
-        presenter = new OverviewPresenter(
+    @NonNull
+    private OverviewPresenter createPresenter(OverviewFragment overviewFragment)
+    {
+        return new OverviewPresenter(
                 overviewFragment,
                 Injection.provideUseCaseHandler(),
                 Injection.provideGetItemsUseCase(),
@@ -47,6 +64,11 @@ public class OverviewActivity extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
+        deletePresenter();
+    }
+
+    private void deletePresenter()
+    {
         presenter = null;
     }
 
