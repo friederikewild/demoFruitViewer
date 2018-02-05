@@ -19,15 +19,27 @@ public interface OverviewContract
 
         void setLoadingIndicator(boolean active);
 
+        void updateMenuItemVisibility();
+
         void showItems(@NonNull List<Item> items);
 
         void showNoItemsAvailable();
 
         void showLoadingItemsError();
+
+        void setListLayout();
+
+        void setGridLayout();
     }
 
     interface Presenter extends BasePresenter
     {
         void loadItems(boolean forceUpdate);
+
+        void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
+
+        boolean isListOptionAvailable();
+
+        boolean isGridOptionAvailable();
     }
 }

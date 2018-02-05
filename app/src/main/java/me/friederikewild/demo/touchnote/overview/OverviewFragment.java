@@ -3,11 +3,16 @@ package me.friederikewild.demo.touchnote.overview;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +24,9 @@ import me.friederikewild.demo.touchnote.R;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import timber.log.Timber;
 
+import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
+import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_LAYOUT;
+
 public class OverviewFragment extends Fragment implements OverviewContract.View
 {
     private OverviewContract.Presenter presenter;
@@ -29,7 +37,10 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     private RecyclerView recyclerView;
     private TextView hintNoItemsTextView;
 
-    private EnhancedSwipeRefreshLayout refreshLayout;
+    public OverviewFragment()
+    {
+        // Empty
+    }
 
     public static OverviewFragment newInstance()
     {
@@ -42,6 +53,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         this.presenter = presenter;
     }
 
+    //region [Fragment LifeCycle]
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -56,35 +68,20 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
         recyclerView = rootView.findViewById(R.id.overviewItemsList);
-        setupRecyclerView();
+        // Use list style as default
+        setListLayout();
 
-        refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
-        setupRefreshLayout();
+        EnhancedSwipeRefreshLayout refreshLayout = rootView.findViewById(R.id.overviewRefreshLayout);
+        setupRefreshLayout(refreshLayout);
 
         hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
+
+        setHasOptionsMenu(true);
 
         return rootView;
     }
 
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-        recyclerView = null;
-        refreshLayout = null;
-        hintNoItemsTextView = null;
-    }
-
-    private void setupRecyclerView()
-    {
-        // Use list style as default
-        currentLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(currentLayoutManager);
-
-        recyclerView.setAdapter(itemsAdapter);
-    }
-
-    private void setupRefreshLayout()
+    private void setupRefreshLayout(@NonNull final EnhancedSwipeRefreshLayout refreshLayout)
     {
         // Set the actual scrollable child view
         refreshLayout.setScrollableChildView(recyclerView);
@@ -107,6 +104,50 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        recyclerView = null;
+        hintNoItemsTextView = null;
+        currentLayoutManager = null;
+    }
+    //endregion
+
+    //region [OptionMenu Handling]
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.overview_fragment_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+
+        // Set visible layout option according to presenter
+        menu.findItem(R.id.menu_show_layout_list).setVisible(presenter.isListOptionAvailable());
+        menu.findItem(R.id.menu_show_layout_grid).setVisible(presenter.isGridOptionAvailable());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_show_layout_list:
+                presenter.setLayoutPresentation(LIST_LAYOUT);
+                break;
+            case R.id.menu_show_layout_grid:
+                presenter.setLayoutPresentation(GRID_LAYOUT);
+                break;
+        }
+        return true;
+    }
+    //endregion
+
+    //region [OverviewContract View]
+    @Override
     public boolean isActive()
     {
         return isAdded();
@@ -115,10 +156,22 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     @Override
     public void setLoadingIndicator(boolean active)
     {
-        if (refreshLayout != null)
+        if (getView() == null)
         {
-            refreshLayout.setRefreshing(active);
+            return;
         }
+
+        final EnhancedSwipeRefreshLayout refreshLayout = getView().findViewById(R.id.overviewRefreshLayout);
+
+        // Ensure to call setRefreshing after layout is done
+        refreshLayout.post(() -> refreshLayout.setRefreshing(active));
+    }
+
+    @Override
+    public void updateMenuItemVisibility()
+    {
+        // Request update of menu to toggle icon
+        ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 
     @Override
@@ -150,4 +203,65 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         hintNoItemsTextView.setVisibility(View.VISIBLE);
         hintNoItemsTextView.setText(R.string.overview_hint_error);
     }
+
+    @Override
+    public void setListLayout()
+    {
+        itemsAdapter.setLayoutType(LIST_LAYOUT);
+
+        final RecyclerView.LayoutManager newLayoutManager = new LinearLayoutManager(getActivity());
+        setLayoutManagerToRecyclerView(newLayoutManager);
+    }
+
+    @Override
+    public void setGridLayout()
+    {
+        itemsAdapter.setLayoutType(GRID_LAYOUT);
+
+        final RecyclerView.LayoutManager newLayoutManager = new GridLayoutManager(getActivity(),
+                                                                                  getRowCount());
+        setLayoutManagerToRecyclerView(newLayoutManager);
+    }
+
+    private int getRowCount()
+    {
+        // Basic adjustment based on orientation. Advanced version could calculate optimal count from screen width
+        return getActivity().getResources().getInteger(R.integer.overview_grid_row_count);
+    }
+
+    private void setLayoutManagerToRecyclerView(@NonNull RecyclerView.LayoutManager newLayoutManager)
+    {
+        // Get scroll position in case LayoutManager was set before
+        int scrollPosition = getScrollPosition(recyclerView.getLayoutManager());
+
+        currentLayoutManager = newLayoutManager;
+        recyclerView.setLayoutManager(currentLayoutManager);
+
+        recyclerView.setAdapter(itemsAdapter);
+        recyclerView.setHasFixedSize(true);
+
+        // Set previous scroll position
+        recyclerView.scrollToPosition(scrollPosition);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private int getScrollPosition(@Nullable RecyclerView.LayoutManager layoutManager)
+    {
+        int scrollPosition = 0;
+
+        if (layoutManager != null)
+        {
+            if (layoutManager instanceof LinearLayoutManager)
+            {
+                scrollPosition = ((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+            }
+            else if (layoutManager instanceof GridLayoutManager)
+            {
+                scrollPosition = ((GridLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+            }
+        }
+
+        return scrollPosition;
+    }
+    //endregion
 }
