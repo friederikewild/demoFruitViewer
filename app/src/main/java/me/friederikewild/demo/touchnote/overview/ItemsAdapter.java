@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.common.base.Strings;
@@ -23,6 +22,7 @@ import java.util.List;
 import me.friederikewild.demo.touchnote.BuildConfig;
 import me.friederikewild.demo.touchnote.R;
 import me.friederikewild.demo.touchnote.domain.model.Item;
+import me.friederikewild.demo.touchnote.util.GlideApp;
 import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
@@ -37,8 +37,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
 {
-
-
     private List<Item> items;
     @NonNull
     private ItemClickListener itemClickListener;
@@ -137,7 +135,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         final Context context = holder.rootView.getContext();
         final @DrawableRes int placeholderRes = getPlaceholderForViewType(viewType);
 
-        RequestBuilder<Drawable> imageLoaderRequest = Glide.with(context)
+        RequestBuilder<Drawable> imageLoaderRequest = GlideApp.with(context)
                 .load(item.getImageUrl())
                 .apply(new RequestOptions().placeholder(placeholderRes))
                 .transition(withCrossFade());

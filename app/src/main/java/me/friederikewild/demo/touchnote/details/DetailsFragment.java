@@ -1,6 +1,8 @@
 package me.friederikewild.demo.touchnote.details;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import me.friederikewild.demo.touchnote.R;
+import me.friederikewild.demo.touchnote.util.GlideApp;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.bumptech.glide.request.RequestOptions.centerCropTransform;
@@ -87,9 +90,10 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
         // Hide error in case visible before
         hintNoDataTextView.setVisibility(View.GONE);
 
-        Glide.with(getContext())
+        GlideApp.with(getContext())
                 .load(imageUrl)
                 .apply(centerCropTransform().centerCrop())
+                .apply(new RequestOptions().placeholder(R.drawable.placeholder_image_square_primary))
                 .transition(withCrossFade()).into(itemImageView);
     }
 
@@ -107,9 +111,24 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     @Override
     public void showLoadingItemError()
     {
-        // Set background again to make sure we are in the expected tate
-        itemImageView.setBackgroundColor(R.drawable.placeholder_image_square_primary);
+        // Set background again to make sure we are in the expected state
+        setImageViewBackground();
+
         hintNoDataTextView.setVisibility(View.VISIBLE);
     }
 
+    private void setImageViewBackground()
+    {
+        @DrawableRes final int drawableRes = R.drawable.placeholder_image_square_primary;
+
+        final Resources res = itemImageView.getContext().getResources();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+        {
+            itemImageView.setImageDrawable(res.getDrawable(drawableRes));
+        }
+        else
+        {
+            itemImageView.setImageDrawable(getResources().getDrawable(drawableRes));
+        }
+    }
 }
