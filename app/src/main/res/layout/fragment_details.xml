@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/zero"
     android:background="@color/colorScreenBackground"
+    android:padding="@dimen/zero"
     tools:context=".details.DetailsActivity">
 
-    <!--TODO: Add spinner behind-->
+    <include
+        android:id="@+id/loadingSpinner"
+        layout="@layout/item_loading_spinner"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsSquareImage"
+        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage"
+        app:layout_constraintStart_toStartOf="@+id/detailsSquareImage"
+        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage" />
 
     <ImageView
         android:id="@+id/detailsSquareImage"
         android:layout_width="@dimen/match_constraints"
         android:layout_height="@dimen/match_constraints"
-        android:scaleType="centerCrop"
         android:layout_margin="@dimen/dot_double"
+        android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:srcCompat="@drawable/placeholder_image_square_primary" />
+        tools:srcCompat="@drawable/placeholder_image_square_primary"/>
 
 </android.support.constraint.ConstraintLayout>

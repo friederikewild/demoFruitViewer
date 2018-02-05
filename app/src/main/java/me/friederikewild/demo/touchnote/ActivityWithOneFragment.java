@@ -2,11 +2,14 @@ package me.friederikewild.demo.touchnote;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 /**
  * Common activity setup that can be shared between overview and detail screen.
@@ -17,7 +20,7 @@ public abstract class ActivityWithOneFragment<V extends Fragment & BaseView, P e
     private P presenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_fragment);
@@ -27,6 +30,25 @@ public abstract class ActivityWithOneFragment<V extends Fragment & BaseView, P e
         setSupportActionBar(toolbar);
 
         presenter = setupPresenterWithView();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            // Handle Up/Home on ActionBar
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @NonNull
+    P getPresenter()
+    {
+        return presenter;
     }
 
     @NonNull
@@ -65,8 +87,8 @@ public abstract class ActivityWithOneFragment<V extends Fragment & BaseView, P e
         presenter = null;
     }
 
-    public void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                      @NonNull Fragment fragment, int frameId)
+    private void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+                                       @NonNull Fragment fragment, int frameId)
     {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);

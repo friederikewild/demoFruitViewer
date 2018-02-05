@@ -21,6 +21,8 @@ public interface OverviewContract
 
         void showItems(@NonNull List<Item> items);
 
+        void showDetailsForItem(@NonNull String itemId);
+
         void showNoItemsAvailable();
 
         void showLoadingItemsError();

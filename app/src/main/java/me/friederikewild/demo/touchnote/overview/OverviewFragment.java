@@ -1,5 +1,6 @@
 package me.friederikewild.demo.touchnote.overview;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.friederikewild.demo.touchnote.R;
+import me.friederikewild.demo.touchnote.details.DetailsActivity;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import timber.log.Timber;
 
@@ -209,6 +211,25 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         hintNoItemsTextView.setVisibility(View.GONE);
 
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showDetailsForItem(@NonNull final String itemId)
+    {
+        assertItemIdNotNull(itemId);
+
+        Intent intent = new Intent(getContext(), DetailsActivity.class);
+        intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
+        startActivity(intent);
+    }
+
+    private void assertItemIdNotNull(final String itemId)
+    {
+        if (itemId == null || itemId.isEmpty())
+        {
+            throw new IllegalStateException(
+                    "ItemsDetails can not be started without an item id!");
+        }
     }
 
     @Override

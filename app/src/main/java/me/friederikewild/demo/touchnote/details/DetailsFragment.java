@@ -15,6 +15,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 {
     private DetailsContract.Presenter presenter;
 
+    private View loadingSpinner;
     private ImageView itemImageView;
 
     public DetailsFragment()
@@ -40,6 +41,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     {
         final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
+        loadingSpinner = rootView.findViewById(R.id.loadingSpinner);
         itemImageView = rootView.findViewById(R.id.detailsSquareImage);
 
         return rootView;
@@ -67,6 +69,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
             return;
         }
 
-        // TODO
+        loadingSpinner.setVisibility(active ? View.VISIBLE : View.GONE);
+        itemImageView.setVisibility(active ? View.GONE : View.VISIBLE);
     }
 }

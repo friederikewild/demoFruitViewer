@@ -11,6 +11,8 @@ public class DetailsContract
     interface View extends BaseView<Presenter>
     {
         void setLoadingIndicator(boolean active);
+
+
     }
 
     interface Presenter extends BasePresenter
