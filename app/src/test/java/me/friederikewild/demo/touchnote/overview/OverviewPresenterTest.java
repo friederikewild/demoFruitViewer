@@ -219,7 +219,7 @@ public class OverviewPresenterTest
         presenter.setViewIsCurrentlyEmpty();
 
         // When view requests if list menu item is visible
-        final boolean isListOptionAvailable = presenter.isListOptionAvailable();
+        final boolean isListOptionAvailable = presenter.isListLayoutOptionAvailable();
 
         // Then
         Assert.assertFalse("List option not available", isListOptionAvailable);
@@ -232,7 +232,7 @@ public class OverviewPresenterTest
         presenter.setViewIsCurrentlyEmpty();
 
         // When view requests if grid menu item is visible
-        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+        final boolean isGridOptionAvailable = presenter.isGridLayoutOptionAvailable();
 
         // Then
         Assert.assertFalse("Grid option not available", isGridOptionAvailable);
@@ -245,7 +245,7 @@ public class OverviewPresenterTest
         presenter.setIsViewCurrentlyEmpty(TestMockData.ITEMS);
 
         // When view requests if grid menu item is visible
-        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+        final boolean isGridOptionAvailable = presenter.isGridLayoutOptionAvailable();
 
         // Then
         Assert.assertTrue("Grid option available", isGridOptionAvailable);
@@ -259,7 +259,7 @@ public class OverviewPresenterTest
         presenter.setLayoutPresentation(OverviewLayoutType.LIST_LAYOUT);
 
         // When view requests if grid menu item is visible
-        final boolean isGridOptionAvailable = presenter.isGridOptionAvailable();
+        final boolean isGridOptionAvailable = presenter.isGridLayoutOptionAvailable();
 
         // Then
         Assert.assertTrue("Grid option available", isGridOptionAvailable);
@@ -273,7 +273,7 @@ public class OverviewPresenterTest
         presenter.setLayoutPresentation(OverviewLayoutType.GRID_LAYOUT);
 
         // When view requests if list menu item is visible
-        final boolean isListOptionAvailable = presenter.isListOptionAvailable();
+        final boolean isListOptionAvailable = presenter.isListLayoutOptionAvailable();
 
         // Then
         Assert.assertTrue("List option available", isListOptionAvailable);
