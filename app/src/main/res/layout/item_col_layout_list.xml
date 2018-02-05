@@ -16,7 +16,7 @@
         android:layout_margin="@dimen/dot_double">
 
         <ImageView
-            android:id="@+id/overviewItemThumbnail"
+            android:id="@+id/overviewItemImage"
             android:layout_width="@dimen/thumb_icon_size"
             android:layout_height="@dimen/thumb_icon_size"
             android:scaleType="centerCrop"
@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/overviewItemDescriptionText"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:srcCompat="@drawable/thumbnail_placeholder" />
+            tools:srcCompat="@drawable/placeholder_thumbnail_circle_primary" />
 
         <TextView
             android:id="@+id/overviewItemTitle"
@@ -33,10 +33,10 @@
             android:layout_marginStart="@dimen/dot_double"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorPrimaryText"
-            app:layout_constraintTop_toTopOf="@+id/overviewItemThumbnail"
-            app:layout_constraintStart_toEndOf="@+id/overviewItemThumbnail"
+            app:layout_constraintTop_toTopOf="@+id/overviewItemImage"
+            app:layout_constraintStart_toEndOf="@+id/overviewItemImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/overviewItemThumbnail"
+            app:layout_constraintBottom_toBottomOf="@+id/overviewItemImage"
             tools:text="@string/app_name" />
 
         <TextView
@@ -47,7 +47,7 @@
             android:lineSpacingExtra="@dimen/dot_half"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorPrimaryText"
-            app:layout_constraintTop_toBottomOf="@+id/overviewItemThumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/overviewItemImage"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

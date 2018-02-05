@@ -61,10 +61,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         final Context context = holder.rootView.getContext();
         Glide.with(context)
                 .load(item.getImageUrl())
-                .apply(new RequestOptions().placeholder(R.drawable.thumbnail_placeholder))
+                .apply(new RequestOptions().placeholder(R.drawable.placeholder_thumbnail_circle_primary))
                 .apply(circleCropTransform().circleCrop())
                 .transition(withCrossFade())
-                .into(holder.thumbnailImageView);
+                .into(holder.imageView);
 
         holder.titleTextView.setText(item.getTitle());
 
@@ -97,7 +97,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         final View rootView;
         final TextView titleTextView;
         final TextView descriptionTextView;
-        final ImageView thumbnailImageView;
+        final ImageView imageView;
 
         public ViewHolder(@NonNull View itemView)
         {
@@ -105,7 +105,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
             rootView = itemView;
             titleTextView = itemView.findViewById(R.id.overviewItemTitle);
             descriptionTextView = itemView.findViewById(R.id.overviewItemDescriptionText);
-            thumbnailImageView = itemView.findViewById(R.id.overviewItemThumbnail);
+            imageView = itemView.findViewById(R.id.overviewItemImage);
         }
     }
 }
