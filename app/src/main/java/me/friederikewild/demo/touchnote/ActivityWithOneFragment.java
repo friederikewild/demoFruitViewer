@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 /**
  * Common activity setup that can be shared between overview and detail screen.
  */
-public abstract class ActivityWithOneFragment<V extends BaseView, P extends BasePresenter>
+public abstract class ActivityWithOneFragment<V extends Fragment & BaseView, P extends BasePresenter>
         extends AppCompatActivity
 {
     private P presenter;
@@ -32,8 +32,24 @@ public abstract class ActivityWithOneFragment<V extends BaseView, P extends Base
     @NonNull
     private P setupPresenterWithView()
     {
-        V viewFragment = createContentFragment();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        V viewFragment = findExistingContentFragment(fragmentManager);
+
+        if (viewFragment == null)
+        {
+            // Create new instance of fragment
+            viewFragment = createContentFragment();
+            addFragmentToActivity(fragmentManager, viewFragment, R.id.contentFrame);
+        }
+
+        // Create presenter and provide the view
         return createPresenter(viewFragment);
+    }
+
+    @SuppressWarnings("unchecked")
+    private V findExistingContentFragment(@NonNull final FragmentManager fragmentManager)
+    {
+        return (V) fragmentManager.findFragmentById(R.id.contentFrame);
     }
 
     @NonNull

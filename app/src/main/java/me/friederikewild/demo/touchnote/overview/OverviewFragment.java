@@ -48,7 +48,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
-    public void setPresenter(OverviewContract.Presenter presenter)
+    public void setPresenter(@NonNull OverviewContract.Presenter presenter)
     {
         this.presenter = presenter;
     }
