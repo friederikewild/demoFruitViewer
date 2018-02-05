@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dot"
     style="@style/CardView.Light"
-    tools:ignore="ContentDescription"
     tools:showIn="@layout/fragment_overview">
 
     <android.support.constraint.ConstraintLayout
@@ -33,8 +32,8 @@
             android:layout_marginStart="@dimen/dot_double"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorPrimaryText"
-            app:layout_constraintTop_toTopOf="@+id/overviewItemImage"
             app:layout_constraintStart_toEndOf="@+id/overviewItemImage"
+            app:layout_constraintTop_toTopOf="@+id/overviewItemImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/overviewItemImage"
             tools:text="@string/app_name" />
@@ -46,9 +45,9 @@
             android:layout_marginTop="@dimen/dot_double"
             android:lineSpacingExtra="@dimen/dot_half"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/colorPrimaryText"
-            app:layout_constraintTop_toBottomOf="@+id/overviewItemImage"
+            android:textColor="@color/colorSecondaryText"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/overviewItemImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="@string/overview_hint_error"
