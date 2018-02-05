@@ -106,7 +106,7 @@ public class DetailsPresenterTest
     }
 
     @Test
-    public void givenStartReceivesItemData_ThenViewIsUpdated()
+    public void givenStartReceivesItemData_ThenViewIsUpdatedWithItemData()
     {
         // Given
         presenter.start();
@@ -115,7 +115,13 @@ public class DetailsPresenterTest
         setItemRemoteAvailable(ITEM);
 
         // Then
-        verify(detailsViewMock).showItem(ITEM);
+        // Then first loading indicator is shown
+        InOrder inOrder = inOrder(detailsViewMock);
+        inOrder.verify(detailsViewMock).setLoadingIndicator(true);
+
+        // Then loading indicator is hidden
+        inOrder.verify(detailsViewMock).showItemImage(ITEM.getImageUrl());
+        inOrder.verify(detailsViewMock).showItemTitle(ITEM.getTitle());
     }
 
     private void setItemRemoteAvailable(@NonNull Item item)

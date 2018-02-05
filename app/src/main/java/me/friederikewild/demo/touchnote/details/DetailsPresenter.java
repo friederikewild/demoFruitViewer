@@ -77,7 +77,8 @@ public class DetailsPresenter implements DetailsContract.Presenter
 
         detailsView.setLoadingIndicator(false);
 
-        detailsView.showItem(item);
+        detailsView.showItemImage(item.getImageUrl());
+        detailsView.showItemTitle(item.getTitle());
     }
 
     private void updateViewWithError()

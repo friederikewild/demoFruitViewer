@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import me.friederikewild.demo.touchnote.BasePresenter;
 import me.friederikewild.demo.touchnote.BaseView;
-import me.friederikewild.demo.touchnote.domain.model.Item;
 
 /**
  * Contract between view and presenter for the details screen.
@@ -15,13 +14,15 @@ public class DetailsContract
     {
         void setLoadingIndicator(boolean active);
 
-        void showItem(@NonNull Item item);
+        void showItemImage(@NonNull String imageUrl);
+
+        void showItemTitle(@NonNull String title);
 
         void showLoadingItemError();
     }
 
     interface Presenter extends BasePresenter
     {
-
+        // Nothing atm
     }
 }
