@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 /**
@@ -26,8 +25,7 @@ public abstract class ActivityWithOneFragment<V extends Fragment & BaseView, P e
         setContentView(R.layout.activity_one_fragment);
 
         // Setup toolbar
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         presenter = setupPresenterWithView();
     }
@@ -87,8 +85,9 @@ public abstract class ActivityWithOneFragment<V extends Fragment & BaseView, P e
         presenter = null;
     }
 
-    private void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                       @NonNull Fragment fragment, int frameId)
+    private void addFragmentToActivity(@NonNull final FragmentManager fragmentManager,
+                                       @NonNull final Fragment fragment,
+                                       int frameId)
     {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);

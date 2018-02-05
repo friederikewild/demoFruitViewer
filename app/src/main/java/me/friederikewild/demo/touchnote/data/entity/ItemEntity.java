@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Item Entity used in the data layer
  */
+@SuppressWarnings("SimplifiableIfStatement")
 public class ItemEntity
 {
     @SerializedName("id")

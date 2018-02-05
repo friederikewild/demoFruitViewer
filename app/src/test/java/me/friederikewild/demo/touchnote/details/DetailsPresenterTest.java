@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import me.friederikewild.demo.touchnote.TestUseCaseScheduler;
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
 import me.friederikewild.demo.touchnote.domain.ItemsRepository;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
@@ -41,8 +40,6 @@ public class DetailsPresenterTest
 
     @Captor
     private ArgumentCaptor<ItemsRepository.GetItemCallback> itemCallbackCaptor;
-    @Captor
-    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
 
     @Before
     public void setupOverviewPresenter()

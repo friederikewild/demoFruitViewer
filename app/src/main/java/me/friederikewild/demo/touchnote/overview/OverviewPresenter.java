@@ -19,8 +19,7 @@ import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_
 
 public class OverviewPresenter implements OverviewContract.Presenter
 {
-    @VisibleForTesting
-    static final String KEY_BUNDLE_LAYOUT_TYPE = "KEY_BUNDLE_LAYOUT_TYPE";
+    private static final String KEY_BUNDLE_LAYOUT_TYPE = "KEY_BUNDLE_LAYOUT_TYPE";
 
     @NonNull
     private OverviewContract.View overviewView;

@@ -12,6 +12,7 @@ import java.util.List;
  * Includes all available fields to make it easy to show more details on the view.
  * NOTE: If {@link date} was to be presented it could be converted into a Date object and formatted.
  */
+@SuppressWarnings("SimplifiableIfStatement")
 public class Item
 {
     @NonNull
