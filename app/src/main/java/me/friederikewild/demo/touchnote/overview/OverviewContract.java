@@ -36,6 +36,8 @@ public interface OverviewContract
     {
         void loadItems(boolean forceUpdate);
 
+        void onItemClicked(@NonNull Item item);
+
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 
         boolean isListLayoutOptionAvailable();

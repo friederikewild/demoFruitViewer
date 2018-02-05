@@ -184,6 +184,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
     //endregion [LoadItems Handling]
 
     @Override
+    public void onItemClicked(@NonNull Item item)
+    {
+        overviewView.showDetailsForItem(item.getId());
+    }
+
+    @Override
     public void setLayoutPresentation(@NonNull final OverviewLayoutType layoutType)
     {
         setLayoutPresentation(layoutType, true);

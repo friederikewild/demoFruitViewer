@@ -60,7 +60,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        itemsAdapter = new ItemsAdapter(new ArrayList<>());
+        itemsAdapter = new ItemsAdapter(new ArrayList<>(),
+                                        item -> presenter.onItemClicked(item));
     }
 
     @Nullable

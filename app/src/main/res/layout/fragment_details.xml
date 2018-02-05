@@ -9,14 +9,6 @@
     android:padding="@dimen/zero"
     tools:context=".details.DetailsActivity">
 
-    <include
-        android:id="@+id/loadingSpinner"
-        layout="@layout/item_loading_spinner"
-        app:layout_constraintBottom_toBottomOf="@+id/detailsSquareImage"
-        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage"
-        app:layout_constraintStart_toStartOf="@+id/detailsSquareImage"
-        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage" />
-
     <ImageView
         android:id="@+id/detailsSquareImage"
         android:layout_width="@dimen/match_constraints"
@@ -24,9 +16,20 @@
         android:layout_margin="@dimen/dot_double"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="H,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/placeholder_image_square_primary"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/placeholder_image_square_primary" />
+
+    <include
+        android:id="@+id/detailsLoadingSpinner"
+        layout="@layout/include_loading_spinner"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="@dimen/match_constraints"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/detailsSquareImage"
+        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage"
+        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsSquareImage" />
 
 </android.support.constraint.ConstraintLayout>

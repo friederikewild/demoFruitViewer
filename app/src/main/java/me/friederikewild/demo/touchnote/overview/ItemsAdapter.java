@@ -38,14 +38,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
 {
     private static final int INVALID_TYPE = -1;
+
     private List<Item> items;
+    @NonNull
+    private ItemClickListener itemClickListener;
 
     @IdRes
     private int currentViewType = INVALID_TYPE;
 
-    ItemsAdapter(@NonNull List<Item> items)
+    ItemsAdapter(@NonNull List<Item> items,
+                 @NonNull ItemClickListener listener)
     {
+        itemClickListener = listener;
         setList(items);
+
         setHasStableIds(true);
     }
 
@@ -132,6 +138,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         bindImageView(holder, item, viewType);
         bindTitleView(holder, item);
         bindDescriptionView(holder, item);
+
+        // Make full card clickable
+        holder.rootView.setOnClickListener(view -> itemClickListener.onItemClicked(item));
     }
 
     private void bindImageView(@NonNull ViewHolder holder, @NonNull Item item, @IdRes int viewType)
