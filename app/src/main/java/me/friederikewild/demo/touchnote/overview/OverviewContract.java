@@ -38,8 +38,8 @@ public interface OverviewContract
 
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 
-        boolean isListOptionAvailable();
+        boolean isListLayoutOptionAvailable();
 
-        boolean isGridOptionAvailable();
+        boolean isGridLayoutOptionAvailable();
     }
 }
