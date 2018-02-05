@@ -15,8 +15,6 @@ public interface OverviewContract
 {
     interface View extends BaseView<Presenter>
     {
-        boolean isActive();
-
         void setLoadingIndicator(boolean active);
 
         void updateMenuItemVisibility();
