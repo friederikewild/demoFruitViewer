@@ -1,12 +1,13 @@
 package me.friederikewild.demo.touchnote.data.datasource.remote;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
+import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
+import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
  * Alternative api provider to test empty return handling.
@@ -14,10 +15,11 @@ import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 @VisibleForTesting
 public class EmptyItemsApiProvider implements ItemsApiProvider
 {
+    private static final List<ItemEntity> FAKE_DATA = new ArrayList<>();
+
     @Override
-    public void enqueueGetItems(@NonNull ItemsDataStore.GetEntityItemsCallback callback,
-                                @NonNull GetNoDataCallback errorCallback)
+    public Flowable<List<ItemEntity>> getItems()
     {
-        callback.onItemsLoaded(new ArrayList<>());
+        return Flowable.fromIterable(FAKE_DATA).toList().toFlowable();
     }
 }

@@ -2,7 +2,9 @@ package me.friederikewild.demo.touchnote.data.datasource;
 
 import android.support.annotation.NonNull;
 
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
+import com.google.common.base.Optional;
+
+import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
@@ -10,19 +12,10 @@ import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
  */
 public interface ItemDataStore
 {
-    interface GetEntityItemCallback
-    {
-        void onItemLoaded(@NonNull ItemEntity itemEntity);
-    }
-
     /**
      * Request concrete item for specific id and get it via provided callback
      *
-     * @param itemId        Id to look up in cache
-     * @param callback      Callback for updates
-     * @param errorCallback Callback for error e.g. no data available
+     * @param itemId Id to look up in cache
      */
-    void getItem(@NonNull String itemId,
-                 @NonNull GetEntityItemCallback callback,
-                 @NonNull GetNoDataCallback errorCallback);
+    Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId);
 }

@@ -4,6 +4,7 @@ package me.friederikewild.demo.touchnote.util;
 import java.io.Serializable;
 
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
+import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CurrentTimeProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyItemsApiProvider;
@@ -14,7 +15,6 @@ import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
-import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
 /**
  * Simple manual injection helper to allow injection of mock implementations for testing.
@@ -24,8 +24,7 @@ public class Injection
 {
     public static ItemsDataRepository provideItemsDataRepository()
     {
-        return ItemsDataRepository.getInstance(provideItemEntityDataMapper(),
-                                               provideRemoteItemsDataStore(),
+        return ItemsDataRepository.getInstance(provideRemoteItemsDataStore(),
                                                provideCacheItemDataStore());
     }
 
@@ -52,7 +51,7 @@ public class Injection
     /**
      * Alternative to test handling receiving an empty list from remote
      */
-    public static ItemsApiProvider provideEmptyItemsApiProvider()
+    public static ItemsDataStore provideEmptyItemsApiProvider()
     {
         return new EmptyItemsApiProvider();
     }
@@ -67,19 +66,14 @@ public class Injection
         return CurrentTimeProvider.getInstance();
     }
 
-    public static UseCaseHandler provideUseCaseHandler()
-    {
-        return UseCaseHandler.getInstance();
-    }
-
     public static GetItemsUseCase provideGetItemsUseCase()
     {
-        return new GetItemsUseCase(provideItemsDataRepository());
+        return new GetItemsUseCase(provideItemsDataRepository(), provideItemEntityDataMapper());
     }
 
     public static GetItemUseCase provideGetItemUseCase()
     {
-        return new GetItemUseCase(provideItemsDataRepository());
+        return new GetItemUseCase(provideItemsDataRepository(), provideItemEntityDataMapper());
     }
 
     public static Bundler<Serializable> provideSerializableBundler()
