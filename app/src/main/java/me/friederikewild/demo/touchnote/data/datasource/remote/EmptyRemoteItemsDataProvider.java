@@ -13,7 +13,7 @@ import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
  * Alternative api provider to test empty return handling.
  */
 @VisibleForTesting
-public class EmptyItemsApiProvider implements ItemsApiProvider
+public class EmptyRemoteItemsDataProvider implements ItemsDataStore
 {
     private static final List<ItemEntity> FAKE_DATA = new ArrayList<>();
 

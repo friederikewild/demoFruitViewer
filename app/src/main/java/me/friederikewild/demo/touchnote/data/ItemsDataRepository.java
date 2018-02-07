@@ -9,7 +9,6 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
@@ -38,7 +37,7 @@ public class ItemsDataRepository implements ItemsRepository
     }
 
     public static ItemsDataRepository getInstance(@NonNull final ItemsDataStore remoteItemsStore,
-                                                  @NonNull final CacheItemDataStore cacheItemDataStore)
+                                                  @NonNull final ItemCache cacheItemDataStore)
     {
         if (INSTANCE == null)
         {

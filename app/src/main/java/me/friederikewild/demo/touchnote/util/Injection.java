@@ -4,10 +4,12 @@ package me.friederikewild.demo.touchnote.util;
 import java.io.Serializable;
 
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
+import me.friederikewild.demo.touchnote.data.ItemsRepository;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CurrentTimeProvider;
-import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyItemsApiProvider;
+import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
+import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyRemoteItemsDataProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.ItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RemoteItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitItemsApiProvider;
@@ -22,10 +24,12 @@ import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
  */
 public class Injection
 {
-    public static ItemsDataRepository provideItemsDataRepository()
+    public static ItemsRepository provideItemsDataRepository()
     {
-        return ItemsDataRepository.getInstance(provideRemoteItemsDataStore(),
-                                               provideCacheItemDataStore());
+        return ItemsDataRepository.getInstance(
+                provideRemoteItemsDataStore(),
+//                provideEmptyRemoteItemsDataProvider(),
+                provideCacheItemDataStore());
     }
 
     public static ItemEntityDataMapper provideItemEntityDataMapper()
@@ -38,9 +42,17 @@ public class Injection
         return HtmlStringFormatter.getInstance();
     }
 
-    public static RemoteItemsDataStore provideRemoteItemsDataStore()
+    public static ItemsDataStore provideRemoteItemsDataStore()
     {
         return RemoteItemsDataStore.getInstance(provideItemsApiProvider());
+    }
+
+    /**
+     * Alternative to test handling receiving an empty list from remote
+     */
+    public static ItemsDataStore provideEmptyRemoteItemsDataProvider()
+    {
+        return new EmptyRemoteItemsDataProvider();
     }
 
     public static ItemsApiProvider provideItemsApiProvider()
@@ -48,15 +60,7 @@ public class Injection
         return RetrofitItemsApiProvider.getInstance();
     }
 
-    /**
-     * Alternative to test handling receiving an empty list from remote
-     */
-    public static ItemsDataStore provideEmptyItemsApiProvider()
-    {
-        return new EmptyItemsApiProvider();
-    }
-
-    public static CacheItemDataStore provideCacheItemDataStore()
+    public static ItemCache provideCacheItemDataStore()
     {
         return CacheItemDataStore.getInstance(provideCurrentTimeProvider());
     }
