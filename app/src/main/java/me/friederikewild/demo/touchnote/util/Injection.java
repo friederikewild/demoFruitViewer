@@ -17,6 +17,8 @@ import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
+import me.friederikewild.demo.touchnote.util.schedulers.BaseSchedulerProvider;
+import me.friederikewild.demo.touchnote.util.schedulers.RxSchedulerProvider;
 
 /**
  * Simple manual injection helper to allow injection of mock implementations for testing.
@@ -72,12 +74,21 @@ public class Injection
 
     public static GetItemsUseCase provideGetItemsUseCase()
     {
-        return new GetItemsUseCase(provideItemsDataRepository(), provideItemEntityDataMapper());
+        return new GetItemsUseCase(provideItemsDataRepository(),
+                                   provideItemEntityDataMapper(),
+                                   provideSchedulerProvider());
     }
 
     public static GetItemUseCase provideGetItemUseCase()
     {
-        return new GetItemUseCase(provideItemsDataRepository(), provideItemEntityDataMapper());
+        return new GetItemUseCase(provideItemsDataRepository(),
+                                  provideItemEntityDataMapper(),
+                                  provideSchedulerProvider());
+    }
+
+    public static BaseSchedulerProvider provideSchedulerProvider()
+    {
+        return RxSchedulerProvider.getInstance();
     }
 
     public static Bundler<Serializable> provideSerializableBundler()

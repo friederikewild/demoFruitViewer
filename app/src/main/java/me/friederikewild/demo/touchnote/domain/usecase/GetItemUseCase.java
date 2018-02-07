@@ -5,11 +5,10 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Optional;
 
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import me.friederikewild.demo.touchnote.data.ItemsRepository;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.model.Item;
+import me.friederikewild.demo.touchnote.util.schedulers.BaseSchedulerProvider;
 
 /**
  * Use Case to fetch item for id
@@ -20,13 +19,16 @@ public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Ite
     private final ItemsRepository repository;
     @NonNull
     private final ItemEntityDataMapper mapper;
+    @NonNull
+    private final BaseSchedulerProvider schedulerProvider;
 
-    // TODO: Provide Schedulers for testing
     public GetItemUseCase(@NonNull final ItemsRepository repository,
-                          @NonNull final ItemEntityDataMapper mapper)
+                          @NonNull final ItemEntityDataMapper mapper,
+                          @NonNull final BaseSchedulerProvider schedulerProvider)
     {
         this.repository = repository;
         this.mapper = mapper;
+        this.schedulerProvider = schedulerProvider;
     }
 
     @Override
@@ -37,9 +39,8 @@ public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Ite
                 .firstOrError()
                 .map(Optional::get)
                 .map(mapper::transform)
-                // TODO: Provide Schedulers as injections
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(schedulerProvider.asyncIoThread())
+                .observeOn(schedulerProvider.mainThread());
     }
 
     public static final class RequestParams implements UseCase.RequestParams
