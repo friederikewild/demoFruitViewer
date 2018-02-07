@@ -1,9 +1,12 @@
 package me.friederikewild.demo.touchnote;
 
 /**
- * Reusable base presenter that can be started.
+ * Reusable base presenter that can subscribe and unsubscribe,
+ * following its view lifecycle.
  */
 public interface BasePresenter
 {
-    void start();
+    void subscribe();
+
+    void unsubscribe();
 }

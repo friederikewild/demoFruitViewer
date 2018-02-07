@@ -76,20 +76,20 @@ public class DetailsPresenterTest
     }
 
     @Test
-    public void givenPresenterStarted_ThenViewShowsLoading()
+    public void givenPresenterSubscribed_ThenViewShowsLoading()
     {
         // When
-        presenter.start();
+        presenter.subscribe();
 
         // Then
         verify(detailsViewMock).setLoadingIndicator(eq(true));
     }
 
     @Test
-    public void givenLoadItemsReceivesData_ThenViewUpdatedToStartAndStopShowLoading()
+    public void givenPresenterReceivesItemData_ThenViewUpdatedToStartAndStopShowLoading()
     {
         // Given
-        presenter.start();
+        presenter.subscribe();
 
         // When
         setItemRemoteAvailable(ITEM);
@@ -103,10 +103,10 @@ public class DetailsPresenterTest
     }
 
     @Test
-    public void givenStartReceivesItemData_ThenViewIsUpdatedWithItemData()
+    public void givenPresenterReceivesItemData_ThenViewIsUpdatedWithItemData()
     {
         // Given
-        presenter.start();
+        presenter.subscribe();
 
         // When
         setItemRemoteAvailable(ITEM);

@@ -35,9 +35,15 @@ public class DetailsPresenter implements DetailsContract.Presenter
     }
 
     @Override
-    public void start()
+    public void subscribe()
     {
         openItem();
+    }
+
+    @Override
+    public void unsubscribe()
+    {
+        // TODO
     }
 
     private void openItem()

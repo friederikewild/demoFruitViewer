@@ -98,12 +98,18 @@ public class OverviewPresenter implements OverviewContract.Presenter
     //endregion
 
     @Override
-    public void start()
+    public void subscribe()
     {
         loadItems(false);
 
         // Ensure menu is updated according to state of presenter and hidden until items are available
         overviewView.updateMenuItemVisibility();
+    }
+
+    @Override
+    public void unsubscribe()
+    {
+        // TODO
     }
 
     //region [OverviewContractPresenter]

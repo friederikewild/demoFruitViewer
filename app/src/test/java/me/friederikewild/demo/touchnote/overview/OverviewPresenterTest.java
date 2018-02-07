@@ -94,20 +94,20 @@ public class OverviewPresenterTest
     }
 
     @Test
-    public void givenPresenterStarted_ThenViewShowsLoading()
+    public void givenPresenterSubscribed_ThenViewShowsLoading()
     {
         // When
-        presenter.start();
+        presenter.subscribe();
 
         // Then
         verify(overviewViewMock).setLoadingIndicator(eq(true));
     }
 
     @Test
-    public void givenPresenterStarted_ThenViewUpdatesMenuVisibility()
+    public void givenPresenterSubscribed_ThenViewUpdatesMenuVisibility()
     {
         // When
-        presenter.start();
+        presenter.subscribe();
 
         // Then
         verify(overviewViewMock).updateMenuItemVisibility();
