@@ -51,17 +51,19 @@ public class ItemsDataRepository implements ItemsRepository
     @Override
     public Flowable<List<ItemEntity>> getItems()
     {
-        return getFlowableItemsFromRemoteAndCache()
-                .toList()
+        return getItemsFromRemoteAndCache()
+                .firstOrError()
                 .toFlowable();
     }
 
     @SuppressWarnings("Convert2MethodRef")
-    private Flowable<ItemEntity> getFlowableItemsFromRemoteAndCache()
+    private Flowable<List<ItemEntity>> getItemsFromRemoteAndCache()
     {
         return remoteItemsStore.getItems()
                 .flatMap(tasks -> Flowable.fromIterable(tasks)
-                        .doOnNext(item -> cacheItemStore.putItem(item)));
+                        .doOnNext(item -> cacheItemStore.putItem(item))
+                        .toList()
+                        .toFlowable());
     }
 
     @Override
@@ -90,8 +92,11 @@ public class ItemsDataRepository implements ItemsRepository
     @SuppressWarnings({"Convert2MethodRef", "Guava"})
     private Flowable<Optional<ItemEntity>> getItemFromRemoteDataStore(@NonNull String itemId)
     {
-        return getFlowableItemsFromRemoteAndCache()
+        return getItemsFromRemoteAndCache()
+                .flatMap(items -> Flowable.fromIterable(items))
                 .filter(itemEntity -> itemEntity.getId().equals(itemId))
-                .map(itemEntity -> Optional.of(itemEntity));
+                .map(itemEntity -> Optional.of(itemEntity))
+                .firstOrError()
+                .toFlowable();
     }
 }
