@@ -3,11 +3,15 @@ package me.friederikewild.demo.touchnote.data.datasource.remote;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
+import java.util.List;
+
+import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
+import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
- * Concrete remote data store.
+ * Concrete remote data store
+ *
  * Setup as a singleton.
  */
 public class RemoteItemsDataStore implements ItemsDataStore
@@ -33,9 +37,9 @@ public class RemoteItemsDataStore implements ItemsDataStore
     }
 
     @Override
-    public void getItems(@NonNull GetEntityItemsCallback callback,
-                         @NonNull GetNoDataCallback errorCallback)
+    public Flowable<List<ItemEntity>> getItems()
     {
-        itemsApiProvider.enqueueGetItems(callback, errorCallback);
+        final ItemsApi itemsApi = itemsApiProvider.getItemsApi();
+        return itemsApi.getItems();
     }
 }

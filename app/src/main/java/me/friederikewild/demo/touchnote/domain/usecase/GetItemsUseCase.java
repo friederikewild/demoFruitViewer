@@ -4,32 +4,48 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import me.friederikewild.demo.touchnote.domain.ItemsRepository;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import me.friederikewild.demo.touchnote.data.ItemsRepository;
+import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.model.Item;
+import me.friederikewild.demo.touchnote.util.schedulers.BaseSchedulerProvider;
 
 /**
  * Use Case to fetch items
  */
-public class GetItemsUseCase extends UseCase<GetItemsUseCase.RequestParams, GetItemsUseCase.Result>
+public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, List<Item>>
 {
     @NonNull
     private final ItemsRepository repository;
+    @NonNull
+    private final ItemEntityDataMapper mapper;
+    @NonNull
+    private final BaseSchedulerProvider schedulerProvider;
 
-    public GetItemsUseCase(@NonNull ItemsRepository repository)
+    public GetItemsUseCase(@NonNull final ItemsRepository repository,
+                           @NonNull final ItemEntityDataMapper mapper,
+                           @NonNull final BaseSchedulerProvider schedulerProvider)
     {
         this.repository = repository;
+        this.mapper = mapper;
+        this.schedulerProvider = schedulerProvider;
     }
 
     @Override
-    protected void executeUseCase(@NonNull RequestParams requestParams)
+    public Single<List<Item>> execute(@NonNull RequestParams requestParams)
     {
         if (requestParams.forceUpdate)
         {
             repository.refreshData();
         }
 
-        repository.getItems(items -> getUseCaseCallback().onSuccess(new Result(items)),
-                            () -> getUseCaseCallback().onError());
+        return repository.getItems()
+                .flatMap(Flowable::fromIterable)
+                .map(mapper::transform)
+                .toList()
+                .subscribeOn(schedulerProvider.asyncIoThread())
+                .observeOn(schedulerProvider.mainThread());
     }
 
     public static final class RequestParams implements UseCase.RequestParams
@@ -39,22 +55,6 @@ public class GetItemsUseCase extends UseCase<GetItemsUseCase.RequestParams, GetI
         public RequestParams(boolean forceUpdate)
         {
             this.forceUpdate = forceUpdate;
-        }
-    }
-
-    public static final class Result implements UseCase.Result
-    {
-        private final List<Item> items;
-
-        public Result(@NonNull List<Item> items)
-        {
-            this.items = items;
-        }
-
-        @NonNull
-        public List<Item> getItems()
-        {
-            return items;
         }
     }
 }

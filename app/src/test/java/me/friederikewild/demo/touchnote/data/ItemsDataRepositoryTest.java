@@ -2,27 +2,27 @@ package me.friederikewild.demo.touchnote.data;
 
 import android.support.annotation.NonNull;
 
+import com.google.common.base.Optional;
+
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import io.reactivex.Flowable;
+import io.reactivex.subscribers.TestSubscriber;
 import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
-import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
-import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
-import me.friederikewild.demo.touchnote.domain.model.Item;
 
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,42 +30,29 @@ import static org.mockito.Mockito.when;
 /**
  * Test {@link ItemsDataRepository}
  */
+@SuppressWarnings("Guava")
 public class ItemsDataRepositoryTest
 {
     // Repository under test
     private ItemsDataRepository repository;
 
-    // Directly use mapping helper
-    private ItemEntityDataMapper dataMapper;
+    private TestSubscriber<List<ItemEntity>> testListSubscriber;
+    private TestSubscriber<Optional<ItemEntity>> testItemSubscriber;
 
     @Mock
     private ItemsDataStore remoteMock;
     @Mock
     private ItemCache cacheMock;
-    @Mock
-    private HtmlStringFormatter htmlStringFormatterMock;
-
-    @Mock
-    private ItemsDataRepository.GetItemsCallback itemsCallbackMock;
-    @Mock
-    private ItemsDataRepository.GetItemCallback itemCallbackMock;
-    @Mock
-    private GetNoDataCallback noItemCallbackMock;
-
-    @Captor
-    private ArgumentCaptor<ItemsDataStore.GetEntityItemsCallback> itemsCallbackCaptor;
-    @Captor
-    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
 
     @Before
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
-        dataMapper = new ItemEntityDataMapper(htmlStringFormatterMock);
-        // No special formatting done for tests
-        when(htmlStringFormatterMock.formatHtml(anyString())).then(returnsFirstArg());
 
-        repository = new ItemsDataRepository(dataMapper, remoteMock, cacheMock);
+        testListSubscriber = new TestSubscriber<>();
+        testItemSubscriber = new TestSubscriber<>();
+
+        repository = new ItemsDataRepository(remoteMock, cacheMock);
     }
 
     @Test
@@ -73,93 +60,81 @@ public class ItemsDataRepositoryTest
     {
         // Given
         setupCacheEmpty();
+        setItemsRemoteEmptyList();
 
         // When
-        repository.getItems(itemsCallbackMock, noItemCallbackMock);
+        repository.getItems().subscribe(testListSubscriber);
 
         // Then
-        verify(remoteMock).getItems(any(), any());
+        verify(remoteMock).getItems();
     }
 
     @Test
-    public void givenRequestItemsWithoutConnection_ThenNotAvailableCallbackIsNotified()
+    public void givenRequestItemsWithoutData_ThenListIsEmpty()
     {
-        // Given
-        repository.getItems(itemsCallbackMock, noItemCallbackMock);
+        // Given remote has no data
+        setupCacheEmpty();
+        setItemsRemoteEmptyList();
 
-        // When remote has no data
-        setItemsRemoteNotAvailable();
+        // When
+        repository.getItems().subscribe(testListSubscriber);
 
         // Then
-        verify(noItemCallbackMock).onNoDataAvailable();
+        Assert.assertEquals(0, testListSubscriber.values().get(0).size());
     }
 
     @Test
     public void givenRequestItems_ThenItemsRetrievedFromRemote()
     {
-        // Given
+        // Given remote data available
         setupCacheEmpty();
-        repository.getItems(itemsCallbackMock, noItemCallbackMock);
-
-        // When remote has data available
         setItemsRemoteAvailable(TestMockData.ENTITY_ITEMS);
 
-        // Then
-        final List<Item> expectedItems = dataMapper.transform(TestMockData.ENTITY_ITEMS);
-        verify(itemsCallbackMock).onItemsLoaded(expectedItems);
-    }
-
-    @Test
-    public void givenCacheIsEmpty_ThenRemoteListRequested()
-    {
-        // Given
-        setupCacheEmpty();
-
         // When
-        repository.getItem(TestMockData.FAKE_ID, itemCallbackMock, noItemCallbackMock);
+        repository.getItems().subscribe(testListSubscriber);
 
         // Then
-        verify(remoteMock).getItems(any(), any());
+        testListSubscriber.assertValue(TestMockData.ENTITY_ITEMS);
     }
 
     @Test
     public void givenItemIsCached_ThenCacheRequested()
     {
         // Given
-        setupCachePutItem(TestMockData.FAKE_ID);
+        final Optional<ItemEntity> expected = setupCachePutItem(TestMockData.FAKE_ID);
+        setItemsRemoteEmptyList();
 
         // When
-        repository.getItem(TestMockData.FAKE_ID, itemCallbackMock, noItemCallbackMock);
+        repository.getItem(TestMockData.FAKE_ID).subscribe(testItemSubscriber);
 
         // Then
-        verify(cacheMock).getItem(eq(TestMockData.FAKE_ID), any(), any());
+        testItemSubscriber.assertValue(expected);
     }
 
     @Test
-    public void givenItemNotFound_ThenNotAvailableCallbackIsNotified()
+    public void givenItemNotFoundWithEmptyListFromServer_ThenItemAbsent()
     {
         // Given
-        setupCacheEmpty();
+        final Optional<ItemEntity> expectedAbsent = setupCacheEmpty();
+        setItemsRemoteEmptyList();
 
         // When
-        repository.getItem(TestMockData.FAKE_ID, itemCallbackMock, noItemCallbackMock);
-        setItemsRemoteNotAvailable();
+        repository.getItem(TestMockData.FAKE_ID).subscribe(testItemSubscriber);
 
         // Then
-        verify(noItemCallbackMock).onNoDataAvailable();
+        testItemSubscriber.assertValue(expectedAbsent);
     }
 
     @Test
     public void givenRemoteItemsFetched_ThenCacheUpdated()
     {
-        // Given
-        repository.getItems(itemsCallbackMock, noItemCallbackMock);
-
-        // When remote has data available
+        // Given remote has data available
         setItemsRemoteAvailable(TestMockData.ENTITY_ITEMS);
 
-        // Then cache cleared and given amount of items saved
-        verify(cacheMock).clearAll();
+        // When
+        repository.getItems().subscribe(testListSubscriber);
+
+        // Then given amount of items saved to cache
         verify(cacheMock, times(TestMockData.ENTITY_ITEMS.size())).putItem(any(ItemEntity.class));
     }
 
@@ -173,28 +148,27 @@ public class ItemsDataRepositoryTest
         verify(cacheMock).clearAll();
     }
 
-
-    private void setupCacheEmpty()
+    private Optional<ItemEntity> setupCacheEmpty()
     {
-        when(cacheMock.isExpired()).thenReturn(false);
-        when(cacheMock.isCached(any())).thenReturn(false);
+        final Optional<ItemEntity> entityAbsent = Optional.absent();
+        when(cacheMock.getItem(any())).thenReturn(Flowable.just(entityAbsent));
+        return entityAbsent;
     }
 
-    private void setupCachePutItem(@NonNull final String id)
+    private Optional<ItemEntity> setupCachePutItem(@NonNull final String id)
     {
-        when(cacheMock.isExpired()).thenReturn(false);
-        when(cacheMock.isCached(id)).thenReturn(true);
+        final Optional<ItemEntity> entityOptional = Optional.of(new ItemEntity(id));
+        when(cacheMock.getItem(id)).thenReturn(Flowable.just(entityOptional));
+        return entityOptional;
     }
 
     private void setItemsRemoteAvailable(@NonNull List<ItemEntity> items)
     {
-        verify(remoteMock).getItems(itemsCallbackCaptor.capture(), any());
-        itemsCallbackCaptor.getValue().onItemsLoaded(items);
+        when(remoteMock.getItems()).thenReturn(Flowable.just(items));
     }
 
-    private void setItemsRemoteNotAvailable()
+    private void setItemsRemoteEmptyList()
     {
-        verify(remoteMock).getItems(any(), noDataCallbackCaptor.capture());
-        noDataCallbackCaptor.getValue().onNoDataAvailable();
+        when(remoteMock.getItems()).thenReturn(Flowable.just(Collections.emptyList()));
     }
 }

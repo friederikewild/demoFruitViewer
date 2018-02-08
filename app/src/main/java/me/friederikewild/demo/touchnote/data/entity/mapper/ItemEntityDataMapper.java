@@ -3,10 +3,6 @@ package me.friederikewild.demo.touchnote.data.entity.mapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 
@@ -49,22 +45,5 @@ public class ItemEntityDataMapper
                         itemEntity.getDate(),
                         itemEntity.getTags(),
                         itemEntity.getImageUrl());
-    }
-
-    @NonNull
-    public List<Item> transform(@NonNull Collection<ItemEntity> itemEntities)
-    {
-        final List<Item> items = new ArrayList<>(10);
-
-        for (ItemEntity entity : itemEntities)
-        {
-            if (entity != null)
-            {
-                final Item item = transform(entity);
-                items.add(item);
-            }
-        }
-
-        return items;
     }
 }

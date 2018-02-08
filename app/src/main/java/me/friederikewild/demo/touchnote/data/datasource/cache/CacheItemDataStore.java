@@ -3,9 +3,11 @@ package me.friederikewild.demo.touchnote.data.datasource.cache;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.google.common.base.Optional;
+
 import java.util.WeakHashMap;
 
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
+import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
@@ -45,22 +47,21 @@ public class CacheItemDataStore implements ItemCache
         return INSTANCE;
     }
 
+    @SuppressWarnings("Guava")
     @Override
-    public void getItem(@NonNull String itemId,
-                        @NonNull GetEntityItemCallback callback,
-                        @NonNull GetNoDataCallback errorCallback)
+    public Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId)
     {
-        if (isCached(itemId))
+        if (!isExpired() && isCached(itemId))
         {
-            callback.onItemLoaded(getItem(itemId));
+            return Flowable.just(Optional.of(getItemFromCache(itemId)));
         }
         else
         {
-            errorCallback.onNoDataAvailable();
+            return Flowable.just(Optional.absent());
         }
     }
 
-    private ItemEntity getItem(@NonNull String itemId)
+    private ItemEntity getItemFromCache(@NonNull String itemId)
     {
         return itemCache.get(itemId);
     }

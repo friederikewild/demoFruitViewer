@@ -3,16 +3,14 @@ package me.friederikewild.demo.touchnote.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import java.util.Collection;
+import com.google.common.base.Optional;
+
 import java.util.List;
 
+import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
-import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
-import me.friederikewild.demo.touchnote.domain.ItemsRepository;
-import me.friederikewild.demo.touchnote.domain.model.Item;
 
 /**
  * Concrete repository getting data from remote or cache.
@@ -25,76 +23,59 @@ public class ItemsDataRepository implements ItemsRepository
 {
     private static ItemsDataRepository INSTANCE;
 
-    private final ItemEntityDataMapper mapper;
-
     private final ItemsDataStore remoteItemsStore;
     private final ItemCache cacheItemStore;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
     @VisibleForTesting
     ItemsDataRepository(
-            @NonNull final ItemEntityDataMapper mapper,
             @NonNull final ItemsDataStore remote,
             @NonNull final ItemCache cache)
     {
-        this.mapper = mapper;
         this.remoteItemsStore = remote;
         this.cacheItemStore = cache;
     }
 
-    public static ItemsDataRepository getInstance(@NonNull final ItemEntityDataMapper mapper,
-                                                  @NonNull final ItemsDataStore remoteItemsStore,
-                                                  @NonNull final CacheItemDataStore cacheItemDataStore)
+    public static ItemsDataRepository getInstance(@NonNull final ItemsDataStore remoteItemsStore,
+                                                  @NonNull final ItemCache cacheItemDataStore)
     {
         if (INSTANCE == null)
         {
             INSTANCE = new ItemsDataRepository(
-                    mapper,
                     remoteItemsStore,
                     cacheItemDataStore);
         }
         return INSTANCE;
     }
 
-    @SuppressWarnings("TrivialMethodReference")
     @Override
-    public void getItems(@NonNull GetItemsCallback callback, @NonNull GetNoDataCallback errorCallback)
+    public Flowable<List<ItemEntity>> getItems()
     {
-        remoteItemsStore.getItems(itemEntityList ->
-                                  {
-                                      updateCache(itemEntityList);
-
-                                      final List<Item> items = mapper.transform(itemEntityList);
-                                      callback.onItemsLoaded(items);
-                                  }, errorCallback::onNoDataAvailable);
+        return getItemsFromRemoteAndCache()
+                .firstOrError()
+                .toFlowable();
     }
 
-    private void updateCache(Collection<ItemEntity> itemEntityList)
+    @SuppressWarnings("Convert2MethodRef")
+    private Flowable<List<ItemEntity>> getItemsFromRemoteAndCache()
     {
-        cacheItemStore.clearAll();
-        for (ItemEntity item : itemEntityList)
-        {
-            cacheItemStore.putItem(item);
-        }
+        return remoteItemsStore.getItems()
+                .flatMap(tasks -> Flowable.fromIterable(tasks)
+                        .doOnNext(item -> cacheItemStore.putItem(item))
+                        .toList()
+                        .toFlowable());
     }
 
     @Override
-    public void getItem(@NonNull String itemId,
-                        @NonNull GetItemCallback callback,
-                        @NonNull GetNoDataCallback errorCallback)
+    public Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId)
     {
-        if (!cacheItemStore.isExpired() && cacheItemStore.isCached(itemId))
-        {
-            cacheItemStore.getItem(itemId, itemEntity ->
-            {
-                final Item item = mapper.transform(itemEntity);
-                callback.onItemLoaded(item);
-            }, () -> getItemFromRemoteDataStore(itemId, callback, errorCallback));
-        }
-        else
-        {
-            getItemFromRemoteDataStore(itemId, callback, errorCallback);
-        }
+        final Flowable<Optional<ItemEntity>> cachedItem = cacheItemStore.getItem(itemId);
+        final Flowable<Optional<ItemEntity>> remoteItem = getItemFromRemoteDataStore(itemId);
+
+        // Request cache first, if not available, request remote
+        return Flowable.concat(cachedItem, remoteItem)
+                .firstElement()
+                .toFlowable();
     }
 
     @Override
@@ -106,31 +87,16 @@ public class ItemsDataRepository implements ItemsRepository
     /**
      * Fallback method to catch all items from remote to then pick item.
      *
-     * @param itemId        Id to look up in cache
-     * @param callback      Callback for updates
-     * @param errorCallback Callback for error e.g. no data available
+     * @param itemId Id to look up in cache
      */
-    @SuppressWarnings("TrivialMethodReference")
-    private void getItemFromRemoteDataStore(@NonNull String itemId,
-                                            @NonNull GetItemCallback callback,
-                                            @NonNull GetNoDataCallback errorCallback)
+    @SuppressWarnings({"Convert2MethodRef", "Guava"})
+    private Flowable<Optional<ItemEntity>> getItemFromRemoteDataStore(@NonNull String itemId)
     {
-        // Request to get all items and cache them
-        getItems(items ->
-                 {
-                     if (!cacheItemStore.isExpired() && cacheItemStore.isCached(itemId))
-                     {
-                         cacheItemStore.getItem(itemId, itemEntity ->
-                         {
-                             final Item item = mapper.transform(itemEntity);
-                             callback.onItemLoaded(item);
-                         }, errorCallback::onNoDataAvailable);
-                     }
-                     else
-                     {
-                         // Still item not found
-                         errorCallback.onNoDataAvailable();
-                     }
-                 }, errorCallback::onNoDataAvailable);
+        return getItemsFromRemoteAndCache()
+                .flatMap(items -> Flowable.fromIterable(items))
+                .filter(itemEntity -> itemEntity.getId().equals(itemId))
+                .map(itemEntity -> Optional.of(itemEntity))
+                .firstOrError()
+                .toFlowable();
     }
 }

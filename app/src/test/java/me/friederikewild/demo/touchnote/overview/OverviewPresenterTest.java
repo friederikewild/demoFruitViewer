@@ -6,28 +6,22 @@ import android.support.annotation.NonNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
-import me.friederikewild.demo.touchnote.TestMockData;
+import io.reactivex.Single;
 import me.friederikewild.demo.touchnote.TestSerializableBundler;
-import me.friederikewild.demo.touchnote.TestUseCaseScheduler;
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
-import me.friederikewild.demo.touchnote.domain.ItemsRepository;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
-import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
 import static me.friederikewild.demo.touchnote.TestMockData.ITEMS;
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.LIST_LAYOUT;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -48,14 +42,9 @@ public class OverviewPresenterTest
     @Mock
     private OverviewContract.View overviewViewMock;
     @Mock
-    private ItemsRepository repositoryMock;
+    private GetItemsUseCase getItemsUseCaseMock;
     @Mock
     private Bundle bundleMock;
-
-    @Captor
-    private ArgumentCaptor<ItemsRepository.GetItemsCallback> itemsCallbackCaptor;
-    @Captor
-    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
 
     @Before
     public void setupOverviewPresenter()
@@ -71,12 +60,8 @@ public class OverviewPresenterTest
 
     private OverviewPresenter givenOverviewPresenter()
     {
-        UseCaseHandler useCaseHandler = new UseCaseHandler(new TestUseCaseScheduler());
-        GetItemsUseCase getItemsUseCase = new GetItemsUseCase(repositoryMock);
-
         return new OverviewPresenter(overviewViewMock,
-                                     useCaseHandler,
-                                     getItemsUseCase,
+                                     getItemsUseCaseMock,
                                      testSerializableBundler);
     }
 
@@ -94,22 +79,30 @@ public class OverviewPresenterTest
     }
 
     @Test
-    public void givenPresenterStarted_ThenViewShowsLoading()
+    public void givenPresenterSubscribed_ThenViewShowsLoading()
     {
+        // Given use case is set up
+        setUseCaseItemsEmptyList();
+
         // When
-        presenter.start();
+        presenter.subscribe();
 
         // Then
         verify(overviewViewMock).setLoadingIndicator(eq(true));
     }
 
     @Test
-    public void givenPresenterStarted_ThenViewUpdatesMenuVisibility()
+    public void givenPresenterSubscribed_ThenViewUpdatesMenuVisibility()
     {
-        // When
-        presenter.start();
+        // Given use case is set up
+        setUseCaseItemsEmptyList();
+        // And view not active on data received
+        when(overviewViewMock.isActive()).thenReturn(false);
 
-        // Then
+        // When
+        presenter.subscribe();
+
+        // Then menu updated twice for initial start and on data
         verify(overviewViewMock).updateMenuItemVisibility();
     }
 
@@ -118,23 +111,24 @@ public class OverviewPresenterTest
     public void givenLoadItemsWithoutUiRefresh_ThenShowNoLoading()
     {
         // Given
+        setUseCaseItemsEmptyList();
         final boolean showLoadingUI = false;
 
         // When
         presenter.loadItems(true, showLoadingUI);
 
         // Then
-        verify(overviewViewMock, never()).setLoadingIndicator(anyBoolean());
+        verify(overviewViewMock, never()).setLoadingIndicator(eq(true));
     }
 
     @Test
     public void givenLoadItemsReceivesData_ThenViewUpdatedToStartAndStopShowLoading()
     {
         // Given
-        presenter.loadItems(true);
+        setUseCaseItemsAvailable(ITEMS);
 
         // When
-        setItemsRemoteAvailable(ITEMS);
+        presenter.loadItems(true);
 
         // Then first loading indicator is shown
         InOrder inOrder = inOrder(overviewViewMock);
@@ -148,10 +142,10 @@ public class OverviewPresenterTest
     public void givenLoadItemsReceivesData_ThenViewIsUpdated()
     {
         // Given
-        presenter.loadItems(true);
+        setUseCaseItemsAvailable(ITEMS);
 
         // When
-        setItemsRemoteAvailable(ITEMS);
+        presenter.loadItems(true);
 
         // Then
         verify(overviewViewMock).showItems(ITEMS);
@@ -161,26 +155,13 @@ public class OverviewPresenterTest
     public void givenLoadItemsNoneAvailable_ThenViewShowsEmptyHint()
     {
         // Given
-        presenter.loadItems(true);
+        setUseCaseItemsEmptyList();
 
         // When
-        setItemsRemoteAvailable(TestMockData.EMPTY_ITEMS);
+        presenter.loadItems(true);
 
         // Then
         verify(overviewViewMock).showNoItemsAvailable();
-    }
-
-    @Test
-    public void givenLoadItemsNoConnection_ThenViewShowsEmptyHint()
-    {
-        // Given
-        presenter.loadItems(true);
-
-        // When
-        setItemsRemoteNotAvailable();
-
-        // Then
-        verify(overviewViewMock).showLoadingItemsError();
     }
     //endregion [Test LoadItems]
 
@@ -353,15 +334,13 @@ public class OverviewPresenterTest
     //endregion [Test Menu Visibility]
 
 
-    private void setItemsRemoteAvailable(@NonNull List<Item> items)
+    private void setUseCaseItemsAvailable(@NonNull List<Item> items)
     {
-        verify(repositoryMock).getItems(itemsCallbackCaptor.capture(), any());
-        itemsCallbackCaptor.getValue().onItemsLoaded(items);
+        when(getItemsUseCaseMock.execute(any())).thenReturn(Single.just(items));
     }
 
-    private void setItemsRemoteNotAvailable()
+    private void setUseCaseItemsEmptyList()
     {
-        verify(repositoryMock).getItems(any(), noDataCallbackCaptor.capture());
-        noDataCallbackCaptor.getValue().onNoDataAvailable();
+        when(getItemsUseCaseMock.execute(any())).thenReturn(Single.just(Collections.emptyList()));
     }
 }

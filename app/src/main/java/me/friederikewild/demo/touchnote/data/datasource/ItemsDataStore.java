@@ -1,10 +1,8 @@
 package me.friederikewild.demo.touchnote.data.datasource;
 
-import android.support.annotation.NonNull;
+import java.util.List;
 
-import java.util.Collection;
-
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
+import io.reactivex.Flowable;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 /**
@@ -12,17 +10,8 @@ import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
  */
 public interface ItemsDataStore
 {
-    interface GetEntityItemsCallback
-    {
-        void onItemsLoaded(@NonNull Collection<ItemEntity> items);
-    }
-
     /**
-     * Request list of items and get them via provided callback
-     *
-     * @param callback      Callback for updates
-     * @param errorCallback Callback for error e.g. no data available
+     * Request list of item entities from cache or remote.
      */
-    void getItems(@NonNull GetEntityItemsCallback callback,
-                  @NonNull GetNoDataCallback errorCallback);
+    Flowable<List<ItemEntity>> getItems();
 }

@@ -4,9 +4,12 @@ package me.friederikewild.demo.touchnote.util;
 import java.io.Serializable;
 
 import me.friederikewild.demo.touchnote.data.ItemsDataRepository;
+import me.friederikewild.demo.touchnote.data.ItemsRepository;
+import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CacheItemDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.cache.CurrentTimeProvider;
-import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyItemsApiProvider;
+import me.friederikewild.demo.touchnote.data.datasource.cache.ItemCache;
+import me.friederikewild.demo.touchnote.data.datasource.remote.EmptyRemoteItemsDataProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.ItemsApiProvider;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RemoteItemsDataStore;
 import me.friederikewild.demo.touchnote.data.datasource.remote.RetrofitItemsApiProvider;
@@ -14,7 +17,8 @@ import me.friederikewild.demo.touchnote.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.touchnote.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
-import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
+import me.friederikewild.demo.touchnote.util.schedulers.BaseSchedulerProvider;
+import me.friederikewild.demo.touchnote.util.schedulers.RxSchedulerProvider;
 
 /**
  * Simple manual injection helper to allow injection of mock implementations for testing.
@@ -22,11 +26,12 @@ import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
  */
 public class Injection
 {
-    public static ItemsDataRepository provideItemsDataRepository()
+    public static ItemsRepository provideItemsDataRepository()
     {
-        return ItemsDataRepository.getInstance(provideItemEntityDataMapper(),
-                                               provideRemoteItemsDataStore(),
-                                               provideCacheItemDataStore());
+        return ItemsDataRepository.getInstance(
+                provideRemoteItemsDataStore(),
+//                provideEmptyRemoteItemsDataProvider(),
+                provideCacheItemDataStore());
     }
 
     public static ItemEntityDataMapper provideItemEntityDataMapper()
@@ -39,9 +44,17 @@ public class Injection
         return HtmlStringFormatter.getInstance();
     }
 
-    public static RemoteItemsDataStore provideRemoteItemsDataStore()
+    public static ItemsDataStore provideRemoteItemsDataStore()
     {
         return RemoteItemsDataStore.getInstance(provideItemsApiProvider());
+    }
+
+    /**
+     * Alternative to test handling receiving an empty list from remote
+     */
+    public static ItemsDataStore provideEmptyRemoteItemsDataProvider()
+    {
+        return new EmptyRemoteItemsDataProvider();
     }
 
     public static ItemsApiProvider provideItemsApiProvider()
@@ -49,15 +62,7 @@ public class Injection
         return RetrofitItemsApiProvider.getInstance();
     }
 
-    /**
-     * Alternative to test handling receiving an empty list from remote
-     */
-    public static ItemsApiProvider provideEmptyItemsApiProvider()
-    {
-        return new EmptyItemsApiProvider();
-    }
-
-    public static CacheItemDataStore provideCacheItemDataStore()
+    public static ItemCache provideCacheItemDataStore()
     {
         return CacheItemDataStore.getInstance(provideCurrentTimeProvider());
     }
@@ -67,19 +72,23 @@ public class Injection
         return CurrentTimeProvider.getInstance();
     }
 
-    public static UseCaseHandler provideUseCaseHandler()
-    {
-        return UseCaseHandler.getInstance();
-    }
-
     public static GetItemsUseCase provideGetItemsUseCase()
     {
-        return new GetItemsUseCase(provideItemsDataRepository());
+        return new GetItemsUseCase(provideItemsDataRepository(),
+                                   provideItemEntityDataMapper(),
+                                   provideSchedulerProvider());
     }
 
     public static GetItemUseCase provideGetItemUseCase()
     {
-        return new GetItemUseCase(provideItemsDataRepository());
+        return new GetItemUseCase(provideItemsDataRepository(),
+                                  provideItemEntityDataMapper(),
+                                  provideSchedulerProvider());
+    }
+
+    public static BaseSchedulerProvider provideSchedulerProvider()
+    {
+        return RxSchedulerProvider.getInstance();
     }
 
     public static Bundler<Serializable> provideSerializableBundler()

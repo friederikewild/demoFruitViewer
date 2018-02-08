@@ -8,10 +8,10 @@ import android.support.annotation.VisibleForTesting;
 import java.io.Serializable;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemsUseCase;
-import me.friederikewild.demo.touchnote.domain.usecase.UseCase;
-import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 import me.friederikewild.demo.touchnote.util.Bundler;
 
 import static me.friederikewild.demo.touchnote.overview.OverviewLayoutType.GRID_LAYOUT;
@@ -28,10 +28,10 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private GetItemsUseCase getItemsUseCase;
 
     @NonNull
-    private UseCaseHandler useCaseHandler;
+    private Bundler<Serializable> serializableBundler;
 
     @NonNull
-    private Bundler<Serializable> serializableBundler;
+    private CompositeDisposable compositeDisposable;
 
     // LateInit @NonNull
     private OverviewLayoutType currentLayoutType;
@@ -52,13 +52,13 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private boolean isFirstLoading = true;
 
     OverviewPresenter(@NonNull final OverviewContract.View view,
-                      @NonNull final UseCaseHandler handler,
                       @NonNull final GetItemsUseCase getItems,
                       @NonNull final Bundler<Serializable> bundler)
     {
-        useCaseHandler = handler;
         getItemsUseCase = getItems;
         serializableBundler = bundler;
+
+        compositeDisposable = new CompositeDisposable();
 
         overviewView = view;
         overviewView.setPresenter(this);
@@ -98,12 +98,18 @@ public class OverviewPresenter implements OverviewContract.Presenter
     //endregion
 
     @Override
-    public void start()
+    public void subscribe()
     {
         loadItems(false);
 
         // Ensure menu is updated according to state of presenter and hidden until items are available
         overviewView.updateMenuItemVisibility();
+    }
+
+    @Override
+    public void unsubscribe()
+    {
+        compositeDisposable.clear();
     }
 
     //region [OverviewContractPresenter]
@@ -124,28 +130,25 @@ public class OverviewPresenter implements OverviewContract.Presenter
             overviewView.setLoadingIndicator(true);
         }
 
+        compositeDisposable.clear();
         final GetItemsUseCase.RequestParams params = new GetItemsUseCase.RequestParams(forceUpdate);
-        useCaseHandler.execute(getItemsUseCase,
-                               params,
-                               new UseCase.UseCaseCallback<GetItemsUseCase.Result>()
-                               {
-                                   @Override
-                                   public void onSuccess(@NonNull final GetItemsUseCase.Result result)
-                                   {
-                                       final List<Item> items = result.getItems();
-                                       setIsViewCurrentlyEmpty(items);
-
-                                       updateViewWithItems(items);
-                                   }
-
-                                   @Override
-                                   public void onError()
-                                   {
-                                       setViewIsCurrentlyEmpty();
-
-                                       updateViewWithLoadingError();
-                                   }
-                               });
+        Disposable disposable = getItemsUseCase
+                .execute(params)
+                .subscribe(
+                        // onNext
+                        resultItems ->
+                        {
+                            setIsViewCurrentlyEmpty(resultItems);
+                            updateViewWithItems(resultItems);
+                        },
+                        // onError
+                        throwable ->
+                        {
+                            setViewIsCurrentlyEmpty();
+                            updateViewWithLoadingError();
+                        }
+                );
+        compositeDisposable.add(disposable);
     }
 
     @VisibleForTesting
