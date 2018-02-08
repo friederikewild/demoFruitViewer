@@ -4,17 +4,13 @@ import android.support.annotation.NonNull;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import me.friederikewild.demo.touchnote.TestUseCaseScheduler;
-import me.friederikewild.demo.touchnote.domain.ItemsRepository;
+import io.reactivex.Single;
 import me.friederikewild.demo.touchnote.domain.model.Item;
 import me.friederikewild.demo.touchnote.domain.usecase.GetItemUseCase;
-import me.friederikewild.demo.touchnote.domain.usecase.UseCaseHandler;
 
 import static me.friederikewild.demo.touchnote.TestMockData.FAKE_ID;
 import static me.friederikewild.demo.touchnote.TestMockData.ITEM;
@@ -36,10 +32,7 @@ public class DetailsPresenterTest
     @Mock
     private DetailsContract.View detailsViewMock;
     @Mock
-    private ItemsRepository repositoryMock;
-
-    @Captor
-    private ArgumentCaptor<ItemsRepository.GetItemCallback> itemCallbackCaptor;
+    private GetItemUseCase getItemUseCaseMock;
 
     @Before
     public void setupOverviewPresenter()
@@ -53,13 +46,9 @@ public class DetailsPresenterTest
 
     private DetailsPresenter givenOverviewPresenter()
     {
-        UseCaseHandler useCaseHandler = new UseCaseHandler(new TestUseCaseScheduler());
-        GetItemUseCase getItemUseCase = new GetItemUseCase(repositoryMock);
-
         return new DetailsPresenter(detailsViewMock,
                                     FAKE_ID,
-                                    useCaseHandler,
-                                    getItemUseCase);
+                                    getItemUseCaseMock);
     }
 
     @Test
@@ -78,6 +67,9 @@ public class DetailsPresenterTest
     @Test
     public void givenPresenterSubscribed_ThenViewShowsLoading()
     {
+        // Given
+        setUseCaseItemAvailable(ITEM);
+
         // When
         presenter.subscribe();
 
@@ -89,10 +81,10 @@ public class DetailsPresenterTest
     public void givenPresenterReceivesItemData_ThenViewUpdatedToStartAndStopShowLoading()
     {
         // Given
-        presenter.subscribe();
+        setUseCaseItemAvailable(ITEM);
 
         // When
-        setItemRemoteAvailable(ITEM);
+        presenter.subscribe();
 
         // Then first loading indicator is shown
         InOrder inOrder = inOrder(detailsViewMock);
@@ -106,10 +98,10 @@ public class DetailsPresenterTest
     public void givenPresenterReceivesItemData_ThenViewIsUpdatedWithItemData()
     {
         // Given
-        presenter.subscribe();
+        setUseCaseItemAvailable(ITEM);
 
         // When
-        setItemRemoteAvailable(ITEM);
+        presenter.subscribe();
 
         // Then
         // Then first loading indicator is shown
@@ -121,10 +113,8 @@ public class DetailsPresenterTest
         inOrder.verify(detailsViewMock).showItemTitle(ITEM.getTitle());
     }
 
-    private void setItemRemoteAvailable(@NonNull Item item)
+    private void setUseCaseItemAvailable(@NonNull Item item)
     {
-        verify(repositoryMock).getItem(eq(item.getId()), itemCallbackCaptor.capture(), any());
-        itemCallbackCaptor.getValue().onItemLoaded(item);
+        when(getItemUseCaseMock.execute(any())).thenReturn(Single.just(item));
     }
-
 }

@@ -51,7 +51,7 @@ public class CacheItemDataStore implements ItemCache
     @Override
     public Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId)
     {
-        if (isCached(itemId))
+        if (!isExpired() && isCached(itemId))
         {
             return Flowable.just(Optional.of(getItemFromCache(itemId)));
         }

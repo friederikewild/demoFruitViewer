@@ -5,10 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import me.friederikewild.demo.touchnote.TestMockData;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 import me.friederikewild.demo.touchnote.domain.model.Item;
@@ -141,20 +137,4 @@ public class ItemEntityDataMapperTest
         assertNotNull(itemModel);
         assertThat(itemModel.getImageUrl(), is(TestMockData.FAKE_IMAGE_URL));
     }
-
-    @Test
-    public void givenTransformCollection_ThenModelListCreatedOfSameLength()
-    {
-        // Given
-        final Collection<ItemEntity> entities = new ArrayList<>();
-        entities.add(TestMockData.createFakeItemEntity());
-        entities.add(TestMockData.createFakeItemEntity());
-
-        // When
-        final List<Item> items = mapper.transform(entities);
-
-        // Then
-        assertThat(items.size(), is(entities.size()));
-    }
-
 }

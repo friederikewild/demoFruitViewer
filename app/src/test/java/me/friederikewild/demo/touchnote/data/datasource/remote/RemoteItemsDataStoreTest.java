@@ -2,22 +2,22 @@ package me.friederikewild.demo.touchnote.data.datasource.remote;
 
 import android.support.annotation.NonNull;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.subscribers.TestSubscriber;
 import me.friederikewild.demo.touchnote.TestMockData;
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
-import me.friederikewild.demo.touchnote.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * CTest {@link RemoteItemsDataStore}
@@ -27,71 +27,59 @@ public class RemoteItemsDataStoreTest
     // Class under test
     private RemoteItemsDataStore remoteItemsDataStore;
 
+    private TestSubscriber<List<ItemEntity>> testSubscriber;
+
     @Mock
     private ItemsApiProvider itemsApiProviderMock;
-
     @Mock
-    private ItemsDataStore.GetEntityItemsCallback itemsCallbackMock;
-    @Mock
-    private GetNoDataCallback noDataCallbackMock;
-
-    @Captor
-    private ArgumentCaptor<ItemsDataStore.GetEntityItemsCallback> itemsCallbackCaptor;
-    @Captor
-    private ArgumentCaptor<GetNoDataCallback> noDataCallbackCaptor;
+    private ItemsApi itemsApiMock;
 
     @Before
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
+        when(itemsApiProviderMock.getItemsApi()).thenReturn(itemsApiMock);
+
+        testSubscriber = new TestSubscriber<>();
+
         remoteItemsDataStore = new RemoteItemsDataStore(itemsApiProviderMock);
     }
 
     @Test
-    public void givenRemoteItemsRequested_ThenProviderIsAskedForThem()
+    public void givenRemoteItemsRequestedWithoutConnection_ThenEmptyList()
     {
-        // When
-        remoteItemsDataStore.getItems(itemsCallbackMock, noDataCallbackMock);
-
-        // Then
-        verify(itemsApiProviderMock).enqueueGetItems(itemsCallbackMock, noDataCallbackMock);
-    }
-
-    @Test
-    public void givenRemoteItemsRequestedWithoutConnection_ThenNoDataCallbackNotified()
-    {
-        // Given
-        remoteItemsDataStore.getItems(itemsCallbackMock, noDataCallbackMock);
-
-        // When remote has no data
+        // Given when no data available
         setItemsRemoteNotAvailable();
 
-        // Then
-        verify(noDataCallbackMock).onNoDataAvailable();
+        // When
+        remoteItemsDataStore.getItems().subscribe(testSubscriber);
+
+        // Then 1 empty list received
+        Assert.assertEquals(1, testSubscriber.values().size());
+        Assert.assertEquals(0, testSubscriber.values().get(0).size());
     }
 
     @Test
     public void givenRemoteItemsRequestedAndReceived_ThenItemsCallbackNotified()
     {
-        // Given
-        remoteItemsDataStore.getItems(itemsCallbackMock, noDataCallbackMock);
-
-        // When remote has data available
+        // Given when remote has data available
         setItemsRemoteAvailable(TestMockData.ENTITY_ITEMS);
 
-        // Then
-        verify(itemsCallbackMock).onItemsLoaded(TestMockData.ENTITY_ITEMS);
+        // When
+        remoteItemsDataStore.getItems().subscribe(testSubscriber);
+
+        // Then 1 list received with items
+        Assert.assertEquals(1, testSubscriber.values().size());
+        testSubscriber.assertValue(TestMockData.ENTITY_ITEMS);
     }
 
     private void setItemsRemoteAvailable(@NonNull List<ItemEntity> items)
     {
-        verify(itemsApiProviderMock).enqueueGetItems(itemsCallbackCaptor.capture(), any());
-        itemsCallbackCaptor.getValue().onItemsLoaded(items);
+        when(itemsApiMock.getItems()).thenReturn(Flowable.just(items));
     }
 
     private void setItemsRemoteNotAvailable()
     {
-        verify(itemsApiProviderMock).enqueueGetItems(any(), noDataCallbackCaptor.capture());
-        noDataCallbackCaptor.getValue().onNoDataAvailable();
+        when(itemsApiMock.getItems()).thenReturn(Flowable.just(Collections.emptyList()));
     }
 }

@@ -1,25 +1,24 @@
 package me.friederikewild.demo.touchnote.data.datasource.cache;
 
+import com.google.common.base.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import io.reactivex.subscribers.TestSubscriber;
 import me.friederikewild.demo.touchnote.TestMockData;
-import me.friederikewild.demo.touchnote.data.GetNoDataCallback;
-import me.friederikewild.demo.touchnote.data.datasource.ItemDataStore;
 import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Test {@link CacheItemDataStore}
  */
+@SuppressWarnings("Guava")
 public class CacheItemDataStoreTest
 {
     private static final long NOW = 1000;
@@ -27,13 +26,10 @@ public class CacheItemDataStoreTest
     // Cache data store under test
     private CacheItemDataStore cacheItemDataStore;
 
-    @Mock
-    private CurrentTimeProvider currentTimeProviderMock;
+    private TestSubscriber<Optional<ItemEntity>> testSubscriber;
 
     @Mock
-    private ItemDataStore.GetEntityItemCallback itemCallbackMock;
-    @Mock
-    private GetNoDataCallback errorCallbackMock;
+    private CurrentTimeProvider currentTimeProviderMock;
 
     @Before
     public void setup()
@@ -41,6 +37,8 @@ public class CacheItemDataStoreTest
         MockitoAnnotations.initMocks(this);
         // Default is to always return the same time millis as if no time passes
         when(currentTimeProviderMock.getCurrentTimeMillis()).thenReturn(NOW);
+
+        testSubscriber = new TestSubscriber<>();
 
         cacheItemDataStore = new CacheItemDataStore(currentTimeProviderMock);
     }
@@ -73,11 +71,10 @@ public class CacheItemDataStoreTest
     public void givenEmptyCache_ThenNoDataCallbackOnRequest()
     {
         // When
-        cacheItemDataStore.getItem(TestMockData.FAKE_ID, itemCallbackMock, errorCallbackMock);
+        cacheItemDataStore.getItem(TestMockData.FAKE_ID).subscribe(testSubscriber);
 
         // Then
-        verify(errorCallbackMock).onNoDataAvailable();
-        verify(itemCallbackMock, never()).onItemLoaded(any(ItemEntity.class));
+        testSubscriber.assertValue(Optional.absent());
     }
 
     @Test
@@ -88,11 +85,11 @@ public class CacheItemDataStoreTest
         cacheItemDataStore.putItem(entity);
 
         // When
-        cacheItemDataStore.getItem(TestMockData.FAKE_ID, itemCallbackMock, errorCallbackMock);
+        cacheItemDataStore.getItem(TestMockData.FAKE_ID).subscribe(testSubscriber);
 
         // Then
-        verify(itemCallbackMock).onItemLoaded(entity);
-        verify(errorCallbackMock, never()).onNoDataAvailable();
+        final Optional<ItemEntity> expectedResult = Optional.of(entity);
+        testSubscriber.assertValue(expectedResult);
     }
 
     @Test
@@ -136,6 +133,7 @@ public class CacheItemDataStoreTest
         // Then
         assertThat(isCached, is(false));
     }
+
 
     private ItemEntity createFakeItemEntity()
     {
