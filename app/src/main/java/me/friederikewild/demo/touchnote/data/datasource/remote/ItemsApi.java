@@ -7,7 +7,8 @@ import me.friederikewild.demo.touchnote.data.entity.ItemEntity;
 import retrofit2.http.GET;
 
 /**
- * Define available api methods
+ * Define available api methods.
+ * Can use "http://www.mocky.io/v2/" as base for testing specific responses.
  */
 public interface ItemsApi
 {
