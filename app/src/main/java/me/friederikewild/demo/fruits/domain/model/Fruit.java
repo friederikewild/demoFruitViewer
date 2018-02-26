@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Immutable model class representing an Fruit.
+ * Immutable model class representing a Fruit entry.
  * For simplicity used in the domain layer as well as the view layer since identical.
  * Includes all available fields to make it easy to show more details on the view.
  * NOTE: If {@link date} was to be presented it could be converted into a Date object and formatted.
@@ -26,7 +26,11 @@ public class Fruit
     @NonNull
     private List<String> tags;
     @NonNull
+    private String sourceProvider;
+    @NonNull
     private String imageUrl;
+    @NonNull
+    private String imageCredits;
 
     /**
      * Special testing constructor for simplified test object creation
@@ -40,18 +44,23 @@ public class Fruit
         this.description = testString;
         this.date = testString;
         this.tags = new ArrayList<>();
+        this.sourceProvider = testString;
         this.imageUrl = testString;
+        this.imageCredits = testString;
     }
 
-    public Fruit(@NonNull String id, @NonNull String title, @NonNull String description, @NonNull String date,
-                 @NonNull List<String> tags, @NonNull String imageUrl)
+    public Fruit(@NonNull String id, @NonNull String title, @NonNull String description,
+                 @NonNull String date, @NonNull List<String> tags, @NonNull String sourceProvider,
+                 @NonNull String imageUrl, @NonNull String imageCredits)
     {
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
         this.tags = tags;
+        this.sourceProvider = sourceProvider;
         this.imageUrl = imageUrl;
+        this.imageCredits = imageCredits;
     }
 
     @NonNull
@@ -85,9 +94,21 @@ public class Fruit
     }
 
     @NonNull
+    public String getSourceProvider()
+    {
+        return sourceProvider;
+    }
+
+    @NonNull
     public String getImageUrl()
     {
         return imageUrl;
+    }
+
+    @NonNull
+    public String getImageCredits()
+    {
+        return imageCredits;
     }
 
     @Override
@@ -124,7 +145,15 @@ public class Fruit
         {
             return false;
         }
-        return imageUrl.equals(fruit.imageUrl);
+        if (!sourceProvider.equals(fruit.sourceProvider))
+        {
+            return false;
+        }
+        if (!imageUrl.equals(fruit.imageUrl))
+        {
+            return false;
+        }
+        return imageCredits.equals(fruit.imageCredits);
     }
 
     @Override
@@ -135,7 +164,9 @@ public class Fruit
         result = 31 * result + description.hashCode();
         result = 31 * result + date.hashCode();
         result = 31 * result + tags.hashCode();
+        result = 31 * result + sourceProvider.hashCode();
         result = 31 * result + imageUrl.hashCode();
+        result = 31 * result + imageCredits.hashCode();
         return result;
     }
 

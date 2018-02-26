@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fruit Entity used in the data layer
+ * Fruit Entity representation used in the data layer.
+ *
+ * Generated from json using http://www.jsonschema2pojo.org/
  */
-@SuppressWarnings("SimplifiableIfStatement")
 public class FruitEntity
 {
     @SerializedName("id")
@@ -30,9 +31,16 @@ public class FruitEntity
     @SerializedName("tags")
     @Expose
     private List<String> tags = null;
-    @SerializedName("image")
+    @SerializedName("sourceProvider")
     @Expose
-    private String imageUrl;
+    private String sourceProvider;
+    @SerializedName("imageId")
+    @Expose
+    private String imageId;
+    @SerializedName("imageProvider")
+    @Expose
+    private String imageProvider;
+
 
     public FruitEntity()
     {
@@ -52,7 +60,9 @@ public class FruitEntity
         this.description = testString;
         this.date = testString;
         this.tags = new ArrayList<>();
-        this.imageUrl = testString;
+        this.sourceProvider = testString;
+        this.imageId = testString;
+        this.imageProvider = testString;
     }
 
     public String getId()
@@ -105,14 +115,34 @@ public class FruitEntity
         this.tags = tags;
     }
 
-    public String getImageUrl()
+    public String getSourceProvider()
     {
-        return imageUrl;
+        return sourceProvider;
     }
 
-    public void setImageUrl(String imageUrl)
+    public void setSourceProvider(String sourceProvider)
     {
-        this.imageUrl = imageUrl;
+        this.sourceProvider = sourceProvider;
+    }
+
+    public String getImageId()
+    {
+        return imageId;
+    }
+
+    public void setImageId(String imageId)
+    {
+        this.imageId = imageId;
+    }
+
+    public String getImageProvider()
+    {
+        return imageProvider;
+    }
+
+    public void setImageProvider(String imageProvider)
+    {
+        this.imageProvider = imageProvider;
     }
 
     @Override
@@ -127,29 +157,37 @@ public class FruitEntity
             return false;
         }
 
-        FruitEntity entity = (FruitEntity) o;
+        FruitEntity that = (FruitEntity) o;
 
-        if (!id.equals(entity.id))
+        if (!id.equals(that.id))
         {
             return false;
         }
-        if (!title.equals(entity.title))
+        if (!title.equals(that.title))
         {
             return false;
         }
-        if (!description.equals(entity.description))
+        if (!description.equals(that.description))
         {
             return false;
         }
-        if (!date.equals(entity.date))
+        if (!date.equals(that.date))
         {
             return false;
         }
-        if (!tags.equals(entity.tags))
+        if (!tags.equals(that.tags))
         {
             return false;
         }
-        return imageUrl.equals(entity.imageUrl);
+        if (!sourceProvider.equals(that.sourceProvider))
+        {
+            return false;
+        }
+        if (!imageId.equals(that.imageId))
+        {
+            return false;
+        }
+        return imageProvider.equals(that.imageProvider);
     }
 
     @Override
@@ -160,7 +198,9 @@ public class FruitEntity
         result = 31 * result + description.hashCode();
         result = 31 * result + date.hashCode();
         result = 31 * result + tags.hashCode();
-        result = 31 * result + imageUrl.hashCode();
+        result = 31 * result + sourceProvider.hashCode();
+        result = 31 * result + imageId.hashCode();
+        result = 31 * result + imageProvider.hashCode();
         return result;
     }
 

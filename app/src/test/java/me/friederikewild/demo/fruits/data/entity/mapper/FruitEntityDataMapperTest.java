@@ -123,18 +123,4 @@ public class FruitEntityDataMapperTest
         assertNotNull(fruitModel);
         assertThat(fruitModel.getDate(), is(TestMockData.FAKE_DATE));
     }
-
-    @Test
-    public void givenTransformFilledItem_ThenModelImageUrlIsFilled()
-    {
-        // Given
-        final FruitEntity entity = TestMockData.createFakeFruitEntity();
-
-        // When
-        final Fruit fruitModel = mapper.transform(entity);
-
-        // Then
-        assertNotNull(fruitModel);
-        assertThat(fruitModel.getImageUrl(), is(TestMockData.FAKE_IMAGE_URL));
-    }
 }

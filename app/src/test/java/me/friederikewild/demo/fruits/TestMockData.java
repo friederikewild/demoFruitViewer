@@ -23,6 +23,7 @@ public interface TestMockData
     String FAKE_DESCRIPTION = "Description";
     String FAKE_DATE = "2016-03-20T00:00:00.000Z";
     String FAKE_IMAGE_URL = "Image";
+    String FAKE_IMAGE_PROVIDER = "Provider";
 
     List<Fruit> EMPTY_FRUITS = new ArrayList<>();
 
@@ -68,12 +69,12 @@ public interface TestMockData
                 TestMockData.FAKE_DESCRIPTION,
                 TestMockData.FAKE_DATE,
                 new ArrayList<>(),
-                TestMockData.FAKE_IMAGE_URL);
+                TestMockData.FAKE_IMAGE_PROVIDER);
     }
 
     static FruitEntity createFakeFruitEntity(@NonNull String id, @NonNull String title,
                                              @NonNull String description, @NonNull String date,
-                                             @NonNull List<String> tags, @NonNull String imageUrl)
+                                             @NonNull List<String> tags, @NonNull String imageProvider)
     {
         FruitEntity fruitEntity = new FruitEntity();
         fruitEntity.setId(id);
@@ -81,7 +82,7 @@ public interface TestMockData
         fruitEntity.setDescription(description);
         fruitEntity.setDate(date);
         fruitEntity.setTags(tags);
-        fruitEntity.setImageUrl(imageUrl);
+        fruitEntity.setImageProvider(imageProvider);
         return fruitEntity;
     }
 }
