@@ -6,7 +6,7 @@ import java.util.List;
 
 import me.friederikewild.demo.fruits.BaseView;
 import me.friederikewild.demo.fruits.SavableBasePresenter;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 
 /**
  * Contract between view and presenter for the overview screen.
@@ -19,7 +19,7 @@ public interface OverviewContract
 
         void updateMenuItemVisibility();
 
-        void showItems(@NonNull List<Item> items);
+        void showItems(@NonNull List<Fruit> fruits);
 
         void showDetailsForItem(@NonNull String itemId);
 
@@ -36,7 +36,7 @@ public interface OverviewContract
     {
         void loadItems(boolean forceUpdate);
 
-        void onItemClicked(@NonNull Item item);
+        void onItemClicked(@NonNull Fruit fruit);
 
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 

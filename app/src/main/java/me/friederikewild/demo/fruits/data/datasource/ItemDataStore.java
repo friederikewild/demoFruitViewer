@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Optional;
 
 import io.reactivex.Flowable;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
  * Define data layer access to single item.
@@ -17,5 +17,5 @@ public interface ItemDataStore
      *
      * @param itemId Id to look up in cache
      */
-    Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId);
+    Flowable<Optional<FruitEntity>> getItem(@NonNull String itemId);
 }

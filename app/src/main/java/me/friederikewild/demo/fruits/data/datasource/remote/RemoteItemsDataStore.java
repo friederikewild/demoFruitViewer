@@ -7,7 +7,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import me.friederikewild.demo.fruits.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
  * Concrete remote data store
@@ -37,7 +37,7 @@ public class RemoteItemsDataStore implements ItemsDataStore
     }
 
     @Override
-    public Flowable<List<ItemEntity>> getItems()
+    public Flowable<List<FruitEntity>> getItems()
     {
         final FruitsApi fruitsApi = itemsApiProvider.getItemsApi();
         return fruitsApi.getFruits();

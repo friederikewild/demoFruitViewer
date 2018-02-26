@@ -21,7 +21,7 @@ import java.util.List;
 
 import me.friederikewild.demo.fruits.BuildConfig;
 import me.friederikewild.demo.fruits.R;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.util.GlideApp;
 import timber.log.Timber;
 
@@ -30,25 +30,25 @@ import static com.bumptech.glide.request.RequestOptions.circleCropTransform;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * RecycleView adapter handling {@link me.friederikewild.demo.fruits.domain.model.Item}.
+ * RecycleView adapter handling {@link Fruit}.
  * Layout of elements is different for list and grid.
  * Look can be switched with {@link #setLayoutType(OverviewLayoutType)}.
  * Internally using two different ViewType to represent the different look when preparing the views.
  */
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
 {
-    private List<Item> items;
+    private List<Fruit> fruits;
     @NonNull
     private ItemClickListener itemClickListener;
 
     @IdRes
     private int currentViewType = OverviewLayoutType.INVALID_TYPE.getUniqueId();
 
-    ItemsAdapter(@NonNull List<Item> items,
+    ItemsAdapter(@NonNull List<Fruit> fruits,
                  @NonNull ItemClickListener listener)
     {
         itemClickListener = listener;
-        setList(items);
+        setList(fruits);
 
         setHasStableIds(true);
     }
@@ -61,15 +61,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         return position;
     }
 
-    void replaceData(@NonNull List<Item> items)
+    void replaceData(@NonNull List<Fruit> fruits)
     {
-        setList(items);
+        setList(fruits);
         notifyDataSetChanged();
     }
 
-    private void setList(@NonNull List<Item> items)
+    private void setList(@NonNull List<Fruit> fruits)
     {
-        this.items = checkNotNull(items);
+        this.fruits = checkNotNull(fruits);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     {
         assertCurrentViewTypeIsValid();
 
-        // All items always have the same viewType
+        // All fruits always have the same viewType
         return currentViewType;
     }
 
@@ -120,23 +120,23 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     public void onBindViewHolder(@NonNull ViewHolder holder, int position)
     {
         final @IdRes int viewType = getItemViewType(position);
-        final Item item = getItem(position);
+        final Fruit fruit = getItem(position);
 
-        bindImageView(holder, item, viewType);
-        bindTitleView(holder, item);
-        bindDescriptionView(holder, item);
+        bindImageView(holder, fruit, viewType);
+        bindTitleView(holder, fruit);
+        bindDescriptionView(holder, fruit);
 
         // Make full card clickable
-        holder.rootView.setOnClickListener(view -> itemClickListener.onItemClicked(item));
+        holder.rootView.setOnClickListener(view -> itemClickListener.onItemClicked(fruit));
     }
 
-    private void bindImageView(@NonNull ViewHolder holder, @NonNull Item item, @IdRes int viewType)
+    private void bindImageView(@NonNull ViewHolder holder, @NonNull Fruit fruit, @IdRes int viewType)
     {
         final Context context = holder.rootView.getContext();
         final @DrawableRes int placeholderRes = getPlaceholderForViewType(viewType);
 
         RequestBuilder<Drawable> imageLoaderRequest = GlideApp.with(context)
-                .load(item.getImageUrl())
+                .load(fruit.getImageUrl())
                 .apply(new RequestOptions().placeholder(placeholderRes))
                 .transition(withCrossFade());
 
@@ -148,22 +148,22 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         imageLoaderRequest.into(holder.imageView);
     }
 
-    private void bindTitleView(@NonNull ViewHolder holder, @NonNull Item item)
+    private void bindTitleView(@NonNull ViewHolder holder, @NonNull Fruit fruit)
     {
-        holder.titleTextView.setText(item.getTitle());
+        holder.titleTextView.setText(fruit.getTitle());
     }
 
-    private void bindDescriptionView(@NonNull ViewHolder holder, @NonNull Item item)
+    private void bindDescriptionView(@NonNull ViewHolder holder, @NonNull Fruit fruit)
     {
         // Description view is optional and not available in grid mode
         if (holder.descriptionTextView != null)
         {
             // Description can be empty, hide view in that case
-            boolean isDescriptionEmpty = Strings.isNullOrEmpty(item.getDescription());
+            boolean isDescriptionEmpty = Strings.isNullOrEmpty(fruit.getDescription());
             holder.descriptionTextView.setVisibility(isDescriptionEmpty ? View.GONE : View.VISIBLE);
             if (!isDescriptionEmpty)
             {
-                holder.descriptionTextView.setText(item.getDescription());
+                holder.descriptionTextView.setText(fruit.getDescription());
             }
         }
     }
@@ -197,15 +197,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     }
 
     @NonNull
-    private Item getItem(int position)
+    private Fruit getItem(int position)
     {
-        return items.get(position);
+        return fruits.get(position);
     }
 
     @Override
     public int getItemCount()
     {
-        return items.size();
+        return fruits.size();
     }
 
     /**

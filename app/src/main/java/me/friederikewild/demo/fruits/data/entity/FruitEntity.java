@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Item Entity used in the data layer
+ * Fruit Entity used in the data layer
  */
 @SuppressWarnings("SimplifiableIfStatement")
-public class ItemEntity
+public class FruitEntity
 {
     @SerializedName("id")
     @Expose
@@ -34,7 +34,7 @@ public class ItemEntity
     @Expose
     private String imageUrl;
 
-    public ItemEntity()
+    public FruitEntity()
     {
         // Nothing
     }
@@ -45,7 +45,7 @@ public class ItemEntity
      * @param testString Test string for all string fields
      */
     @VisibleForTesting
-    public ItemEntity(@NonNull String testString)
+    public FruitEntity(@NonNull String testString)
     {
         this.id = testString;
         this.title = testString;
@@ -122,12 +122,12 @@ public class ItemEntity
         {
             return true;
         }
-        if (!(o instanceof ItemEntity))
+        if (!(o instanceof FruitEntity))
         {
             return false;
         }
 
-        ItemEntity entity = (ItemEntity) o;
+        FruitEntity entity = (FruitEntity) o;
 
         if (!id.equals(entity.id))
         {
@@ -167,7 +167,7 @@ public class ItemEntity
     @Override
     public String toString()
     {
-        return "ItemEntity{" +
+        return "FruitEntity{" +
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 '}';

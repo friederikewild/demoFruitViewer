@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.domain.usecase.GetItemUseCase;
 
 public class DetailsPresenter implements DetailsContract.Presenter
@@ -68,7 +68,7 @@ public class DetailsPresenter implements DetailsContract.Presenter
         compositeDisposable.add(disposable);
     }
 
-    private void updateViewWithItem(@NonNull Item item)
+    private void updateViewWithItem(@NonNull Fruit fruit)
     {
         // Check if view is still able to handle UI updates
         if (!detailsView.isActive())
@@ -78,8 +78,8 @@ public class DetailsPresenter implements DetailsContract.Presenter
 
         detailsView.setLoadingIndicator(false);
 
-        detailsView.showItemImage(item.getImageUrl());
-        detailsView.showItemTitle(item.getTitle());
+        detailsView.showItemImage(fruit.getImageUrl());
+        detailsView.showItemTitle(fruit.getTitle());
     }
 
     private void updateViewWithError()

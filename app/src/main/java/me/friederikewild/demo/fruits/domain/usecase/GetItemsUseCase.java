@@ -8,13 +8,13 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import me.friederikewild.demo.fruits.data.ItemsRepository;
 import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
 
 /**
  * Use Case to fetch items
  */
-public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, List<Item>>
+public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, List<Fruit>>
 {
     @NonNull
     private final ItemsRepository repository;
@@ -33,7 +33,7 @@ public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, L
     }
 
     @Override
-    public Single<List<Item>> execute(@NonNull RequestParams requestParams)
+    public Single<List<Fruit>> execute(@NonNull RequestParams requestParams)
     {
         if (requestParams.forceUpdate)
         {

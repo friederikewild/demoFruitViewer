@@ -23,7 +23,7 @@ import java.util.List;
 
 import me.friederikewild.demo.fruits.R;
 import me.friederikewild.demo.fruits.details.DetailsActivity;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import timber.log.Timber;
 
 import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.GRID_LAYOUT;
@@ -217,11 +217,11 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
-    public void showItems(@NonNull List<Item> items)
+    public void showItems(@NonNull List<Fruit> fruits)
     {
-        Timber.i("View - Show %d items %s", items.size(), items);
+        Timber.i("View - Show %d fruits %s", fruits.size(), fruits);
 
-        itemsAdapter.replaceData(items);
+        itemsAdapter.replaceData(fruits);
 
         hintNoItemsTextView.setVisibility(View.GONE);
 

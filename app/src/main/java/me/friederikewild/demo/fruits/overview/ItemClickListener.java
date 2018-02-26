@@ -1,8 +1,8 @@
 package me.friederikewild.demo.fruits.overview;
 
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 
 public interface ItemClickListener
 {
-    void onItemClicked(Item item);
+    void onItemClicked(Fruit fruit);
 }

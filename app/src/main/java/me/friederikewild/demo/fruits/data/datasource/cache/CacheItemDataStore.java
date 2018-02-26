@@ -8,7 +8,7 @@ import com.google.common.base.Optional;
 import java.util.WeakHashMap;
 
 import io.reactivex.Flowable;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
  * Concrete data access cashed in memory for quick ui updates.
@@ -27,7 +27,7 @@ public class CacheItemDataStore implements ItemCache
      */
     static final long EXPIRATION_TIME = 10L * 60L * 1000L;
 
-    private final WeakHashMap<String, ItemEntity> itemCache;
+    private final WeakHashMap<String, FruitEntity> itemCache;
     private long lastUpdatedTimeMillis = 0;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
@@ -49,7 +49,7 @@ public class CacheItemDataStore implements ItemCache
 
     @SuppressWarnings("Guava")
     @Override
-    public Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId)
+    public Flowable<Optional<FruitEntity>> getItem(@NonNull String itemId)
     {
         if (!isExpired() && isCached(itemId))
         {
@@ -61,13 +61,13 @@ public class CacheItemDataStore implements ItemCache
         }
     }
 
-    private ItemEntity getItemFromCache(@NonNull String itemId)
+    private FruitEntity getItemFromCache(@NonNull String itemId)
     {
         return itemCache.get(itemId);
     }
 
     @Override
-    public void putItem(@NonNull ItemEntity item)
+    public void putItem(@NonNull FruitEntity item)
     {
         itemCache.put(item.getId(), item);
         saveNowAsLastCacheUpdate();

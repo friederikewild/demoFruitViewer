@@ -15,10 +15,10 @@ import java.util.List;
 
 import io.reactivex.Single;
 import me.friederikewild.demo.fruits.TestSerializableBundler;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.domain.usecase.GetItemsUseCase;
 
-import static me.friederikewild.demo.fruits.TestMockData.ITEMS;
+import static me.friederikewild.demo.fruits.TestMockData.FRUITS;
 import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.GRID_LAYOUT;
 import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.LIST_LAYOUT;
 import static org.mockito.ArgumentMatchers.any;
@@ -125,7 +125,7 @@ public class OverviewPresenterTest
     public void givenLoadItemsReceivesData_ThenViewUpdatedToStartAndStopShowLoading()
     {
         // Given
-        setUseCaseItemsAvailable(ITEMS);
+        setUseCaseItemsAvailable(FRUITS);
 
         // When
         presenter.loadItems(true);
@@ -142,13 +142,13 @@ public class OverviewPresenterTest
     public void givenLoadItemsReceivesData_ThenViewIsUpdated()
     {
         // Given
-        setUseCaseItemsAvailable(ITEMS);
+        setUseCaseItemsAvailable(FRUITS);
 
         // When
         presenter.loadItems(true);
 
         // Then
-        verify(overviewViewMock).showItems(ITEMS);
+        verify(overviewViewMock).showItems(FRUITS);
     }
 
     @Test
@@ -308,7 +308,7 @@ public class OverviewPresenterTest
     public void givenPresenterHasDataAndSetListLayout_ThenGridLayoutMenuIsVisible()
     {
         // Given
-        presenter.setIsViewCurrentlyEmpty(ITEMS);
+        presenter.setIsViewCurrentlyEmpty(FRUITS);
         presenter.setLayoutPresentation(LIST_LAYOUT);
 
         // When view requests if grid menu item is visible
@@ -322,7 +322,7 @@ public class OverviewPresenterTest
     public void givenPresenterHasDataAndSetGridLayout_ThenListLayoutMenuIsVisible()
     {
         // Given
-        presenter.setIsViewCurrentlyEmpty(ITEMS);
+        presenter.setIsViewCurrentlyEmpty(FRUITS);
         presenter.setLayoutPresentation(GRID_LAYOUT);
 
         // When view requests if list menu item is visible
@@ -334,9 +334,9 @@ public class OverviewPresenterTest
     //endregion [Test Menu Visibility]
 
 
-    private void setUseCaseItemsAvailable(@NonNull List<Item> items)
+    private void setUseCaseItemsAvailable(@NonNull List<Fruit> fruits)
     {
-        when(getItemsUseCaseMock.execute(any())).thenReturn(Single.just(items));
+        when(getItemsUseCaseMock.execute(any())).thenReturn(Single.just(fruits));
     }
 
     private void setUseCaseItemsEmptyList()

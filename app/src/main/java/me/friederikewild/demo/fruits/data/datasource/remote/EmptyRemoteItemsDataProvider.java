@@ -7,7 +7,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import me.friederikewild.demo.fruits.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
  * Alternative api provider to test empty return handling.
@@ -15,10 +15,10 @@ import me.friederikewild.demo.fruits.data.entity.ItemEntity;
 @VisibleForTesting
 public class EmptyRemoteItemsDataProvider implements ItemsDataStore
 {
-    private static final List<ItemEntity> FAKE_DATA = new ArrayList<>();
+    private static final List<FruitEntity> FAKE_DATA = new ArrayList<>();
 
     @Override
-    public Flowable<List<ItemEntity>> getItems()
+    public Flowable<List<FruitEntity>> getItems()
     {
         return Flowable.fromIterable(FAKE_DATA).toList().toFlowable();
     }

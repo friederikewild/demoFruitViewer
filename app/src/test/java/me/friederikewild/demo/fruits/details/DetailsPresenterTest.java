@@ -9,11 +9,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Single;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.domain.usecase.GetItemUseCase;
 
 import static me.friederikewild.demo.fruits.TestMockData.FAKE_ID;
-import static me.friederikewild.demo.fruits.TestMockData.ITEM;
+import static me.friederikewild.demo.fruits.TestMockData.FRUIT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
@@ -68,7 +68,7 @@ public class DetailsPresenterTest
     public void givenPresenterSubscribed_ThenViewShowsLoading()
     {
         // Given
-        setUseCaseItemAvailable(ITEM);
+        setUseCaseItemAvailable(FRUIT);
 
         // When
         presenter.subscribe();
@@ -81,7 +81,7 @@ public class DetailsPresenterTest
     public void givenPresenterReceivesItemData_ThenViewUpdatedToStartAndStopShowLoading()
     {
         // Given
-        setUseCaseItemAvailable(ITEM);
+        setUseCaseItemAvailable(FRUIT);
 
         // When
         presenter.subscribe();
@@ -98,7 +98,7 @@ public class DetailsPresenterTest
     public void givenPresenterReceivesItemData_ThenViewIsUpdatedWithItemData()
     {
         // Given
-        setUseCaseItemAvailable(ITEM);
+        setUseCaseItemAvailable(FRUIT);
 
         // When
         presenter.subscribe();
@@ -109,12 +109,12 @@ public class DetailsPresenterTest
         inOrder.verify(detailsViewMock).setLoadingIndicator(true);
 
         // Then loading indicator is hidden
-        inOrder.verify(detailsViewMock).showItemImage(ITEM.getImageUrl());
-        inOrder.verify(detailsViewMock).showItemTitle(ITEM.getTitle());
+        inOrder.verify(detailsViewMock).showItemImage(FRUIT.getImageUrl());
+        inOrder.verify(detailsViewMock).showItemTitle(FRUIT.getTitle());
     }
 
-    private void setUseCaseItemAvailable(@NonNull Item item)
+    private void setUseCaseItemAvailable(@NonNull Fruit fruit)
     {
-        when(getItemUseCaseMock.execute(any())).thenReturn(Single.just(item));
+        when(getItemUseCaseMock.execute(any())).thenReturn(Single.just(fruit));
     }
 }

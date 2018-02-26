@@ -7,13 +7,13 @@ import com.google.common.base.Optional;
 import io.reactivex.Single;
 import me.friederikewild.demo.fruits.data.ItemsRepository;
 import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
 
 /**
  * Use Case to fetch item for id
  */
-public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Item>
+public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Fruit>
 {
     @NonNull
     private final ItemsRepository repository;
@@ -32,7 +32,7 @@ public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Ite
     }
 
     @Override
-    public Single<Item> execute(RequestParams requestParams)
+    public Single<Fruit> execute(RequestParams requestParams)
     {
         return repository.getItem(requestParams.getItemId())
                 .filter(Optional::isPresent)

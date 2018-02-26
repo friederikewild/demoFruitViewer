@@ -3,12 +3,12 @@ package me.friederikewild.demo.fruits.data.entity.mapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 
 /**
- * Mapper to transform between Item in the data layer {@link me.friederikewild.demo.fruits.data.entity.ItemEntity}
- * to {@link me.friederikewild.demo.fruits.domain.model.Item} in the domain layer.
+ * Mapper to transform between Fruit in the data layer {@link FruitEntity}
+ * to {@link Fruit} in the domain layer.
  *
  * NOTE: Currently data is read only, therefore no mapping needed in the opposite direction.
  * Setup as a singleton.
@@ -36,14 +36,14 @@ public class ItemEntityDataMapper
     }
 
     @NonNull
-    public Item transform(@NonNull ItemEntity itemEntity)
+    public Fruit transform(@NonNull FruitEntity fruitEntity)
     {
         // Note: Title and Description can include html that needs transformation
-        return new Item(itemEntity.getId(),
-                        formatter.formatHtml(itemEntity.getTitle()),
-                        formatter.formatHtml(itemEntity.getDescription()),
-                        itemEntity.getDate(),
-                        itemEntity.getTags(),
-                        itemEntity.getImageUrl());
+        return new Fruit(fruitEntity.getId(),
+                         formatter.formatHtml(fruitEntity.getTitle()),
+                         formatter.formatHtml(fruitEntity.getDescription()),
+                         fruitEntity.getDate(),
+                         fruitEntity.getTags(),
+                         fruitEntity.getImageUrl());
     }
 }

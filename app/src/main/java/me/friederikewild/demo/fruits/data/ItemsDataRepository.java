@@ -10,7 +10,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import me.friederikewild.demo.fruits.data.datasource.ItemsDataStore;
 import me.friederikewild.demo.fruits.data.datasource.cache.ItemCache;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
  * Concrete repository getting data from remote or cache.
@@ -49,7 +49,7 @@ public class ItemsDataRepository implements ItemsRepository
     }
 
     @Override
-    public Flowable<List<ItemEntity>> getItems()
+    public Flowable<List<FruitEntity>> getItems()
     {
         return getItemsFromRemoteAndCache()
                 .firstOrError()
@@ -57,7 +57,7 @@ public class ItemsDataRepository implements ItemsRepository
     }
 
     @SuppressWarnings("Convert2MethodRef")
-    private Flowable<List<ItemEntity>> getItemsFromRemoteAndCache()
+    private Flowable<List<FruitEntity>> getItemsFromRemoteAndCache()
     {
         return remoteItemsStore.getItems()
                 .flatMap(tasks -> Flowable.fromIterable(tasks)
@@ -67,10 +67,10 @@ public class ItemsDataRepository implements ItemsRepository
     }
 
     @Override
-    public Flowable<Optional<ItemEntity>> getItem(@NonNull String itemId)
+    public Flowable<Optional<FruitEntity>> getItem(@NonNull String itemId)
     {
-        final Flowable<Optional<ItemEntity>> cachedItem = cacheItemStore.getItem(itemId);
-        final Flowable<Optional<ItemEntity>> remoteItem = getItemFromRemoteDataStore(itemId);
+        final Flowable<Optional<FruitEntity>> cachedItem = cacheItemStore.getItem(itemId);
+        final Flowable<Optional<FruitEntity>> remoteItem = getItemFromRemoteDataStore(itemId);
 
         // Request cache first, if not available, request remote
         return Flowable.concat(cachedItem, remoteItem)
@@ -90,7 +90,7 @@ public class ItemsDataRepository implements ItemsRepository
      * @param itemId Id to look up in cache
      */
     @SuppressWarnings({"Convert2MethodRef", "Guava"})
-    private Flowable<Optional<ItemEntity>> getItemFromRemoteDataStore(@NonNull String itemId)
+    private Flowable<Optional<FruitEntity>> getItemFromRemoteDataStore(@NonNull String itemId)
     {
         return getItemsFromRemoteAndCache()
                 .flatMap(items -> Flowable.fromIterable(items))

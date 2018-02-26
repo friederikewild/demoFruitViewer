@@ -10,7 +10,7 @@ import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import me.friederikewild.demo.fruits.domain.model.Item;
+import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.domain.usecase.GetItemsUseCase;
 import me.friederikewild.demo.fruits.util.Bundler;
 
@@ -158,12 +158,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
     }
 
     @VisibleForTesting
-    void setIsViewCurrentlyEmpty(@Nullable final List<Item> items)
+    void setIsViewCurrentlyEmpty(@Nullable final List<Fruit> fruits)
     {
-        isViewCurrentlyEmpty = items == null || items.isEmpty();
+        isViewCurrentlyEmpty = fruits == null || fruits.isEmpty();
     }
 
-    private void updateViewWithItems(@NonNull final List<Item> items)
+    private void updateViewWithItems(@NonNull final List<Fruit> fruits)
     {
         // Check if view is still able to handle UI updates
         if (!overviewView.isActive())
@@ -179,10 +179,10 @@ public class OverviewPresenter implements OverviewContract.Presenter
         }
         else
         {
-            overviewView.showItems(items);
+            overviewView.showItems(fruits);
         }
 
-        // Ensure menu is updated according to items availability
+        // Ensure menu is updated according to fruits availability
         overviewView.updateMenuItemVisibility();
     }
 
@@ -204,9 +204,9 @@ public class OverviewPresenter implements OverviewContract.Presenter
     //endregion [LoadItems Handling]
 
     @Override
-    public void onItemClicked(@NonNull Item item)
+    public void onItemClicked(@NonNull Fruit fruit)
     {
-        overviewView.showDetailsForItem(item.getId());
+        overviewView.showDetailsForItem(fruit.getId());
     }
 
     @Override

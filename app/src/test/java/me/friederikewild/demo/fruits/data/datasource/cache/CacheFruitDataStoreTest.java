@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import io.reactivex.subscribers.TestSubscriber;
 import me.friederikewild.demo.fruits.TestMockData;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -19,14 +19,14 @@ import static org.mockito.Mockito.when;
  * Test {@link CacheItemDataStore}
  */
 @SuppressWarnings("Guava")
-public class CacheItemDataStoreTest
+public class CacheFruitDataStoreTest
 {
     private static final long NOW = 1000;
 
     // Cache data store under test
     private CacheItemDataStore cacheItemDataStore;
 
-    private TestSubscriber<Optional<ItemEntity>> testSubscriber;
+    private TestSubscriber<Optional<FruitEntity>> testSubscriber;
 
     @Mock
     private CurrentTimeProvider currentTimeProviderMock;
@@ -57,7 +57,7 @@ public class CacheItemDataStoreTest
     public void givenPutItemToCache_ThenItemIsCached()
     {
         // Given
-        final ItemEntity entity = createFakeItemEntity();
+        final FruitEntity entity = createFakeItemEntity();
 
         // When
         cacheItemDataStore.putItem(entity);
@@ -81,14 +81,14 @@ public class CacheItemDataStoreTest
     public void givenPutItemToCache_ThenItemIsEqualFromCache()
     {
         // Given
-        final ItemEntity entity = createFakeItemEntity();
+        final FruitEntity entity = createFakeItemEntity();
         cacheItemDataStore.putItem(entity);
 
         // When
         cacheItemDataStore.getItem(TestMockData.FAKE_ID).subscribe(testSubscriber);
 
         // Then
-        final Optional<ItemEntity> expectedResult = Optional.of(entity);
+        final Optional<FruitEntity> expectedResult = Optional.of(entity);
         testSubscriber.assertValue(expectedResult);
     }
 
@@ -135,9 +135,9 @@ public class CacheItemDataStoreTest
     }
 
 
-    private ItemEntity createFakeItemEntity()
+    private FruitEntity createFakeItemEntity()
     {
-        ItemEntity entity = new ItemEntity();
+        FruitEntity entity = new FruitEntity();
         entity.setId(TestMockData.FAKE_ID);
         return entity;
     }

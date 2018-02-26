@@ -15,7 +15,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import me.friederikewild.demo.fruits.TestMockData;
-import me.friederikewild.demo.fruits.data.entity.ItemEntity;
+import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 import static org.mockito.Mockito.when;
 
@@ -27,7 +27,7 @@ public class RemoteItemsDataStoreTest
     // Class under test
     private RemoteItemsDataStore remoteItemsDataStore;
 
-    private TestSubscriber<List<ItemEntity>> testSubscriber;
+    private TestSubscriber<List<FruitEntity>> testSubscriber;
 
     @Mock
     private ItemsApiProvider itemsApiProviderMock;
@@ -63,17 +63,17 @@ public class RemoteItemsDataStoreTest
     public void givenRemoteItemsRequestedAndReceived_ThenItemsCallbackNotified()
     {
         // Given when remote has data available
-        setItemsRemoteAvailable(TestMockData.ENTITY_ITEMS);
+        setItemsRemoteAvailable(TestMockData.ENTITY_FRUITS);
 
         // When
         remoteItemsDataStore.getItems().subscribe(testSubscriber);
 
         // Then 1 list received with items
         Assert.assertEquals(1, testSubscriber.values().size());
-        testSubscriber.assertValue(TestMockData.ENTITY_ITEMS);
+        testSubscriber.assertValue(TestMockData.ENTITY_FRUITS);
     }
 
-    private void setItemsRemoteAvailable(@NonNull List<ItemEntity> items)
+    private void setItemsRemoteAvailable(@NonNull List<FruitEntity> items)
     {
         when(fruitsApiMock.getFruits()).thenReturn(Flowable.just(items));
     }

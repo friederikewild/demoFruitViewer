@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Immutable model class representing an Item.
+ * Immutable model class representing an Fruit.
  * For simplicity used in the domain layer as well as the view layer since identical.
  * Includes all available fields to make it easy to show more details on the view.
  * NOTE: If {@link date} was to be presented it could be converted into a Date object and formatted.
  */
 @SuppressWarnings("SimplifiableIfStatement")
-public class Item
+public class Fruit
 {
     @NonNull
     private String id;
@@ -33,7 +33,7 @@ public class Item
      * @param testString Test string for all string fields
      */
     @VisibleForTesting
-    public Item(@NonNull String testString)
+    public Fruit(@NonNull String testString)
     {
         this.id = testString;
         this.title = testString;
@@ -43,8 +43,8 @@ public class Item
         this.imageUrl = testString;
     }
 
-    public Item(@NonNull String id, @NonNull String title, @NonNull String description, @NonNull String date,
-                @NonNull List<String> tags, @NonNull String imageUrl)
+    public Fruit(@NonNull String id, @NonNull String title, @NonNull String description, @NonNull String date,
+                 @NonNull List<String> tags, @NonNull String imageUrl)
     {
         this.id = id;
         this.title = title;
@@ -97,34 +97,34 @@ public class Item
         {
             return true;
         }
-        if (!(o instanceof Item))
+        if (!(o instanceof Fruit))
         {
             return false;
         }
 
-        Item item = (Item) o;
+        Fruit fruit = (Fruit) o;
 
-        if (!id.equals(item.id))
+        if (!id.equals(fruit.id))
         {
             return false;
         }
-        if (!title.equals(item.title))
+        if (!title.equals(fruit.title))
         {
             return false;
         }
-        if (!description.equals(item.description))
+        if (!description.equals(fruit.description))
         {
             return false;
         }
-        if (!date.equals(item.date))
+        if (!date.equals(fruit.date))
         {
             return false;
         }
-        if (!tags.equals(item.tags))
+        if (!tags.equals(fruit.tags))
         {
             return false;
         }
-        return imageUrl.equals(item.imageUrl);
+        return imageUrl.equals(fruit.imageUrl);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class Item
     @Override
     public String toString()
     {
-        return "Item{" +
+        return "Fruit{" +
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 '}';
