@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.Single;
 import me.friederikewild.demo.fruits.TestSerializableBundler;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
-import me.friederikewild.demo.fruits.domain.usecase.GetItemsUseCase;
+import me.friederikewild.demo.fruits.domain.usecase.GetFruitsUseCase;
 
 import static me.friederikewild.demo.fruits.TestMockData.FRUITS;
 import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.GRID_LAYOUT;
@@ -42,7 +42,7 @@ public class OverviewPresenterTest
     @Mock
     private OverviewContract.View overviewViewMock;
     @Mock
-    private GetItemsUseCase getItemsUseCaseMock;
+    private GetFruitsUseCase getFruitsUseCaseMock;
     @Mock
     private Bundle bundleMock;
 
@@ -61,7 +61,7 @@ public class OverviewPresenterTest
     private OverviewPresenter givenOverviewPresenter()
     {
         return new OverviewPresenter(overviewViewMock,
-                                     getItemsUseCaseMock,
+                                     getFruitsUseCaseMock,
                                      testSerializableBundler);
     }
 
@@ -336,11 +336,11 @@ public class OverviewPresenterTest
 
     private void setUseCaseItemsAvailable(@NonNull List<Fruit> fruits)
     {
-        when(getItemsUseCaseMock.execute(any())).thenReturn(Single.just(fruits));
+        when(getFruitsUseCaseMock.execute(any())).thenReturn(Single.just(fruits));
     }
 
     private void setUseCaseItemsEmptyList()
     {
-        when(getItemsUseCaseMock.execute(any())).thenReturn(Single.just(Collections.emptyList()));
+        when(getFruitsUseCaseMock.execute(any())).thenReturn(Single.just(Collections.emptyList()));
     }
 }

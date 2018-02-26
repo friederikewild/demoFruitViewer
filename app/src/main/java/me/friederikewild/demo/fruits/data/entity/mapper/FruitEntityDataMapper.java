@@ -13,24 +13,24 @@ import me.friederikewild.demo.fruits.domain.model.Fruit;
  * NOTE: Currently data is read only, therefore no mapping needed in the opposite direction.
  * Setup as a singleton.
  */
-public class ItemEntityDataMapper
+public class FruitEntityDataMapper
 {
-    private static ItemEntityDataMapper INSTANCE;
+    private static FruitEntityDataMapper INSTANCE;
 
     @NonNull
     private final HtmlStringFormatter formatter;
 
     @VisibleForTesting // Alternative provide clearInstance for tests
-    public ItemEntityDataMapper(@NonNull HtmlStringFormatter formatter)
+    public FruitEntityDataMapper(@NonNull HtmlStringFormatter formatter)
     {
         this.formatter = formatter;
     }
 
-    public static ItemEntityDataMapper getInstance(@NonNull HtmlStringFormatter formatter)
+    public static FruitEntityDataMapper getInstance(@NonNull HtmlStringFormatter formatter)
     {
         if (INSTANCE == null)
         {
-            INSTANCE = new ItemEntityDataMapper(formatter);
+            INSTANCE = new FruitEntityDataMapper(formatter);
         }
         return INSTANCE;
     }

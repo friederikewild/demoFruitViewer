@@ -2,29 +2,28 @@ package me.friederikewild.demo.fruits.domain.usecase;
 
 import android.support.annotation.NonNull;
 
-import java.util.List;
+import com.google.common.base.Optional;
 
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 import me.friederikewild.demo.fruits.data.FruitsRepository;
-import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
+import me.friederikewild.demo.fruits.data.entity.mapper.FruitEntityDataMapper;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
 
 /**
- * Use Case to fetch items
+ * Use Case to fetch fruit for id
  */
-public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, List<Fruit>>
+public class GetFruitUseCase implements UseCase<GetFruitUseCase.RequestParams, Fruit>
 {
     @NonNull
     private final FruitsRepository repository;
     @NonNull
-    private final ItemEntityDataMapper mapper;
+    private final FruitEntityDataMapper mapper;
     @NonNull
     private final BaseSchedulerProvider schedulerProvider;
 
-    public GetItemsUseCase(@NonNull final FruitsRepository repository,
-                           @NonNull final ItemEntityDataMapper mapper,
+    public GetFruitUseCase(@NonNull final FruitsRepository repository,
+                           @NonNull final FruitEntityDataMapper mapper,
                            @NonNull final BaseSchedulerProvider schedulerProvider)
     {
         this.repository = repository;
@@ -33,28 +32,31 @@ public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, L
     }
 
     @Override
-    public Single<List<Fruit>> execute(@NonNull RequestParams requestParams)
+    public Single<Fruit> execute(RequestParams requestParams)
     {
-        if (requestParams.forceUpdate)
-        {
-            repository.refreshData();
-        }
-
-        return repository.getFruits()
-                .flatMap(Flowable::fromIterable)
+        return repository.getFruit(requestParams.getFruitId())
+                .filter(Optional::isPresent)
+                .firstOrError()
+                .map(Optional::get)
                 .map(mapper::transform)
-                .toList()
                 .subscribeOn(schedulerProvider.asyncIoThread())
                 .observeOn(schedulerProvider.mainThread());
     }
 
     public static final class RequestParams implements UseCase.RequestParams
     {
-        private final boolean forceUpdate;
+        @NonNull
+        private final String fruitId;
 
-        public RequestParams(boolean forceUpdate)
+        public RequestParams(@NonNull String fruitId)
         {
-            this.forceUpdate = forceUpdate;
+            this.fruitId = fruitId;
+        }
+
+        @NonNull
+        String getFruitId()
+        {
+            return fruitId;
         }
     }
 }

@@ -21,7 +21,7 @@ public class OverviewActivity
     {
         return new OverviewPresenter(
                 fragment,
-                Injection.provideGetItemsUseCase(),
+                Injection.provideGetFruitsUseCase(),
                 Injection.provideSerializableBundler()
         );
     }

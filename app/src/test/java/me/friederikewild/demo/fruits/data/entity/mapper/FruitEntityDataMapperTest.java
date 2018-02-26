@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for the implementation of {@link ItemEntityDataMapper}
+ * Unit tests for the implementation of {@link FruitEntityDataMapper}
  *
  * NOTE: Displaying tags and date are not part of the presented data,
  * therefore no extra tests on those special types added for now.
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class FruitEntityDataMapperTest
 {
     //    Mapper under test
-    private ItemEntityDataMapper mapper;
+    private FruitEntityDataMapper mapper;
 
     @Mock
     private HtmlStringFormatter htmlStringFormatterMock;
@@ -38,7 +38,7 @@ public class FruitEntityDataMapperTest
         // No special formatting done as default
         when(htmlStringFormatterMock.formatHtml(anyString())).then(returnsFirstArg());
 
-        mapper = new ItemEntityDataMapper(htmlStringFormatterMock);
+        mapper = new FruitEntityDataMapper(htmlStringFormatterMock);
     }
 
     @Test

@@ -56,6 +56,6 @@ public class DetailsActivity extends ActivityWithOneFragment<DetailsFragment, De
 
         return new DetailsPresenter(fragment,
                                     itemId,
-                                    Injection.provideGetItemUseCase());
+                                    Injection.provideGetFruitUseCase());
     }
 }

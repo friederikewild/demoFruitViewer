@@ -5,14 +5,14 @@ import android.support.annotation.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
-import me.friederikewild.demo.fruits.domain.usecase.GetItemUseCase;
+import me.friederikewild.demo.fruits.domain.usecase.GetFruitUseCase;
 
 public class DetailsPresenter implements DetailsContract.Presenter
 {
     private DetailsContract.View detailsView;
 
     @NonNull
-    private GetItemUseCase getItemUseCase;
+    private GetFruitUseCase getFruitUseCase;
 
     @NonNull
     private CompositeDisposable compositeDisposable;
@@ -22,10 +22,10 @@ public class DetailsPresenter implements DetailsContract.Presenter
 
     DetailsPresenter(@NonNull final DetailsContract.View view,
                      @NonNull final String id,
-                     @NonNull final GetItemUseCase getItem)
+                     @NonNull final GetFruitUseCase getItem)
     {
         itemId = id;
-        getItemUseCase = getItem;
+        getFruitUseCase = getItem;
 
         compositeDisposable = new CompositeDisposable();
 
@@ -53,11 +53,11 @@ public class DetailsPresenter implements DetailsContract.Presenter
             detailsView.setLoadingIndicator(true);
         }
 
-        final GetItemUseCase.RequestParams params = new GetItemUseCase.RequestParams(itemId);
+        final GetFruitUseCase.RequestParams params = new GetFruitUseCase.RequestParams(itemId);
 
         compositeDisposable.clear();
 
-        Disposable disposable = getItemUseCase
+        Disposable disposable = getFruitUseCase
                 .execute(params)
                 .subscribe(
                         // onNext

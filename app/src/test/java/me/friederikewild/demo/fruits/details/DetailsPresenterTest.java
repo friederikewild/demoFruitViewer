@@ -10,7 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Single;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
-import me.friederikewild.demo.fruits.domain.usecase.GetItemUseCase;
+import me.friederikewild.demo.fruits.domain.usecase.GetFruitUseCase;
 
 import static me.friederikewild.demo.fruits.TestMockData.FAKE_ID;
 import static me.friederikewild.demo.fruits.TestMockData.FRUIT;
@@ -32,7 +32,7 @@ public class DetailsPresenterTest
     @Mock
     private DetailsContract.View detailsViewMock;
     @Mock
-    private GetItemUseCase getItemUseCaseMock;
+    private GetFruitUseCase getFruitUseCaseMock;
 
     @Before
     public void setupOverviewPresenter()
@@ -48,7 +48,7 @@ public class DetailsPresenterTest
     {
         return new DetailsPresenter(detailsViewMock,
                                     FAKE_ID,
-                                    getItemUseCaseMock);
+                                    getFruitUseCaseMock);
     }
 
     @Test
@@ -115,6 +115,6 @@ public class DetailsPresenterTest
 
     private void setUseCaseItemAvailable(@NonNull Fruit fruit)
     {
-        when(getItemUseCaseMock.execute(any())).thenReturn(Single.just(fruit));
+        when(getFruitUseCaseMock.execute(any())).thenReturn(Single.just(fruit));
     }
 }

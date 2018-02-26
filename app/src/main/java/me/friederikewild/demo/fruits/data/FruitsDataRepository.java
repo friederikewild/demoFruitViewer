@@ -16,15 +16,15 @@ import me.friederikewild.demo.fruits.data.entity.FruitEntity;
  * Concrete repository getting data from remote or cache.
  * For simplicity, the synchronisation between locally cached and
  * remote data is kept to a minimum. When remote data is received the cache will be overwritten,
- * When an item is requested it will be used from cache if available.
+ * When a fruit is requested it will be used from cache if available.
  * Setup as a singleton.
  */
 public class FruitsDataRepository implements FruitsRepository
 {
     private static FruitsDataRepository INSTANCE;
 
-    private final FruitsDataStore remoteItemsStore;
-    private final FruitCache cacheItemStore;
+    private final FruitsDataStore remoteFruitsStore;
+    private final FruitCache cacheFruitStore;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
     @VisibleForTesting
@@ -32,18 +32,18 @@ public class FruitsDataRepository implements FruitsRepository
             @NonNull final FruitsDataStore remote,
             @NonNull final FruitCache cache)
     {
-        this.remoteItemsStore = remote;
-        this.cacheItemStore = cache;
+        this.remoteFruitsStore = remote;
+        this.cacheFruitStore = cache;
     }
 
-    public static FruitsDataRepository getInstance(@NonNull final FruitsDataStore remoteItemsStore,
-                                                   @NonNull final FruitCache cacheItemDataStore)
+    public static FruitsDataRepository getInstance(@NonNull final FruitsDataStore remoteFruitsStore,
+                                                   @NonNull final FruitCache cacheFruitDataStore)
     {
         if (INSTANCE == null)
         {
             INSTANCE = new FruitsDataRepository(
-                    remoteItemsStore,
-                    cacheItemDataStore);
+                    remoteFruitsStore,
+                    cacheFruitDataStore);
         }
         return INSTANCE;
     }
@@ -51,17 +51,17 @@ public class FruitsDataRepository implements FruitsRepository
     @Override
     public Flowable<List<FruitEntity>> getFruits()
     {
-        return getItemsFromRemoteAndCache()
+        return getFruitsFromRemoteAndCache()
                 .firstOrError()
                 .toFlowable();
     }
 
     @SuppressWarnings("Convert2MethodRef")
-    private Flowable<List<FruitEntity>> getItemsFromRemoteAndCache()
+    private Flowable<List<FruitEntity>> getFruitsFromRemoteAndCache()
     {
-        return remoteItemsStore.getFruits()
+        return remoteFruitsStore.getFruits()
                 .flatMap(tasks -> Flowable.fromIterable(tasks)
-                        .doOnNext(item -> cacheItemStore.putFruit(item))
+                        .doOnNext(fruit -> cacheFruitStore.putFruit(fruit))
                         .toList()
                         .toFlowable());
     }
@@ -69,11 +69,11 @@ public class FruitsDataRepository implements FruitsRepository
     @Override
     public Flowable<Optional<FruitEntity>> getFruit(@NonNull String fruitId)
     {
-        final Flowable<Optional<FruitEntity>> cachedItem = cacheItemStore.getFruit(fruitId);
-        final Flowable<Optional<FruitEntity>> remoteItem = getItemFromRemoteDataStore(fruitId);
+        final Flowable<Optional<FruitEntity>> cachedFruit = cacheFruitStore.getFruit(fruitId);
+        final Flowable<Optional<FruitEntity>> remoteFruit = getFruitFromRemoteDataStore(fruitId);
 
         // Request cache first, if not available, request remote
-        return Flowable.concat(cachedItem, remoteItem)
+        return Flowable.concat(cachedFruit, remoteFruit)
                 .firstElement()
                 .toFlowable();
     }
@@ -81,21 +81,21 @@ public class FruitsDataRepository implements FruitsRepository
     @Override
     public void refreshData()
     {
-        cacheItemStore.clearAll();
+        cacheFruitStore.clearAll();
     }
 
     /**
-     * Fallback method to catch all items from remote to then pick item.
+     * Fallback method to catch all fruits from remote to then pick fruit.
      *
-     * @param itemId Id to look up in cache
+     * @param fruitId Id to look up in cache
      */
     @SuppressWarnings({"Convert2MethodRef", "Guava"})
-    private Flowable<Optional<FruitEntity>> getItemFromRemoteDataStore(@NonNull String itemId)
+    private Flowable<Optional<FruitEntity>> getFruitFromRemoteDataStore(@NonNull String fruitId)
     {
-        return getItemsFromRemoteAndCache()
-                .flatMap(items -> Flowable.fromIterable(items))
-                .filter(itemEntity -> itemEntity.getId().equals(itemId))
-                .map(itemEntity -> Optional.of(itemEntity))
+        return getFruitsFromRemoteAndCache()
+                .flatMap(fruits -> Flowable.fromIterable(fruits))
+                .filter(fruitEntity -> fruitEntity.getId().equals(fruitId))
+                .map(fruitEntity -> Optional.of(fruitEntity))
                 .firstOrError()
                 .toFlowable();
     }

@@ -11,7 +11,7 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
-import me.friederikewild.demo.fruits.domain.usecase.GetItemsUseCase;
+import me.friederikewild.demo.fruits.domain.usecase.GetFruitsUseCase;
 import me.friederikewild.demo.fruits.util.Bundler;
 
 import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.GRID_LAYOUT;
@@ -25,7 +25,7 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private OverviewContract.View overviewView;
 
     @NonNull
-    private GetItemsUseCase getItemsUseCase;
+    private GetFruitsUseCase getFruitsUseCase;
 
     @NonNull
     private Bundler<Serializable> serializableBundler;
@@ -52,10 +52,10 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private boolean isFirstLoading = true;
 
     OverviewPresenter(@NonNull final OverviewContract.View view,
-                      @NonNull final GetItemsUseCase getItems,
+                      @NonNull final GetFruitsUseCase getItems,
                       @NonNull final Bundler<Serializable> bundler)
     {
-        getItemsUseCase = getItems;
+        getFruitsUseCase = getItems;
         serializableBundler = bundler;
 
         compositeDisposable = new CompositeDisposable();
@@ -131,8 +131,8 @@ public class OverviewPresenter implements OverviewContract.Presenter
         }
 
         compositeDisposable.clear();
-        final GetItemsUseCase.RequestParams params = new GetItemsUseCase.RequestParams(forceUpdate);
-        Disposable disposable = getItemsUseCase
+        final GetFruitsUseCase.RequestParams params = new GetFruitsUseCase.RequestParams(forceUpdate);
+        Disposable disposable = getFruitsUseCase
                 .execute(params)
                 .subscribe(
                         // onNext

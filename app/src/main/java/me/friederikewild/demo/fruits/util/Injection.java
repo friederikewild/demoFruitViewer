@@ -14,9 +14,9 @@ import me.friederikewild.demo.fruits.data.datasource.remote.FruitsApiProvider;
 import me.friederikewild.demo.fruits.data.datasource.remote.RemoteFruitsDataStore;
 import me.friederikewild.demo.fruits.data.datasource.remote.RetrofitFruitsApiProvider;
 import me.friederikewild.demo.fruits.data.entity.mapper.HtmlStringFormatter;
-import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
-import me.friederikewild.demo.fruits.domain.usecase.GetItemUseCase;
-import me.friederikewild.demo.fruits.domain.usecase.GetItemsUseCase;
+import me.friederikewild.demo.fruits.data.entity.mapper.FruitEntityDataMapper;
+import me.friederikewild.demo.fruits.domain.usecase.GetFruitUseCase;
+import me.friederikewild.demo.fruits.domain.usecase.GetFruitsUseCase;
 import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
 import me.friederikewild.demo.fruits.util.schedulers.RxSchedulerProvider;
 
@@ -26,17 +26,17 @@ import me.friederikewild.demo.fruits.util.schedulers.RxSchedulerProvider;
  */
 public class Injection
 {
-    public static FruitsRepository provideItemsDataRepository()
+    public static FruitsRepository provideFruitsDataRepository()
     {
         return FruitsDataRepository.getInstance(
-                provideRemoteItemsDataStore(),
-//                provideEmptyRemoteItemsDataProvider(),
-                provideCacheItemDataStore());
+                provideRemoteFruitsDataStore(),
+//                provideEmptyRemoteFruitsDataProvider(),
+                provideCacheFruitDataStore());
     }
 
-    public static ItemEntityDataMapper provideItemEntityDataMapper()
+    public static FruitEntityDataMapper provideFruitEntityDataMapper()
     {
-        return ItemEntityDataMapper.getInstance(provideHtmlStringFormatter());
+        return FruitEntityDataMapper.getInstance(provideHtmlStringFormatter());
     }
 
     public static HtmlStringFormatter provideHtmlStringFormatter()
@@ -44,25 +44,25 @@ public class Injection
         return HtmlStringFormatter.getInstance();
     }
 
-    public static FruitsDataStore provideRemoteItemsDataStore()
+    public static FruitsDataStore provideRemoteFruitsDataStore()
     {
-        return RemoteFruitsDataStore.getInstance(provideItemsApiProvider());
+        return RemoteFruitsDataStore.getInstance(provideFruitsApiProvider());
     }
 
     /**
      * Alternative to test handling receiving an empty list from remote
      */
-    public static FruitsDataStore provideEmptyRemoteItemsDataProvider()
+    public static FruitsDataStore provideEmptyRemoteFruitsDataProvider()
     {
         return new EmptyRemoteFruitsDataProvider();
     }
 
-    public static FruitsApiProvider provideItemsApiProvider()
+    public static FruitsApiProvider provideFruitsApiProvider()
     {
         return RetrofitFruitsApiProvider.getInstance();
     }
 
-    public static FruitCache provideCacheItemDataStore()
+    public static FruitCache provideCacheFruitDataStore()
     {
         return CacheFruitDataStore.getInstance(provideCurrentTimeProvider());
     }
@@ -72,18 +72,18 @@ public class Injection
         return CurrentTimeProvider.getInstance();
     }
 
-    public static GetItemsUseCase provideGetItemsUseCase()
+    public static GetFruitsUseCase provideGetFruitsUseCase()
     {
-        return new GetItemsUseCase(provideItemsDataRepository(),
-                                   provideItemEntityDataMapper(),
-                                   provideSchedulerProvider());
+        return new GetFruitsUseCase(provideFruitsDataRepository(),
+                                    provideFruitEntityDataMapper(),
+                                    provideSchedulerProvider());
     }
 
-    public static GetItemUseCase provideGetItemUseCase()
+    public static GetFruitUseCase provideGetFruitUseCase()
     {
-        return new GetItemUseCase(provideItemsDataRepository(),
-                                  provideItemEntityDataMapper(),
-                                  provideSchedulerProvider());
+        return new GetFruitUseCase(provideFruitsDataRepository(),
+                                   provideFruitEntityDataMapper(),
+                                   provideSchedulerProvider());
     }
 
     public static BaseSchedulerProvider provideSchedulerProvider()
