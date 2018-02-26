@@ -17,7 +17,7 @@ import timber.log.Timber;
 
 /**
  * Facade wrapper for retrofitClient as concrete implementation of {@link FruitsApiProvider}
- * Call {@link #enqueueGetItems}
+ * Call {@link #getFruitsApi} to get a concrete {@link FruitsApi} object to use for remote requests.
  *
  * Setup as a singleton.
  */
