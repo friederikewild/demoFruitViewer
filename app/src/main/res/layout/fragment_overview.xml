@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<me.friederikewild.demo.touchnote.overview.EnhancedSwipeRefreshLayout
+<me.friederikewild.demo.fruits.overview.EnhancedSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -39,4 +39,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</me.friederikewild.demo.touchnote.overview.EnhancedSwipeRefreshLayout>
+</me.friederikewild.demo.fruits.overview.EnhancedSwipeRefreshLayout>
