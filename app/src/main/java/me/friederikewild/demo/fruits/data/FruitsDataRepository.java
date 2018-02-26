@@ -8,8 +8,8 @@ import com.google.common.base.Optional;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import me.friederikewild.demo.fruits.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.fruits.data.datasource.cache.ItemCache;
+import me.friederikewild.demo.fruits.data.datasource.FruitsDataStore;
+import me.friederikewild.demo.fruits.data.datasource.cache.FruitCache;
 import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
@@ -19,29 +19,29 @@ import me.friederikewild.demo.fruits.data.entity.FruitEntity;
  * When an item is requested it will be used from cache if available.
  * Setup as a singleton.
  */
-public class ItemsDataRepository implements ItemsRepository
+public class FruitsDataRepository implements FruitsRepository
 {
-    private static ItemsDataRepository INSTANCE;
+    private static FruitsDataRepository INSTANCE;
 
-    private final ItemsDataStore remoteItemsStore;
-    private final ItemCache cacheItemStore;
+    private final FruitsDataStore remoteItemsStore;
+    private final FruitCache cacheItemStore;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
     @VisibleForTesting
-    ItemsDataRepository(
-            @NonNull final ItemsDataStore remote,
-            @NonNull final ItemCache cache)
+    FruitsDataRepository(
+            @NonNull final FruitsDataStore remote,
+            @NonNull final FruitCache cache)
     {
         this.remoteItemsStore = remote;
         this.cacheItemStore = cache;
     }
 
-    public static ItemsDataRepository getInstance(@NonNull final ItemsDataStore remoteItemsStore,
-                                                  @NonNull final ItemCache cacheItemDataStore)
+    public static FruitsDataRepository getInstance(@NonNull final FruitsDataStore remoteItemsStore,
+                                                   @NonNull final FruitCache cacheItemDataStore)
     {
         if (INSTANCE == null)
         {
-            INSTANCE = new ItemsDataRepository(
+            INSTANCE = new FruitsDataRepository(
                     remoteItemsStore,
                     cacheItemDataStore);
         }
@@ -49,7 +49,7 @@ public class ItemsDataRepository implements ItemsRepository
     }
 
     @Override
-    public Flowable<List<FruitEntity>> getItems()
+    public Flowable<List<FruitEntity>> getFruits()
     {
         return getItemsFromRemoteAndCache()
                 .firstOrError()
@@ -59,18 +59,18 @@ public class ItemsDataRepository implements ItemsRepository
     @SuppressWarnings("Convert2MethodRef")
     private Flowable<List<FruitEntity>> getItemsFromRemoteAndCache()
     {
-        return remoteItemsStore.getItems()
+        return remoteItemsStore.getFruits()
                 .flatMap(tasks -> Flowable.fromIterable(tasks)
-                        .doOnNext(item -> cacheItemStore.putItem(item))
+                        .doOnNext(item -> cacheItemStore.putFruit(item))
                         .toList()
                         .toFlowable());
     }
 
     @Override
-    public Flowable<Optional<FruitEntity>> getItem(@NonNull String itemId)
+    public Flowable<Optional<FruitEntity>> getFruit(@NonNull String fruitId)
     {
-        final Flowable<Optional<FruitEntity>> cachedItem = cacheItemStore.getItem(itemId);
-        final Flowable<Optional<FruitEntity>> remoteItem = getItemFromRemoteDataStore(itemId);
+        final Flowable<Optional<FruitEntity>> cachedItem = cacheItemStore.getFruit(fruitId);
+        final Flowable<Optional<FruitEntity>> remoteItem = getItemFromRemoteDataStore(fruitId);
 
         // Request cache first, if not available, request remote
         return Flowable.concat(cachedItem, remoteItem)

@@ -16,28 +16,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 /**
- * Facade wrapper for retrofitClient as concrete implementation of {@link ItemsApiProvider}
+ * Facade wrapper for retrofitClient as concrete implementation of {@link FruitsApiProvider}
  * Call {@link #enqueueGetItems}
  *
  * Setup as a singleton.
  */
-public class RetrofitItemsApiProvider implements ItemsApiProvider
+public class RetrofitFruitsApiProvider implements FruitsApiProvider
 {
-    private static RetrofitItemsApiProvider INSTANCE;
+    private static RetrofitFruitsApiProvider INSTANCE;
 
     @NonNull
     private Retrofit retrofitClient;
 
-    private RetrofitItemsApiProvider()
+    private RetrofitFruitsApiProvider()
     {
         retrofitClient = createRetrofitClient();
     }
 
-    public static RetrofitItemsApiProvider getInstance()
+    public static RetrofitFruitsApiProvider getInstance()
     {
         if (INSTANCE == null)
         {
-            INSTANCE = new RetrofitItemsApiProvider();
+            INSTANCE = new RetrofitFruitsApiProvider();
         }
         return INSTANCE;
     }
@@ -115,7 +115,7 @@ public class RetrofitItemsApiProvider implements ItemsApiProvider
     }
 
     @NonNull
-    public FruitsApi getItemsApi()
+    public FruitsApi getFruitsApi()
     {
         // Create api from interface ready for calls
         return retrofitClient.create(FruitsApi.class);

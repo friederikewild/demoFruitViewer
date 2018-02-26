@@ -15,9 +15,9 @@ import me.friederikewild.demo.fruits.data.entity.FruitEntity;
  * Elements are saved in a {@code WeakHashMap} to allow garbage collection when needed.
  * Setup as a singleton.
  */
-public class CacheItemDataStore implements ItemCache
+public class CacheFruitDataStore implements FruitCache
 {
-    private static CacheItemDataStore INSTANCE;
+    private static CacheFruitDataStore INSTANCE;
 
     @NonNull
     private final CurrentTimeProvider timeProvider;
@@ -27,33 +27,33 @@ public class CacheItemDataStore implements ItemCache
      */
     static final long EXPIRATION_TIME = 10L * 60L * 1000L;
 
-    private final WeakHashMap<String, FruitEntity> itemCache;
+    private final WeakHashMap<String, FruitEntity> fruitCache;
     private long lastUpdatedTimeMillis = 0;
 
     // Prevent direct instantiation, but allow it from tests to inject mocks
     @VisibleForTesting
-    CacheItemDataStore(@NonNull CurrentTimeProvider timeProvider)
+    CacheFruitDataStore(@NonNull CurrentTimeProvider timeProvider)
     {
-        itemCache = new WeakHashMap<>(20);
+        fruitCache = new WeakHashMap<>(20);
         this.timeProvider = timeProvider;
     }
 
-    public static CacheItemDataStore getInstance(@NonNull CurrentTimeProvider timeProvider)
+    public static CacheFruitDataStore getInstance(@NonNull CurrentTimeProvider timeProvider)
     {
         if (INSTANCE == null)
         {
-            INSTANCE = new CacheItemDataStore(timeProvider);
+            INSTANCE = new CacheFruitDataStore(timeProvider);
         }
         return INSTANCE;
     }
 
     @SuppressWarnings("Guava")
     @Override
-    public Flowable<Optional<FruitEntity>> getItem(@NonNull String itemId)
+    public Flowable<Optional<FruitEntity>> getFruit(@NonNull String fruitId)
     {
-        if (!isExpired() && isCached(itemId))
+        if (!isExpired() && isCached(fruitId))
         {
-            return Flowable.just(Optional.of(getItemFromCache(itemId)));
+            return Flowable.just(Optional.of(getFruitFromCache(fruitId)));
         }
         else
         {
@@ -61,15 +61,15 @@ public class CacheItemDataStore implements ItemCache
         }
     }
 
-    private FruitEntity getItemFromCache(@NonNull String itemId)
+    private FruitEntity getFruitFromCache(@NonNull String fruitId)
     {
-        return itemCache.get(itemId);
+        return fruitCache.get(fruitId);
     }
 
     @Override
-    public void putItem(@NonNull FruitEntity item)
+    public void putFruit(@NonNull FruitEntity fruit)
     {
-        itemCache.put(item.getId(), item);
+        fruitCache.put(fruit.getId(), fruit);
         saveNowAsLastCacheUpdate();
     }
 
@@ -79,9 +79,9 @@ public class CacheItemDataStore implements ItemCache
     }
 
     @Override
-    public boolean isCached(@NonNull String itemId)
+    public boolean isCached(@NonNull String fruitId)
     {
-        return itemCache.containsKey(itemId);
+        return fruitCache.containsKey(fruitId);
     }
 
     @Override
@@ -102,6 +102,6 @@ public class CacheItemDataStore implements ItemCache
     @Override
     public void clearAll()
     {
-        itemCache.clear();
+        fruitCache.clear();
     }
 }

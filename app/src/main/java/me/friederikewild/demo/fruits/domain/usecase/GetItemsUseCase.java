@@ -6,7 +6,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import me.friederikewild.demo.fruits.data.ItemsRepository;
+import me.friederikewild.demo.fruits.data.FruitsRepository;
 import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
@@ -17,13 +17,13 @@ import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
 public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, List<Fruit>>
 {
     @NonNull
-    private final ItemsRepository repository;
+    private final FruitsRepository repository;
     @NonNull
     private final ItemEntityDataMapper mapper;
     @NonNull
     private final BaseSchedulerProvider schedulerProvider;
 
-    public GetItemsUseCase(@NonNull final ItemsRepository repository,
+    public GetItemsUseCase(@NonNull final FruitsRepository repository,
                            @NonNull final ItemEntityDataMapper mapper,
                            @NonNull final BaseSchedulerProvider schedulerProvider)
     {
@@ -40,7 +40,7 @@ public class GetItemsUseCase implements UseCase<GetItemsUseCase.RequestParams, L
             repository.refreshData();
         }
 
-        return repository.getItems()
+        return repository.getFruits()
                 .flatMap(Flowable::fromIterable)
                 .map(mapper::transform)
                 .toList()

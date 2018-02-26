@@ -2,29 +2,29 @@ package me.friederikewild.demo.fruits.data.datasource.cache;
 
 import android.support.annotation.NonNull;
 
-import me.friederikewild.demo.fruits.data.datasource.ItemDataStore;
+import me.friederikewild.demo.fruits.data.datasource.FruitDataStore;
 import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
- * Interface for caching items and retrieving them by id.
+ * Interface for caching fruits and retrieving them by id.
  * Loading is expected to be quick, therefore no extra callbacks.
  */
-public interface ItemCache extends ItemDataStore
+public interface FruitCache extends FruitDataStore
 {
     /**
-     * Save item in cache
+     * Save fruit in cache
      *
-     * @param item The item to cache
+     * @param fruit The fruit to cache
      */
-    void putItem(@NonNull FruitEntity item);
+    void putFruit(@NonNull FruitEntity fruit);
 
     /**
-     * Check if item with provided id is cached
+     * Check if fruit with provided id is cached
      *
-     * @param itemId Id to look up in cache
+     * @param fruitId Id to look up in cache
      * @return {@code true} if cached, otherwise {@code false}
      */
-    boolean isCached(final @NonNull String itemId);
+    boolean isCached(final @NonNull String fruitId);
 
     /**
      * Check if cache is still trustworthy

@@ -17,8 +17,8 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import me.friederikewild.demo.fruits.TestMockData;
-import me.friederikewild.demo.fruits.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.fruits.data.datasource.cache.ItemCache;
+import me.friederikewild.demo.fruits.data.datasource.FruitsDataStore;
+import me.friederikewild.demo.fruits.data.datasource.cache.FruitCache;
 import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,21 +27,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Test {@link ItemsDataRepository}
+ * Test {@link FruitsDataRepository}
  */
 @SuppressWarnings("Guava")
 public class ItemsDataRepositoryTest
 {
     // Repository under test
-    private ItemsDataRepository repository;
+    private FruitsDataRepository repository;
 
     private TestSubscriber<List<FruitEntity>> testListSubscriber;
     private TestSubscriber<Optional<FruitEntity>> testItemSubscriber;
 
     @Mock
-    private ItemsDataStore remoteMock;
+    private FruitsDataStore remoteMock;
     @Mock
-    private ItemCache cacheMock;
+    private FruitCache cacheMock;
 
     @Before
     public void setup()
@@ -51,7 +51,7 @@ public class ItemsDataRepositoryTest
         testListSubscriber = new TestSubscriber<>();
         testItemSubscriber = new TestSubscriber<>();
 
-        repository = new ItemsDataRepository(remoteMock, cacheMock);
+        repository = new FruitsDataRepository(remoteMock, cacheMock);
     }
 
     @Test
@@ -62,10 +62,10 @@ public class ItemsDataRepositoryTest
         setItemsRemoteEmptyList();
 
         // When
-        repository.getItems().subscribe(testListSubscriber);
+        repository.getFruits().subscribe(testListSubscriber);
 
         // Then
-        verify(remoteMock).getItems();
+        verify(remoteMock).getFruits();
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ItemsDataRepositoryTest
         setItemsRemoteEmptyList();
 
         // When
-        repository.getItems().subscribe(testListSubscriber);
+        repository.getFruits().subscribe(testListSubscriber);
 
         // Then
         Assert.assertEquals(0, testListSubscriber.values().get(0).size());
@@ -90,7 +90,7 @@ public class ItemsDataRepositoryTest
         setItemsRemoteAvailable(TestMockData.ENTITY_FRUITS);
 
         // When
-        repository.getItems().subscribe(testListSubscriber);
+        repository.getFruits().subscribe(testListSubscriber);
 
         // Then
         testListSubscriber.assertValue(TestMockData.ENTITY_FRUITS);
@@ -104,7 +104,7 @@ public class ItemsDataRepositoryTest
         setItemsRemoteEmptyList();
 
         // When
-        repository.getItem(TestMockData.FAKE_ID).subscribe(testItemSubscriber);
+        repository.getFruit(TestMockData.FAKE_ID).subscribe(testItemSubscriber);
 
         // Then
         testItemSubscriber.assertValue(expected);
@@ -118,7 +118,7 @@ public class ItemsDataRepositoryTest
         setItemsRemoteEmptyList();
 
         // When
-        repository.getItem(TestMockData.FAKE_ID).subscribe(testItemSubscriber);
+        repository.getFruit(TestMockData.FAKE_ID).subscribe(testItemSubscriber);
 
         // Then
         testItemSubscriber.assertValue(expectedAbsent);
@@ -131,10 +131,10 @@ public class ItemsDataRepositoryTest
         setItemsRemoteAvailable(TestMockData.ENTITY_FRUITS);
 
         // When
-        repository.getItems().subscribe(testListSubscriber);
+        repository.getFruits().subscribe(testListSubscriber);
 
         // Then given amount of items saved to cache
-        verify(cacheMock, times(TestMockData.ENTITY_FRUITS.size())).putItem(any(FruitEntity.class));
+        verify(cacheMock, times(TestMockData.ENTITY_FRUITS.size())).putFruit(any(FruitEntity.class));
     }
 
     @Test
@@ -150,24 +150,24 @@ public class ItemsDataRepositoryTest
     private Optional<FruitEntity> setupCacheEmpty()
     {
         final Optional<FruitEntity> entityAbsent = Optional.absent();
-        when(cacheMock.getItem(any())).thenReturn(Flowable.just(entityAbsent));
+        when(cacheMock.getFruit(any())).thenReturn(Flowable.just(entityAbsent));
         return entityAbsent;
     }
 
     private Optional<FruitEntity> setupCachePutItem(@NonNull final String id)
     {
         final Optional<FruitEntity> entityOptional = Optional.of(new FruitEntity(id));
-        when(cacheMock.getItem(id)).thenReturn(Flowable.just(entityOptional));
+        when(cacheMock.getFruit(id)).thenReturn(Flowable.just(entityOptional));
         return entityOptional;
     }
 
     private void setItemsRemoteAvailable(@NonNull List<FruitEntity> items)
     {
-        when(remoteMock.getItems()).thenReturn(Flowable.just(items));
+        when(remoteMock.getFruits()).thenReturn(Flowable.just(items));
     }
 
     private void setItemsRemoteEmptyList()
     {
-        when(remoteMock.getItems()).thenReturn(Flowable.just(Collections.emptyList()));
+        when(remoteMock.getFruits()).thenReturn(Flowable.just(Collections.emptyList()));
     }
 }

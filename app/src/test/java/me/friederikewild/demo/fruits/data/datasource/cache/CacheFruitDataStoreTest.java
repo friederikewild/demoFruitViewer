@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 /**
- * Test {@link CacheItemDataStore}
+ * Test {@link CacheFruitDataStore}
  */
 @SuppressWarnings("Guava")
 public class CacheFruitDataStoreTest
@@ -24,7 +24,7 @@ public class CacheFruitDataStoreTest
     private static final long NOW = 1000;
 
     // Cache data store under test
-    private CacheItemDataStore cacheItemDataStore;
+    private CacheFruitDataStore cacheItemDataStore;
 
     private TestSubscriber<Optional<FruitEntity>> testSubscriber;
 
@@ -40,7 +40,7 @@ public class CacheFruitDataStoreTest
 
         testSubscriber = new TestSubscriber<>();
 
-        cacheItemDataStore = new CacheItemDataStore(currentTimeProviderMock);
+        cacheItemDataStore = new CacheFruitDataStore(currentTimeProviderMock);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CacheFruitDataStoreTest
         final FruitEntity entity = createFakeItemEntity();
 
         // When
-        cacheItemDataStore.putItem(entity);
+        cacheItemDataStore.putFruit(entity);
         final boolean isCached = cacheItemDataStore.isCached(TestMockData.FAKE_ID);
 
         // Then
@@ -71,7 +71,7 @@ public class CacheFruitDataStoreTest
     public void givenEmptyCache_ThenNoDataCallbackOnRequest()
     {
         // When
-        cacheItemDataStore.getItem(TestMockData.FAKE_ID).subscribe(testSubscriber);
+        cacheItemDataStore.getFruit(TestMockData.FAKE_ID).subscribe(testSubscriber);
 
         // Then
         testSubscriber.assertValue(Optional.absent());
@@ -82,10 +82,10 @@ public class CacheFruitDataStoreTest
     {
         // Given
         final FruitEntity entity = createFakeItemEntity();
-        cacheItemDataStore.putItem(entity);
+        cacheItemDataStore.putFruit(entity);
 
         // When
-        cacheItemDataStore.getItem(TestMockData.FAKE_ID).subscribe(testSubscriber);
+        cacheItemDataStore.getFruit(TestMockData.FAKE_ID).subscribe(testSubscriber);
 
         // Then
         final Optional<FruitEntity> expectedResult = Optional.of(entity);
@@ -96,7 +96,7 @@ public class CacheFruitDataStoreTest
     public void givenCheckExpiredImmediatelyAfterCache_ThenCacheNotExpired()
     {
         // Given
-        cacheItemDataStore.putItem(createFakeItemEntity());
+        cacheItemDataStore.putFruit(createFakeItemEntity());
 
         // When
         boolean isExpired = cacheItemDataStore.isExpired();
@@ -109,10 +109,10 @@ public class CacheFruitDataStoreTest
     public void givenCheckExpiredAfterExpiration_ThenCacheExpired()
     {
         // Given
-        cacheItemDataStore.putItem(createFakeItemEntity());
+        cacheItemDataStore.putFruit(createFakeItemEntity());
 
         // When
-        updateCurrentTime(CacheItemDataStore.EXPIRATION_TIME + 1);
+        updateCurrentTime(CacheFruitDataStore.EXPIRATION_TIME + 1);
         boolean isExpired = cacheItemDataStore.isExpired();
 
         // Then
@@ -123,10 +123,10 @@ public class CacheFruitDataStoreTest
     public void givenCheckExpiredAfterExpiration_ThenItemNoLongerCached()
     {
         // Given
-        cacheItemDataStore.putItem(createFakeItemEntity());
+        cacheItemDataStore.putFruit(createFakeItemEntity());
 
         // When
-        updateCurrentTime(CacheItemDataStore.EXPIRATION_TIME + 1);
+        updateCurrentTime(CacheFruitDataStore.EXPIRATION_TIME + 1);
         cacheItemDataStore.isExpired();
         final boolean isCached = cacheItemDataStore.isCached(TestMockData.FAKE_ID);
 

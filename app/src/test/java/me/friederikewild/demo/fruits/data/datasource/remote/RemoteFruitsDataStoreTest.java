@@ -20,17 +20,17 @@ import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 import static org.mockito.Mockito.when;
 
 /**
- * CTest {@link RemoteItemsDataStore}
+ * CTest {@link RemoteFruitsDataStore}
  */
-public class RemoteItemsDataStoreTest
+public class RemoteFruitsDataStoreTest
 {
     // Class under test
-    private RemoteItemsDataStore remoteItemsDataStore;
+    private RemoteFruitsDataStore remoteItemsDataStore;
 
     private TestSubscriber<List<FruitEntity>> testSubscriber;
 
     @Mock
-    private ItemsApiProvider itemsApiProviderMock;
+    private FruitsApiProvider fruitsApiProviderMock;
     @Mock
     private FruitsApi fruitsApiMock;
 
@@ -38,11 +38,11 @@ public class RemoteItemsDataStoreTest
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
-        when(itemsApiProviderMock.getItemsApi()).thenReturn(fruitsApiMock);
+        when(fruitsApiProviderMock.getFruitsApi()).thenReturn(fruitsApiMock);
 
         testSubscriber = new TestSubscriber<>();
 
-        remoteItemsDataStore = new RemoteItemsDataStore(itemsApiProviderMock);
+        remoteItemsDataStore = new RemoteFruitsDataStore(fruitsApiProviderMock);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class RemoteItemsDataStoreTest
         setItemsRemoteNotAvailable();
 
         // When
-        remoteItemsDataStore.getItems().subscribe(testSubscriber);
+        remoteItemsDataStore.getFruits().subscribe(testSubscriber);
 
         // Then 1 empty list received
         Assert.assertEquals(1, testSubscriber.values().size());
@@ -66,7 +66,7 @@ public class RemoteItemsDataStoreTest
         setItemsRemoteAvailable(TestMockData.ENTITY_FRUITS);
 
         // When
-        remoteItemsDataStore.getItems().subscribe(testSubscriber);
+        remoteItemsDataStore.getFruits().subscribe(testSubscriber);
 
         // Then 1 list received with items
         Assert.assertEquals(1, testSubscriber.values().size());

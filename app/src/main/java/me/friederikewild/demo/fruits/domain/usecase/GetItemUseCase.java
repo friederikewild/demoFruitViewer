@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Optional;
 
 import io.reactivex.Single;
-import me.friederikewild.demo.fruits.data.ItemsRepository;
+import me.friederikewild.demo.fruits.data.FruitsRepository;
 import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
@@ -16,13 +16,13 @@ import me.friederikewild.demo.fruits.util.schedulers.BaseSchedulerProvider;
 public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Fruit>
 {
     @NonNull
-    private final ItemsRepository repository;
+    private final FruitsRepository repository;
     @NonNull
     private final ItemEntityDataMapper mapper;
     @NonNull
     private final BaseSchedulerProvider schedulerProvider;
 
-    public GetItemUseCase(@NonNull final ItemsRepository repository,
+    public GetItemUseCase(@NonNull final FruitsRepository repository,
                           @NonNull final ItemEntityDataMapper mapper,
                           @NonNull final BaseSchedulerProvider schedulerProvider)
     {
@@ -34,7 +34,7 @@ public class GetItemUseCase implements UseCase<GetItemUseCase.RequestParams, Fru
     @Override
     public Single<Fruit> execute(RequestParams requestParams)
     {
-        return repository.getItem(requestParams.getItemId())
+        return repository.getFruit(requestParams.getItemId())
                 .filter(Optional::isPresent)
                 .firstOrError()
                 .map(Optional::get)

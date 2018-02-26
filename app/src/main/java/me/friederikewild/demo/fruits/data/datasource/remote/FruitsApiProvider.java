@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 
 /**
  * Provide creation of a {@link FruitsApi} api.
- * Allowing no knowledge of used library to fetch items.
+ * Allowing no knowledge of used library to fetch fruits.
  */
-public interface ItemsApiProvider
+public interface FruitsApiProvider
 {
     @NonNull
-    FruitsApi getItemsApi();
+    FruitsApi getFruitsApi();
 }

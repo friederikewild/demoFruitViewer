@@ -6,12 +6,12 @@ import io.reactivex.Flowable;
 import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 
 /**
- * Define data layer access to items as collection
+ * Define data layer access to fruits as collection
  */
-public interface ItemsDataStore
+public interface FruitsDataStore
 {
     /**
-     * Request list of item entities from cache or remote.
+     * Request list of fruit entities from cache or remote.
      */
-    Flowable<List<FruitEntity>> getItems();
+    Flowable<List<FruitEntity>> getFruits();
 }

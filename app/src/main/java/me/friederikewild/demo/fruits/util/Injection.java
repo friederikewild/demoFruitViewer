@@ -3,16 +3,16 @@ package me.friederikewild.demo.fruits.util;
 
 import java.io.Serializable;
 
-import me.friederikewild.demo.fruits.data.ItemsDataRepository;
-import me.friederikewild.demo.fruits.data.ItemsRepository;
-import me.friederikewild.demo.fruits.data.datasource.ItemsDataStore;
-import me.friederikewild.demo.fruits.data.datasource.cache.CacheItemDataStore;
+import me.friederikewild.demo.fruits.data.FruitsDataRepository;
+import me.friederikewild.demo.fruits.data.FruitsRepository;
+import me.friederikewild.demo.fruits.data.datasource.FruitsDataStore;
+import me.friederikewild.demo.fruits.data.datasource.cache.CacheFruitDataStore;
 import me.friederikewild.demo.fruits.data.datasource.cache.CurrentTimeProvider;
-import me.friederikewild.demo.fruits.data.datasource.cache.ItemCache;
-import me.friederikewild.demo.fruits.data.datasource.remote.EmptyRemoteItemsDataProvider;
-import me.friederikewild.demo.fruits.data.datasource.remote.ItemsApiProvider;
-import me.friederikewild.demo.fruits.data.datasource.remote.RemoteItemsDataStore;
-import me.friederikewild.demo.fruits.data.datasource.remote.RetrofitItemsApiProvider;
+import me.friederikewild.demo.fruits.data.datasource.cache.FruitCache;
+import me.friederikewild.demo.fruits.data.datasource.remote.EmptyRemoteFruitsDataProvider;
+import me.friederikewild.demo.fruits.data.datasource.remote.FruitsApiProvider;
+import me.friederikewild.demo.fruits.data.datasource.remote.RemoteFruitsDataStore;
+import me.friederikewild.demo.fruits.data.datasource.remote.RetrofitFruitsApiProvider;
 import me.friederikewild.demo.fruits.data.entity.mapper.HtmlStringFormatter;
 import me.friederikewild.demo.fruits.data.entity.mapper.ItemEntityDataMapper;
 import me.friederikewild.demo.fruits.domain.usecase.GetItemUseCase;
@@ -26,9 +26,9 @@ import me.friederikewild.demo.fruits.util.schedulers.RxSchedulerProvider;
  */
 public class Injection
 {
-    public static ItemsRepository provideItemsDataRepository()
+    public static FruitsRepository provideItemsDataRepository()
     {
-        return ItemsDataRepository.getInstance(
+        return FruitsDataRepository.getInstance(
                 provideRemoteItemsDataStore(),
 //                provideEmptyRemoteItemsDataProvider(),
                 provideCacheItemDataStore());
@@ -44,27 +44,27 @@ public class Injection
         return HtmlStringFormatter.getInstance();
     }
 
-    public static ItemsDataStore provideRemoteItemsDataStore()
+    public static FruitsDataStore provideRemoteItemsDataStore()
     {
-        return RemoteItemsDataStore.getInstance(provideItemsApiProvider());
+        return RemoteFruitsDataStore.getInstance(provideItemsApiProvider());
     }
 
     /**
      * Alternative to test handling receiving an empty list from remote
      */
-    public static ItemsDataStore provideEmptyRemoteItemsDataProvider()
+    public static FruitsDataStore provideEmptyRemoteItemsDataProvider()
     {
-        return new EmptyRemoteItemsDataProvider();
+        return new EmptyRemoteFruitsDataProvider();
     }
 
-    public static ItemsApiProvider provideItemsApiProvider()
+    public static FruitsApiProvider provideItemsApiProvider()
     {
-        return RetrofitItemsApiProvider.getInstance();
+        return RetrofitFruitsApiProvider.getInstance();
     }
 
-    public static ItemCache provideCacheItemDataStore()
+    public static FruitCache provideCacheItemDataStore()
     {
-        return CacheItemDataStore.getInstance(provideCurrentTimeProvider());
+        return CacheFruitDataStore.getInstance(provideCurrentTimeProvider());
     }
 
     public static CurrentTimeProvider provideCurrentTimeProvider()
