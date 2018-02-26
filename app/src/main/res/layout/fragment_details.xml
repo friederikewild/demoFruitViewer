@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
     android:padding="@dimen/zero"
-    tools:context=".details.DetailsActivity">
+    tools:context=".presentation.details.DetailsActivity">
 
     <include
         android:id="@+id/detailsSquareImage"
