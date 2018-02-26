@@ -1,4 +1,4 @@
-package me.friederikewild.demo.fruits.overview;
+package me.friederikewild.demo.fruits.presentation.overview;
 
 import android.support.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package me.friederikewild.demo.fruits.overview;
+package me.friederikewild.demo.fruits.presentation.overview;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.friederikewild.demo.fruits.R;
-import me.friederikewild.demo.fruits.details.DetailsActivity;
+import me.friederikewild.demo.fruits.presentation.details.DetailsActivity;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 import timber.log.Timber;
 
-import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.GRID_LAYOUT;
-import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.LIST_LAYOUT;
+import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.GRID_LAYOUT;
+import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.LIST_LAYOUT;
 
 public class OverviewFragment extends Fragment implements OverviewContract.View
 {

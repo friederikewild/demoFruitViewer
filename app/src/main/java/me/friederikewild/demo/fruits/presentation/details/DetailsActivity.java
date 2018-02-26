@@ -1,4 +1,4 @@
-package me.friederikewild.demo.fruits.details;
+package me.friederikewild.demo.fruits.presentation.details;
 
 import android.content.Intent;
 import android.os.Bundle;

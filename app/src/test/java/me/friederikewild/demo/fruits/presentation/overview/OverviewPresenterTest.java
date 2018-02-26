@@ -1,4 +1,4 @@
-package me.friederikewild.demo.fruits.overview;
+package me.friederikewild.demo.fruits.presentation.overview;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,8 +19,8 @@ import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.domain.usecase.GetFruitsUseCase;
 
 import static me.friederikewild.demo.fruits.TestMockData.FRUITS;
-import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.GRID_LAYOUT;
-import static me.friederikewild.demo.fruits.overview.OverviewLayoutType.LIST_LAYOUT;
+import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.GRID_LAYOUT;
+import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.LIST_LAYOUT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;

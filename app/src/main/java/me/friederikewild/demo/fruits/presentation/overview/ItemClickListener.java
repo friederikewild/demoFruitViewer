@@ -1,4 +1,4 @@
-package me.friederikewild.demo.fruits.overview;
+package me.friederikewild.demo.fruits.presentation.overview;
 
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 
