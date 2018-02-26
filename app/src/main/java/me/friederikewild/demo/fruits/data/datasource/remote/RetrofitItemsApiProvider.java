@@ -60,7 +60,7 @@ public class RetrofitItemsApiProvider implements ItemsApiProvider
 
         // Setup retrofitClient builder
         final Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .baseUrl(ItemsApi.BASE_URL)
+                .baseUrl(FruitsApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient);
@@ -115,10 +115,10 @@ public class RetrofitItemsApiProvider implements ItemsApiProvider
     }
 
     @NonNull
-    public ItemsApi getItemsApi()
+    public FruitsApi getItemsApi()
     {
         // Create api from interface ready for calls
-        return retrofitClient.create(ItemsApi.class);
+        return retrofitClient.create(FruitsApi.class);
     }
 
     private static boolean isNetworkAvailable()

@@ -39,7 +39,7 @@ public class RemoteItemsDataStore implements ItemsDataStore
     @Override
     public Flowable<List<ItemEntity>> getItems()
     {
-        final ItemsApi itemsApi = itemsApiProvider.getItemsApi();
-        return itemsApi.getItems();
+        final FruitsApi fruitsApi = itemsApiProvider.getItemsApi();
+        return fruitsApi.getFruits();
     }
 }

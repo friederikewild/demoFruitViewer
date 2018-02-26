@@ -32,13 +32,13 @@ public class RemoteItemsDataStoreTest
     @Mock
     private ItemsApiProvider itemsApiProviderMock;
     @Mock
-    private ItemsApi itemsApiMock;
+    private FruitsApi fruitsApiMock;
 
     @Before
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
-        when(itemsApiProviderMock.getItemsApi()).thenReturn(itemsApiMock);
+        when(itemsApiProviderMock.getItemsApi()).thenReturn(fruitsApiMock);
 
         testSubscriber = new TestSubscriber<>();
 
@@ -75,11 +75,11 @@ public class RemoteItemsDataStoreTest
 
     private void setItemsRemoteAvailable(@NonNull List<ItemEntity> items)
     {
-        when(itemsApiMock.getItems()).thenReturn(Flowable.just(items));
+        when(fruitsApiMock.getFruits()).thenReturn(Flowable.just(items));
     }
 
     private void setItemsRemoteNotAvailable()
     {
-        when(itemsApiMock.getItems()).thenReturn(Flowable.just(Collections.emptyList()));
+        when(fruitsApiMock.getFruits()).thenReturn(Flowable.just(Collections.emptyList()));
     }
 }

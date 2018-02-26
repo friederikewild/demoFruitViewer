@@ -10,10 +10,10 @@ import retrofit2.http.GET;
  * Define available api methods.
  * Can use "http://www.mocky.io/v2/" as base for testing specific responses.
  */
-public interface ItemsApi
+public interface FruitsApi
 {
     String BASE_URL = "http://www.mocky.io/v2/";
 
-    @GET("57ee2ca8260000f80e1110fa")
+    @GET("5a94869f3500000e009b0ec9")
     Flowable<List<ItemEntity>> getItems();
 }
