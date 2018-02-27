@@ -1,4 +1,4 @@
-# README 
+# README [![CircleCI](https://circleci.com/gh/friederikewild/demoFruitViewer.svg?style=svg&circle-token=1be52784e95b73fb58f601c99c19916d4eff6806)](https://circleci.com/gh/friederikewild/demoFruitViewer) 
 
 Android MVP Android demo showing fruit fact cards. The app showcases usage of MVP + Clean Architecture combined with rxJava. 
 The look follows the Material Design Guidelines with usage of cards and material system icons.
