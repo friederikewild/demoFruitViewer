@@ -18,8 +18,8 @@ The look follows the Material Design Guidelines with usage of cards and material
 
 * **Overview** provides RecyclerView with list and grid display option (aka *OverviewLayoutType*). Pull2Refresh is available to fetch again when first started without network connection
 
-** Using CardView for fruits in list since content is more than three lines of text
-** Card layouts follow [Material Design Guidelines](https://material.io/guidelines/components/cards.html#cards-content)
+  * Using CardView for fruits in list since content is more than three lines of text
+  * Card layouts follow [Material Design Guidelines](https://material.io/guidelines/components/cards.html#cards-content)
 
 * **Detail** provides larger image of one entry, square and fully visible in both portrait and landscape
 
