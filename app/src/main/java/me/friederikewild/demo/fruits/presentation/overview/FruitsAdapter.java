@@ -153,7 +153,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
         holder.titleTextView.setText(fruit.getTitle());
     }
 
-    private void bindDescriptionView(@NonNull ViewHolder holder, @NonNull Fruit fruit)
+    private void bindDescriptionView(final @NonNull ViewHolder holder, final @NonNull Fruit fruit)
     {
         // Description view is optional and not available in grid mode
         if (holder.descriptionTextView != null)
@@ -164,6 +164,18 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
             if (!isDescriptionEmpty)
             {
                 holder.descriptionTextView.setText(fruit.getDescription());
+            }
+        }
+        // More view is optional and not available in grid mode
+        if (holder.moreActionTextView != null)
+        {
+            // Hide view if no source link provided
+            boolean isSourceUrlEmpty = Strings.isNullOrEmpty(fruit.getSourceUrl());
+            holder.moreActionTextView.setVisibility(isSourceUrlEmpty ? View.GONE : View.VISIBLE);
+            if (!isSourceUrlEmpty)
+            {
+                holder.moreActionTextView.setOnClickListener(
+                        view -> fruitClickListener.onMoreActionClicked(fruit));
             }
         }
     }
@@ -216,6 +228,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
         final View rootView;
         final TextView titleTextView;
         final TextView descriptionTextView;
+        final TextView moreActionTextView;
         final ImageView imageView;
 
         ViewHolder(@NonNull View itemView)
@@ -224,6 +237,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
             rootView = itemView;
             titleTextView = itemView.findViewById(R.id.overviewFruitTitle);
             descriptionTextView = itemView.findViewById(R.id.overviewFruitDescriptionText);
+            moreActionTextView = itemView.findViewById(R.id.overviewFruitMoreText);
             imageView = itemView.findViewById(R.id.overviewFruitImage);
         }
     }

@@ -18,6 +18,7 @@ import me.friederikewild.demo.fruits.TestSerializableBundler;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 import me.friederikewild.demo.fruits.domain.usecase.GetFruitsUseCase;
 
+import static me.friederikewild.demo.fruits.TestMockData.FRUIT;
 import static me.friederikewild.demo.fruits.TestMockData.FRUITS;
 import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.GRID_LAYOUT;
 import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.LIST_LAYOUT;
@@ -333,6 +334,33 @@ public class OverviewPresenterTest
     }
     //endregion [Test Menu Visibility]
 
+    //region [Test Actions]
+    @Test
+    public void givenPresenterInformedAboutClick_ThenViewShowsDetails()
+    {
+        // Given
+        reset(overviewViewMock);
+
+        // When
+        presenter.onFruitItemClicked(FRUIT);
+
+        // Then
+        verify(overviewViewMock).showDetailsForFruit(FRUIT.getId());
+    }
+
+    @Test
+    public void givenPresenterInformedAboutMoreAction_ThenViewShowsMore()
+    {
+        // Given
+        reset(overviewViewMock);
+
+        // When
+        presenter.onFruitActionMore(FRUIT);
+
+        // Then
+        verify(overviewViewMock).showMoreView(FRUIT.getSourceUrl());
+    }
+    //endregion [Test Actions]
 
     private void setUseCaseItemsAvailable(@NonNull List<Fruit> fruits)
     {

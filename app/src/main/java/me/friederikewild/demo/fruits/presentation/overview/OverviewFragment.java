@@ -1,6 +1,7 @@
 package me.friederikewild.demo.fruits.presentation.overview;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.friederikewild.demo.fruits.R;
-import me.friederikewild.demo.fruits.presentation.details.DetailsActivity;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
+import me.friederikewild.demo.fruits.presentation.details.DetailsActivity;
 import timber.log.Timber;
 
 import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.GRID_LAYOUT;
@@ -67,8 +68,20 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        fruitsAdapter = new FruitsAdapter(new ArrayList<>(),
-                                        fruit -> presenter.onFruitItemClicked(fruit));
+        fruitsAdapter = new FruitsAdapter(new ArrayList<>(), new FruitClickListener()
+        {
+            @Override
+            public void onFruitItemClicked(@NonNull Fruit fruit)
+            {
+                presenter.onFruitItemClicked(fruit);
+            }
+
+            @Override
+            public void onMoreActionClicked(@NonNull Fruit fruit)
+            {
+                presenter.onFruitActionMore(fruit);
+            }
+        });
     }
 
     @Nullable
@@ -238,6 +251,16 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 
         // Start for result to allow dealing with last active layout
         startActivityForResult(intent, presenter.getRequestCodeForDetail());
+    }
+
+    @Override
+    public void showMoreView(@NonNull String moreUrl)
+    {
+        assertFruitIdNotNull(moreUrl);
+
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(moreUrl));
+        startActivity(i);
     }
 
     private void assertFruitIdNotNull(final String fruitId)

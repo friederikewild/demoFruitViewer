@@ -28,6 +28,8 @@ public class Fruit
     @NonNull
     private String sourceProvider;
     @NonNull
+    private String sourceUrl;
+    @NonNull
     private String imageUrl;
     @NonNull
     private String imageCredits;
@@ -45,12 +47,14 @@ public class Fruit
         this.date = testString;
         this.tags = new ArrayList<>();
         this.sourceProvider = testString;
+        this.sourceUrl = "sourceUrl" + testString;
         this.imageUrl = testString;
         this.imageCredits = testString;
     }
 
     public Fruit(@NonNull String id, @NonNull String title, @NonNull String description,
-                 @NonNull String date, @NonNull List<String> tags, @NonNull String sourceProvider,
+                 @NonNull String date, @NonNull List<String> tags,
+                 @NonNull String sourceProvider, @NonNull String sourceUrl,
                  @NonNull String imageUrl, @NonNull String imageCredits)
     {
         this.id = id;
@@ -59,6 +63,7 @@ public class Fruit
         this.date = date;
         this.tags = tags;
         this.sourceProvider = sourceProvider;
+        this.sourceUrl = sourceUrl;
         this.imageUrl = imageUrl;
         this.imageCredits = imageCredits;
     }
@@ -97,6 +102,12 @@ public class Fruit
     public String getSourceProvider()
     {
         return sourceProvider;
+    }
+
+    @NonNull
+    public String getSourceUrl()
+    {
+        return sourceUrl;
     }
 
     @NonNull
@@ -149,6 +160,10 @@ public class Fruit
         {
             return false;
         }
+        if (!sourceUrl.equals(fruit.sourceUrl))
+        {
+            return false;
+        }
         if (!imageUrl.equals(fruit.imageUrl))
         {
             return false;
@@ -165,6 +180,7 @@ public class Fruit
         result = 31 * result + date.hashCode();
         result = 31 * result + tags.hashCode();
         result = 31 * result + sourceProvider.hashCode();
+        result = 31 * result + sourceUrl.hashCode();
         result = 31 * result + imageUrl.hashCode();
         result = 31 * result + imageCredits.hashCode();
         return result;

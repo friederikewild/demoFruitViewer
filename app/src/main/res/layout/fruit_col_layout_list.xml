@@ -52,8 +52,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/overviewFruitMoreText"
             tools:text="@string/overview_hint_error"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/overviewFruitMoreText"
+            android:layout_width="@dimen/match_constraints"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dot_double"
+            android:lineSpacingExtra="@dimen/dot_half"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/colorAccent"
+            android:text="@string/overview_action_more"
+            app:layout_constraintTop_toBottomOf="@+id/overviewFruitDescriptionText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible" />
 
     </android.support.constraint.ConstraintLayout>

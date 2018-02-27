@@ -23,6 +23,8 @@ public interface OverviewContract
 
         void showDetailsForFruit(@NonNull String fruitId);
 
+        void showMoreView(@NonNull String moreUrl);
+
         void showNoFruitsAvailable();
 
         void showLoadingFruitsError();
@@ -37,6 +39,8 @@ public interface OverviewContract
         void loadFruits(boolean forceUpdate);
 
         void onFruitItemClicked(@NonNull Fruit fruit);
+
+        void onFruitActionMore(@NonNull Fruit fruit);
 
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 

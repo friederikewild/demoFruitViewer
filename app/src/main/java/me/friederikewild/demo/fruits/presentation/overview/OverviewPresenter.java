@@ -210,6 +210,12 @@ public class OverviewPresenter implements OverviewContract.Presenter
     }
 
     @Override
+    public void onFruitActionMore(@NonNull Fruit fruit)
+    {
+        overviewView.showMoreView(fruit.getSourceUrl());
+    }
+
+    @Override
     public void setLayoutPresentation(@NonNull final OverviewLayoutType layoutType)
     {
         setLayoutPresentation(layoutType, true);
