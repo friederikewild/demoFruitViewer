@@ -1,15 +1,18 @@
-# README [![CircleCI](https://circleci.com/bb/eyewellbeing/touchnotedemo.svg?style=svg&circle-token=6df3bafb890a179ecdbee3196ad2f434e4dcacad)](https://circleci.com/bb/eyewellbeing/touchnotedemo)
+# README 
 
-Android MVP demo showing fruit facts by Friederike Wild.
+Android MVP Android demo showing fruit fact cards. The app showcases usage of MVP + Clean Architecture combined with rxJava. 
+The look follows the Material Design Guidelines with usage of cards and material system icons.
+
 
 ### Fruits Demo App
 
-* Implemented following MVP architecture
+* Implemented following [MVP architecture](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
 * Split into three layers with data (including repositories), domain and presentation layer inspired by [Clean Architecture](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html) and [Google Android Architecture Blueprints](https://github.com/googlesamples/android-architecture)
 
 * Fetch json test data and cache elements per id for quick detail viewing
 
 * Data is provided between layers via rxJava Flowables
+
 
 ### Screens
 
