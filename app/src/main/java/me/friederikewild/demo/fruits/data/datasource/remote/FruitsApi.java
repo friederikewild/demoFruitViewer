@@ -12,8 +12,8 @@ import retrofit2.http.GET;
  */
 public interface FruitsApi
 {
-    String BASE_URL = "http://www.mocky.io/v2/";
+    String BASE_URL = "https://friederikewild.github.io/demoFruitViewer/api/";
 
-    @GET("5a94869f3500000e009b0ec9")
+    @GET("fruits.json")
     Flowable<List<FruitEntity>> getFruits();
 }
