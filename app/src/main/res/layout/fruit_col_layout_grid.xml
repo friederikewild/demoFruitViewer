@@ -49,25 +49,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!--Bend material design and provide more space at start and bottom to fit 3 lines-->
         <TextView
             android:id="@+id/overviewFruitTitle"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="@dimen/match_constraints"
             android:layout_marginStart="@dimen/dot_double"
             android:layout_marginEnd="@dimen/dot_double"
-            android:layout_marginTop="@dimen/dot"
-            android:layout_marginBottom="@dimen/dot"
+            android:layout_marginTop="@dimen/dot_double"
+            android:layout_marginBottom="@dimen/dot_double"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorPrimaryTextDark"
-            android:maxLines="3"
+            android:maxLines="2"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/overviewFruitFooterBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="@string/overview_hint_error" />
+            tools:text="@string/app_name" />
 
     </android.support.constraint.ConstraintLayout>
 

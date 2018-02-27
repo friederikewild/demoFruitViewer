@@ -22,9 +22,8 @@
             android:layout_width="@dimen/thumb_icon_size"
             android:layout_height="@dimen/thumb_icon_size"
             android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/overviewFruitDescriptionText"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:srcCompat="@drawable/placeholder_thumbnail_circle_primary" />
 
@@ -52,8 +51,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/overviewFruitMoreText"
             tools:text="@string/overview_hint_error"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/overviewFruitSourceProvider"
+            android:layout_width="@dimen/match_constraints"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dot_double"
+            android:lineSpacingExtra="@dimen/dot_half"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/colorSecondaryTextLight"
+            android:text="@string/fruit_source_provider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/overviewFruitDescriptionText"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible" />
 
         <TextView
@@ -64,7 +76,8 @@
             android:lineSpacingExtra="@dimen/dot_half"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorAccent"
-            android:text="@string/overview_action_more"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="@string/fruit_action_more"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitDescriptionText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

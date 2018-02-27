@@ -1,6 +1,7 @@
 package me.friederikewild.demo.fruits.presentation.overview;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -166,6 +167,19 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
                 holder.descriptionTextView.setText(fruit.getDescription());
             }
         }
+        // Source view is optional and not available in grid mode
+        if (holder.sourceTextView != null)
+        {
+            // Hide view if no source link provided
+            boolean isSourceEmpty = Strings.isNullOrEmpty(fruit.getSourceProvider());
+            holder.sourceTextView.setVisibility(isSourceEmpty ? View.GONE : View.VISIBLE);
+            if (!isSourceEmpty)
+            {
+                final Resources res = holder.rootView.getContext().getResources();
+                holder.sourceTextView.setText(res.getString(R.string.fruit_source_provider,
+                                                            fruit.getSourceProvider()));
+            }
+        }
         // More view is optional and not available in grid mode
         if (holder.moreActionTextView != null)
         {
@@ -228,6 +242,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
         final View rootView;
         final TextView titleTextView;
         final TextView descriptionTextView;
+        final TextView sourceTextView;
         final TextView moreActionTextView;
         final ImageView imageView;
 
@@ -238,6 +253,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
             titleTextView = itemView.findViewById(R.id.overviewFruitTitle);
             descriptionTextView = itemView.findViewById(R.id.overviewFruitDescriptionText);
             moreActionTextView = itemView.findViewById(R.id.overviewFruitMoreText);
+            sourceTextView = itemView.findViewById(R.id.overviewFruitSourceProvider);
             imageView = itemView.findViewById(R.id.overviewFruitImage);
         }
     }
