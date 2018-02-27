@@ -35,19 +35,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Look can be switched with {@link #setLayoutType(OverviewLayoutType)}.
  * Internally using two different ViewType to represent the different look when preparing the views.
  */
-public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
+public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder>
 {
     private List<Fruit> fruits;
     @NonNull
-    private ItemClickListener itemClickListener;
+    private FruitClickListener fruitClickListener;
 
     @IdRes
     private int currentViewType = OverviewLayoutType.INVALID_TYPE.getUniqueId();
 
-    ItemsAdapter(@NonNull List<Fruit> fruits,
-                 @NonNull ItemClickListener listener)
+    FruitsAdapter(@NonNull List<Fruit> fruits,
+                  @NonNull FruitClickListener listener)
     {
-        itemClickListener = listener;
+        fruitClickListener = listener;
         setList(fruits);
 
         setHasStableIds(true);
@@ -86,7 +86,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         if (currentViewType == OverviewLayoutType.INVALID_TYPE.getUniqueId())
         {
             final IllegalStateException exception = new IllegalStateException(
-                    "ItemsAdapter needs initial configuration of current LayoutType before usage!");
+                    "FruitsAdapter needs initial configuration of current LayoutType before usage!");
             if (BuildConfig.DEBUG)
             {
                 throw exception;
@@ -127,7 +127,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         bindDescriptionView(holder, fruit);
 
         // Make full card clickable
-        holder.rootView.setOnClickListener(view -> itemClickListener.onItemClicked(fruit));
+        holder.rootView.setOnClickListener(view -> fruitClickListener.onFruitItemClicked(fruit));
     }
 
     private void bindImageView(@NonNull ViewHolder holder, @NonNull Fruit fruit, @IdRes int viewType)
@@ -153,7 +153,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         holder.titleTextView.setText(fruit.getTitle());
     }
 
-    private void bindDescriptionView(@NonNull ViewHolder holder, @NonNull Fruit fruit)
+    private void bindDescriptionView(final @NonNull ViewHolder holder, final @NonNull Fruit fruit)
     {
         // Description view is optional and not available in grid mode
         if (holder.descriptionTextView != null)
@@ -166,6 +166,18 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
                 holder.descriptionTextView.setText(fruit.getDescription());
             }
         }
+        // More view is optional and not available in grid mode
+        if (holder.moreActionTextView != null)
+        {
+            // Hide view if no source link provided
+            boolean isSourceUrlEmpty = Strings.isNullOrEmpty(fruit.getSourceUrl());
+            holder.moreActionTextView.setVisibility(isSourceUrlEmpty ? View.GONE : View.VISIBLE);
+            if (!isSourceUrlEmpty)
+            {
+                holder.moreActionTextView.setOnClickListener(
+                        view -> fruitClickListener.onMoreActionClicked(fruit));
+            }
+        }
     }
 
     @LayoutRes
@@ -174,11 +186,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         switch (viewType)
         {
             case R.id.overview_view_type_grid:
-                return R.layout.item_col_layout_grid;
+                return R.layout.fruit_col_layout_grid;
 
             case R.id.overview_view_type_list:
             default:
-                return R.layout.item_col_layout_list;
+                return R.layout.fruit_col_layout_list;
         }
     }
 
@@ -209,22 +221,24 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     }
 
     /**
-     * View Holder per item
+     * View Holder per fruit item
      */
     static class ViewHolder extends RecyclerView.ViewHolder
     {
         final View rootView;
         final TextView titleTextView;
         final TextView descriptionTextView;
+        final TextView moreActionTextView;
         final ImageView imageView;
 
         ViewHolder(@NonNull View itemView)
         {
             super(itemView);
             rootView = itemView;
-            titleTextView = itemView.findViewById(R.id.overviewItemTitle);
-            descriptionTextView = itemView.findViewById(R.id.overviewItemDescriptionText);
-            imageView = itemView.findViewById(R.id.overviewItemImage);
+            titleTextView = itemView.findViewById(R.id.overviewFruitTitle);
+            descriptionTextView = itemView.findViewById(R.id.overviewFruitDescriptionText);
+            moreActionTextView = itemView.findViewById(R.id.overviewFruitMoreText);
+            imageView = itemView.findViewById(R.id.overviewFruitImage);
         }
     }
 }

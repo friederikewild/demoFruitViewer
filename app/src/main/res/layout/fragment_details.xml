@@ -26,7 +26,7 @@
 
     <!-- Hide hint by default. Shown by view when needed -->
     <TextView
-        android:id="@+id/detailsHintNoItems"
+        android:id="@+id/detailsHintNoFruits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dot_double"

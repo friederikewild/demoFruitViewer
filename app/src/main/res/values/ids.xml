@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Ids used by ItemsAdapter as ViewTypes -->
+    <!-- Ids used by FruitsAdapter as ViewTypes -->
     <item type="id" name="overview_view_type_list" />
     <item type="id" name="overview_view_type_grid" />
     <item type="id" name="overview_view_type_invalid" />

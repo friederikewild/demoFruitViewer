@@ -14,11 +14,11 @@ public class DetailsContract
     {
         void setLoadingIndicator(boolean active);
 
-        void showItemImage(@NonNull String imageUrl);
+        void showFruitImage(@NonNull String imageUrl);
 
-        void showItemTitle(@NonNull String title);
+        void showFruitTitle(@NonNull String title);
 
-        void showLoadingItemError();
+        void showLoadingFruitError();
     }
 
     interface Presenter extends BasePresenter

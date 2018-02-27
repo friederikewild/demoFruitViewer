@@ -10,7 +10,7 @@ import me.friederikewild.demo.fruits.util.Injection;
 
 public class DetailsActivity extends ActivityWithOneFragment<DetailsFragment, DetailsContract.Presenter>
 {
-    public static final String EXTRA_ITEM_ID = "ITEM_ID";
+    public static final String EXTRA_FRUIT_ID = "ITEM_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,7 +52,7 @@ public class DetailsActivity extends ActivityWithOneFragment<DetailsFragment, De
     public DetailsContract.Presenter createPresenter(@NonNull DetailsFragment fragment)
     {
         // Get the requested task id
-        final String itemId = getIntent().getStringExtra(EXTRA_ITEM_ID);
+        final String itemId = getIntent().getStringExtra(EXTRA_FRUIT_ID);
 
         return new DetailsPresenter(fragment,
                                     itemId,

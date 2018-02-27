@@ -19,7 +19,7 @@
 
         <!-- Mark a square starting from the start/top corner that is kept free for the image -->
         <Space
-            android:id="@+id/overviewItemTopSquare"
+            android:id="@+id/overviewFruitTopSquare"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="@dimen/match_constraints"
             app:layout_constraintDimensionRatio="H,1:1"
@@ -28,30 +28,30 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
-            android:id="@+id/overviewItemImage"
+            android:id="@+id/overviewFruitImage"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="@dimen/match_constraints"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="@+id/overviewItemTopSquare"
-            app:layout_constraintTop_toTopOf="@+id/overviewItemTopSquare"
+            app:layout_constraintStart_toStartOf="@+id/overviewFruitTopSquare"
+            app:layout_constraintTop_toTopOf="@+id/overviewFruitTopSquare"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:srcCompat="@drawable/placeholder_image_square_primary"/>
 
         <!-- Half transparent box in recommended footer height -->
         <View
-            android:id="@+id/overviewItemFooterBackground"
+            android:id="@+id/overviewFruitFooterBackground"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="@dimen/card_footer_height"
             android:background="@color/colorGridTitleBackground"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/overviewItemTopSquare"
+            app:layout_constraintTop_toBottomOf="@+id/overviewFruitTopSquare"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <!--Bend material design and provide more space at start and bottom to fit 3 lines-->
         <TextView
-            android:id="@+id/overviewItemTitle"
+            android:id="@+id/overviewFruitTitle"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="@dimen/match_constraints"
             android:layout_marginStart="@dimen/dot_double"
@@ -64,7 +64,7 @@
             android:maxLines="3"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/overviewItemFooterBackground"
+            app:layout_constraintTop_toTopOf="@+id/overviewFruitFooterBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="@string/overview_hint_error" />

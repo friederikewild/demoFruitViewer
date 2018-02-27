@@ -109,8 +109,8 @@ public class DetailsPresenterTest
         inOrder.verify(detailsViewMock).setLoadingIndicator(true);
 
         // Then loading indicator is hidden
-        inOrder.verify(detailsViewMock).showItemImage(FRUIT.getImageUrl());
-        inOrder.verify(detailsViewMock).showItemTitle(FRUIT.getTitle());
+        inOrder.verify(detailsViewMock).showFruitImage(FRUIT.getImageUrl());
+        inOrder.verify(detailsViewMock).showFruitTitle(FRUIT.getTitle());
     }
 
     private void setUseCaseItemAvailable(@NonNull Fruit fruit)

@@ -1,6 +1,7 @@
 package me.friederikewild.demo.fruits.presentation.overview;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.friederikewild.demo.fruits.R;
-import me.friederikewild.demo.fruits.presentation.details.DetailsActivity;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
+import me.friederikewild.demo.fruits.presentation.details.DetailsActivity;
 import timber.log.Timber;
 
 import static me.friederikewild.demo.fruits.presentation.overview.OverviewLayoutType.GRID_LAYOUT;
@@ -33,11 +34,11 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
 {
     private OverviewContract.Presenter presenter;
 
-    private ItemsAdapter itemsAdapter;
+    private FruitsAdapter fruitsAdapter;
 
     private RecyclerView.LayoutManager currentLayoutManager;
     private RecyclerView recyclerView;
-    private TextView hintNoItemsTextView;
+    private TextView hintNoFruitsTextView;
 
     public OverviewFragment()
     {
@@ -67,8 +68,20 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        itemsAdapter = new ItemsAdapter(new ArrayList<>(),
-                                        item -> presenter.onItemClicked(item));
+        fruitsAdapter = new FruitsAdapter(new ArrayList<>(), new FruitClickListener()
+        {
+            @Override
+            public void onFruitItemClicked(@NonNull Fruit fruit)
+            {
+                presenter.onFruitItemClicked(fruit);
+            }
+
+            @Override
+            public void onMoreActionClicked(@NonNull Fruit fruit)
+            {
+                presenter.onFruitActionMore(fruit);
+            }
+        });
     }
 
     @Nullable
@@ -77,8 +90,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     {
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        recyclerView = rootView.findViewById(R.id.overviewItemsList);
-        hintNoItemsTextView = rootView.findViewById(R.id.overviewHintNoItems);
+        recyclerView = rootView.findViewById(R.id.overviewFruitsList);
+        hintNoFruitsTextView = rootView.findViewById(R.id.overviewHintNoFruits);
 
         return rootView;
     }
@@ -106,7 +119,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
                 ContextCompat.getColor(getActivity(), R.color.colorAccent)
         );
 
-        refreshLayout.setOnRefreshListener(() -> presenter.loadItems(false));
+        refreshLayout.setOnRefreshListener(() -> presenter.loadFruits(false));
     }
 
     @Override
@@ -142,7 +155,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     {
         super.onDestroyView();
         recyclerView = null;
-        hintNoItemsTextView = null;
+        hintNoFruitsTextView = null;
         currentLayoutManager = null;
         presenter = null;
     }
@@ -151,7 +164,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     public void onDestroy()
     {
         super.onDestroy();
-        itemsAdapter = null;
+        fruitsAdapter = null;
     }
     //endregion
 
@@ -217,60 +230,70 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     }
 
     @Override
-    public void showItems(@NonNull List<Fruit> fruits)
+    public void showFruits(@NonNull List<Fruit> fruits)
     {
         Timber.i("View - Show %d fruits %s", fruits.size(), fruits);
 
-        itemsAdapter.replaceData(fruits);
+        fruitsAdapter.replaceData(fruits);
 
-        hintNoItemsTextView.setVisibility(View.GONE);
+        hintNoFruitsTextView.setVisibility(View.GONE);
 
         recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void showDetailsForItem(@NonNull final String itemId)
+    public void showDetailsForFruit(@NonNull final String fruitId)
     {
-        assertItemIdNotNull(itemId);
+        assertFruitIdNotNull(fruitId);
 
         Intent intent = new Intent(getContext(), DetailsActivity.class);
-        intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
+        intent.putExtra(DetailsActivity.EXTRA_FRUIT_ID, fruitId);
 
         // Start for result to allow dealing with last active layout
         startActivityForResult(intent, presenter.getRequestCodeForDetail());
     }
 
-    private void assertItemIdNotNull(final String itemId)
+    @Override
+    public void showMoreView(@NonNull String moreUrl)
     {
-        if (itemId == null || itemId.isEmpty())
+        assertFruitIdNotNull(moreUrl);
+
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(moreUrl));
+        startActivity(i);
+    }
+
+    private void assertFruitIdNotNull(final String fruitId)
+    {
+        if (fruitId == null || fruitId.isEmpty())
         {
             throw new IllegalStateException(
-                    "ItemsDetails can not be started without an item id!");
+                    "Details can not be started without a fruit id!");
         }
     }
 
     @Override
-    public void showNoItemsAvailable()
+    public void showNoFruitsAvailable()
     {
         recyclerView.setVisibility(View.GONE);
 
-        hintNoItemsTextView.setVisibility(View.VISIBLE);
-        hintNoItemsTextView.setText(R.string.overview_hint_empty);
+        hintNoFruitsTextView.setVisibility(View.VISIBLE);
+        hintNoFruitsTextView.setText(R.string.overview_hint_empty);
     }
 
     @Override
-    public void showLoadingItemsError()
+    public void showLoadingFruitsError()
     {
         recyclerView.setVisibility(View.GONE);
 
-        hintNoItemsTextView.setVisibility(View.VISIBLE);
-        hintNoItemsTextView.setText(R.string.overview_hint_error);
+        hintNoFruitsTextView.setVisibility(View.VISIBLE);
+        hintNoFruitsTextView.setText(R.string.overview_hint_error);
     }
 
     @Override
     public void setListLayout()
     {
-        itemsAdapter.setLayoutType(LIST_LAYOUT);
+        fruitsAdapter.setLayoutType(LIST_LAYOUT);
 
         final RecyclerView.LayoutManager newLayoutManager = new LinearLayoutManager(getActivity());
         setLayoutManagerToRecyclerView(newLayoutManager);
@@ -279,7 +302,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     @Override
     public void setGridLayout()
     {
-        itemsAdapter.setLayoutType(GRID_LAYOUT);
+        fruitsAdapter.setLayoutType(GRID_LAYOUT);
 
         final RecyclerView.LayoutManager newLayoutManager = new GridLayoutManager(getActivity(),
                                                                                   getRowCount());
@@ -300,7 +323,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         currentLayoutManager = newLayoutManager;
         recyclerView.setLayoutManager(currentLayoutManager);
 
-        recyclerView.setAdapter(itemsAdapter);
+        recyclerView.setAdapter(fruitsAdapter);
         recyclerView.setHasFixedSize(true);
 
         // Set previous scroll position

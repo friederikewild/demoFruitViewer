@@ -11,12 +11,12 @@ import me.friederikewild.demo.fruits.R;
 enum OverviewLayoutType
 {
     /**
-     * Show items as list with picture, title and description
+     * Show fruits as list with picture, title and description
      */
     LIST_LAYOUT,
 
     /**
-     * Show items as grid with picture and title
+     * Show fruits as grid with picture and title
      */
     GRID_LAYOUT,
 
