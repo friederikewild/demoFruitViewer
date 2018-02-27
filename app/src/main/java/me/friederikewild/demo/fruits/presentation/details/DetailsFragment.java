@@ -54,7 +54,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 
         loadingSpinner = rootView.findViewById(R.id.detailsLoadingSpinner);
         fruitImageView = rootView.findViewById(R.id.detailsSquareImage);
-        hintNoDataTextView = rootView.findViewById(R.id.detailsHintNoItems);
+        hintNoDataTextView = rootView.findViewById(R.id.detailsHintNoFruits);
 
         return rootView;
     }

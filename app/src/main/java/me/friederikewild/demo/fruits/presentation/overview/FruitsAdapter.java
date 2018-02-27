@@ -174,11 +174,11 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
         switch (viewType)
         {
             case R.id.overview_view_type_grid:
-                return R.layout.item_col_layout_grid;
+                return R.layout.fruit_col_layout_grid;
 
             case R.id.overview_view_type_list:
             default:
-                return R.layout.item_col_layout_list;
+                return R.layout.fruit_col_layout_list;
         }
     }
 
@@ -222,9 +222,9 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
         {
             super(itemView);
             rootView = itemView;
-            titleTextView = itemView.findViewById(R.id.overviewItemTitle);
-            descriptionTextView = itemView.findViewById(R.id.overviewItemDescriptionText);
-            imageView = itemView.findViewById(R.id.overviewItemImage);
+            titleTextView = itemView.findViewById(R.id.overviewFruitTitle);
+            descriptionTextView = itemView.findViewById(R.id.overviewFruitDescriptionText);
+            imageView = itemView.findViewById(R.id.overviewFruitImage);
         }
     }
 }

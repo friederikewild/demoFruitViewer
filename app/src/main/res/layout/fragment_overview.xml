@@ -16,15 +16,15 @@
         android:background="@color/colorScreenBackground">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/overviewItemsList"
+            android:id="@+id/overviewFruitsList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/zero"
-            tools:listitem="@layout/item_col_layout_list" />
+            tools:listitem="@layout/fruit_col_layout_list" />
 
         <!-- Hide hint by default. Shown by view when needed -->
         <TextView
-            android:id="@+id/overviewHintNoItems"
+            android:id="@+id/overviewHintNoFruits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/overview_hint_error"

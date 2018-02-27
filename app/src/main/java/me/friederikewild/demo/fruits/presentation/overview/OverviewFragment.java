@@ -77,8 +77,8 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
     {
         final View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        recyclerView = rootView.findViewById(R.id.overviewItemsList);
-        hintNoFruitsTextView = rootView.findViewById(R.id.overviewHintNoItems);
+        recyclerView = rootView.findViewById(R.id.overviewFruitsList);
+        hintNoFruitsTextView = rootView.findViewById(R.id.overviewHintNoFruits);
 
         return rootView;
     }
