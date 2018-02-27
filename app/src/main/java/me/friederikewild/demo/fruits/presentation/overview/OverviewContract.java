@@ -19,13 +19,13 @@ public interface OverviewContract
 
         void updateMenuItemVisibility();
 
-        void showItems(@NonNull List<Fruit> fruits);
+        void showFruits(@NonNull List<Fruit> fruits);
 
-        void showDetailsForItem(@NonNull String itemId);
+        void showDetailsForFruit(@NonNull String fruitId);
 
-        void showNoItemsAvailable();
+        void showNoFruitsAvailable();
 
-        void showLoadingItemsError();
+        void showLoadingFruitsError();
 
         void setListLayout();
 
@@ -34,9 +34,9 @@ public interface OverviewContract
 
     interface Presenter extends SavableBasePresenter
     {
-        void loadItems(boolean forceUpdate);
+        void loadFruits(boolean forceUpdate);
 
-        void onItemClicked(@NonNull Fruit fruit);
+        void onFruitItemClicked(@NonNull Fruit fruit);
 
         void setLayoutPresentation(@NonNull OverviewLayoutType layoutType);
 

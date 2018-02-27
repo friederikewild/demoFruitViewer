@@ -35,19 +35,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Look can be switched with {@link #setLayoutType(OverviewLayoutType)}.
  * Internally using two different ViewType to represent the different look when preparing the views.
  */
-public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
+public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder>
 {
     private List<Fruit> fruits;
     @NonNull
-    private ItemClickListener itemClickListener;
+    private FruitClickListener fruitClickListener;
 
     @IdRes
     private int currentViewType = OverviewLayoutType.INVALID_TYPE.getUniqueId();
 
-    ItemsAdapter(@NonNull List<Fruit> fruits,
-                 @NonNull ItemClickListener listener)
+    FruitsAdapter(@NonNull List<Fruit> fruits,
+                  @NonNull FruitClickListener listener)
     {
-        itemClickListener = listener;
+        fruitClickListener = listener;
         setList(fruits);
 
         setHasStableIds(true);
@@ -86,7 +86,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         if (currentViewType == OverviewLayoutType.INVALID_TYPE.getUniqueId())
         {
             final IllegalStateException exception = new IllegalStateException(
-                    "ItemsAdapter needs initial configuration of current LayoutType before usage!");
+                    "FruitsAdapter needs initial configuration of current LayoutType before usage!");
             if (BuildConfig.DEBUG)
             {
                 throw exception;
@@ -127,7 +127,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
         bindDescriptionView(holder, fruit);
 
         // Make full card clickable
-        holder.rootView.setOnClickListener(view -> itemClickListener.onItemClicked(fruit));
+        holder.rootView.setOnClickListener(view -> fruitClickListener.onFruitItemClicked(fruit));
     }
 
     private void bindImageView(@NonNull ViewHolder holder, @NonNull Fruit fruit, @IdRes int viewType)
@@ -209,7 +209,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>
     }
 
     /**
-     * View Holder per item
+     * View Holder per fruit item
      */
     static class ViewHolder extends RecyclerView.ViewHolder
     {

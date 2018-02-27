@@ -18,14 +18,14 @@ public class DetailsPresenter implements DetailsContract.Presenter
     private CompositeDisposable compositeDisposable;
 
     @NonNull
-    private final String itemId;
+    private final String fruitId;
 
     DetailsPresenter(@NonNull final DetailsContract.View view,
                      @NonNull final String id,
-                     @NonNull final GetFruitUseCase getItem)
+                     @NonNull final GetFruitUseCase getFruit)
     {
-        itemId = id;
-        getFruitUseCase = getItem;
+        fruitId = id;
+        getFruitUseCase = getFruit;
 
         compositeDisposable = new CompositeDisposable();
 
@@ -36,7 +36,7 @@ public class DetailsPresenter implements DetailsContract.Presenter
     @Override
     public void subscribe()
     {
-        openItem();
+        openFruitItem();
     }
 
     @Override
@@ -46,14 +46,14 @@ public class DetailsPresenter implements DetailsContract.Presenter
     }
 
     @SuppressWarnings("Convert2MethodRef")
-    private void openItem()
+    private void openFruitItem()
     {
         if (detailsView.isActive())
         {
             detailsView.setLoadingIndicator(true);
         }
 
-        final GetFruitUseCase.RequestParams params = new GetFruitUseCase.RequestParams(itemId);
+        final GetFruitUseCase.RequestParams params = new GetFruitUseCase.RequestParams(fruitId);
 
         compositeDisposable.clear();
 
@@ -61,14 +61,14 @@ public class DetailsPresenter implements DetailsContract.Presenter
                 .execute(params)
                 .subscribe(
                         // onNext
-                        resultItem -> updateViewWithItem(resultItem),
+                        resultFruit -> updateViewWithFruit(resultFruit),
                         // onError
                         throwable -> updateViewWithError()
                 );
         compositeDisposable.add(disposable);
     }
 
-    private void updateViewWithItem(@NonNull Fruit fruit)
+    private void updateViewWithFruit(@NonNull Fruit fruit)
     {
         // Check if view is still able to handle UI updates
         if (!detailsView.isActive())
@@ -78,8 +78,8 @@ public class DetailsPresenter implements DetailsContract.Presenter
 
         detailsView.setLoadingIndicator(false);
 
-        detailsView.showItemImage(fruit.getImageUrl());
-        detailsView.showItemTitle(fruit.getTitle());
+        detailsView.showFruitImage(fruit.getImageUrl());
+        detailsView.showFruitTitle(fruit.getTitle());
     }
 
     private void updateViewWithError()
@@ -92,6 +92,6 @@ public class DetailsPresenter implements DetailsContract.Presenter
 
         detailsView.setLoadingIndicator(false);
 
-        detailsView.showLoadingItemError();
+        detailsView.showLoadingFruitError();
     }
 }

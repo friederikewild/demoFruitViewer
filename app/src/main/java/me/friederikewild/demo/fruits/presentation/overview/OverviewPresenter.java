@@ -52,10 +52,10 @@ public class OverviewPresenter implements OverviewContract.Presenter
     private boolean isFirstLoading = true;
 
     OverviewPresenter(@NonNull final OverviewContract.View view,
-                      @NonNull final GetFruitsUseCase getItems,
+                      @NonNull final GetFruitsUseCase getFruits,
                       @NonNull final Bundler<Serializable> bundler)
     {
-        getFruitsUseCase = getItems;
+        getFruitsUseCase = getFruits;
         serializableBundler = bundler;
 
         compositeDisposable = new CompositeDisposable();
@@ -100,9 +100,9 @@ public class OverviewPresenter implements OverviewContract.Presenter
     @Override
     public void subscribe()
     {
-        loadItems(false);
+        loadFruits(false);
 
-        // Ensure menu is updated according to state of presenter and hidden until items are available
+        // Ensure menu is updated according to state of presenter and hidden until fruit items are available
         overviewView.updateMenuItemVisibility();
     }
 
@@ -114,16 +114,16 @@ public class OverviewPresenter implements OverviewContract.Presenter
 
     //region [OverviewContractPresenter]
 
-    //region [LoadItems Handling]
+    //region [LoadFruits Handling]
     @Override
-    public void loadItems(final boolean forceUpdate)
+    public void loadFruits(final boolean forceUpdate)
     {
-        loadItems(forceUpdate || isFirstLoading, true);
+        loadFruits(forceUpdate || isFirstLoading, true);
         isFirstLoading = false;
     }
 
     @VisibleForTesting
-    void loadItems(final boolean forceUpdate, final boolean showLoadingUI)
+    void loadFruits(final boolean forceUpdate, final boolean showLoadingUI)
     {
         if (showLoadingUI && overviewView.isActive())
         {
@@ -136,10 +136,10 @@ public class OverviewPresenter implements OverviewContract.Presenter
                 .execute(params)
                 .subscribe(
                         // onNext
-                        resultItems ->
+                        resultFruits ->
                         {
-                            setIsViewCurrentlyEmpty(resultItems);
-                            updateViewWithItems(resultItems);
+                            setIsViewCurrentlyEmpty(resultFruits);
+                            updateViewWithFruits(resultFruits);
                         },
                         // onError
                         throwable ->
@@ -163,7 +163,7 @@ public class OverviewPresenter implements OverviewContract.Presenter
         isViewCurrentlyEmpty = fruits == null || fruits.isEmpty();
     }
 
-    private void updateViewWithItems(@NonNull final List<Fruit> fruits)
+    private void updateViewWithFruits(@NonNull final List<Fruit> fruits)
     {
         // Check if view is still able to handle UI updates
         if (!overviewView.isActive())
@@ -175,11 +175,11 @@ public class OverviewPresenter implements OverviewContract.Presenter
 
         if (isViewCurrentlyEmpty)
         {
-            overviewView.showNoItemsAvailable();
+            overviewView.showNoFruitsAvailable();
         }
         else
         {
-            overviewView.showItems(fruits);
+            overviewView.showFruits(fruits);
         }
 
         // Ensure menu is updated according to fruits availability
@@ -196,17 +196,17 @@ public class OverviewPresenter implements OverviewContract.Presenter
 
         overviewView.setLoadingIndicator(false);
 
-        overviewView.showLoadingItemsError();
+        overviewView.showLoadingFruitsError();
 
         // Ensure menu is updated according to items availability
         overviewView.updateMenuItemVisibility();
     }
-    //endregion [LoadItems Handling]
+    //endregion [LoadFruits Handling]
 
     @Override
-    public void onItemClicked(@NonNull Fruit fruit)
+    public void onFruitItemClicked(@NonNull Fruit fruit)
     {
-        overviewView.showDetailsForItem(fruit.getId());
+        overviewView.showDetailsForFruit(fruit.getId());
     }
 
     @Override

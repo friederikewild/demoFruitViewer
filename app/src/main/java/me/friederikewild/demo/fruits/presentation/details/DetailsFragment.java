@@ -26,7 +26,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     private DetailsContract.Presenter presenter;
 
     private View loadingSpinner;
-    private ImageView itemImageView;
+    private ImageView fruitImageView;
     private TextView hintNoDataTextView;
 
     public DetailsFragment()
@@ -53,7 +53,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
         final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
         loadingSpinner = rootView.findViewById(R.id.detailsLoadingSpinner);
-        itemImageView = rootView.findViewById(R.id.detailsSquareImage);
+        fruitImageView = rootView.findViewById(R.id.detailsSquareImage);
         hintNoDataTextView = rootView.findViewById(R.id.detailsHintNoItems);
 
         return rootView;
@@ -93,7 +93,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     }
 
     @Override
-    public void showItemImage(@NonNull String imageUrl)
+    public void showFruitImage(@NonNull String imageUrl)
     {
         // Hide error in case visible before
         hintNoDataTextView.setVisibility(View.GONE);
@@ -102,11 +102,11 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
                 .load(imageUrl)
                 .apply(centerCropTransform().centerCrop())
                 .apply(new RequestOptions().placeholder(R.drawable.placeholder_image_square_primary))
-                .transition(withCrossFade()).into(itemImageView);
+                .transition(withCrossFade()).into(fruitImageView);
     }
 
     @Override
-    public void showItemTitle(@NonNull String title)
+    public void showFruitTitle(@NonNull String title)
     {
         final ActionBar actionBar = ((DetailsActivity) getActivity()).getSupportActionBar();
         if (actionBar != null)
@@ -117,7 +117,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     }
 
     @Override
-    public void showLoadingItemError()
+    public void showLoadingFruitError()
     {
         // Set background again to make sure we are in the expected state
         setImageViewBackground();
@@ -129,14 +129,14 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     {
         @DrawableRes final int drawableRes = R.drawable.placeholder_image_square_primary;
 
-        final Resources res = itemImageView.getContext().getResources();
+        final Resources res = fruitImageView.getContext().getResources();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
         {
-            itemImageView.setImageDrawable(res.getDrawable(drawableRes));
+            fruitImageView.setImageDrawable(res.getDrawable(drawableRes));
         }
         else
         {
-            itemImageView.setImageDrawable(getResources().getDrawable(drawableRes));
+            fruitImageView.setImageDrawable(getResources().getDrawable(drawableRes));
         }
     }
 }

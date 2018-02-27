@@ -115,7 +115,7 @@ public class OverviewPresenterTest
         final boolean showLoadingUI = false;
 
         // When
-        presenter.loadItems(true, showLoadingUI);
+        presenter.loadFruits(true, showLoadingUI);
 
         // Then
         verify(overviewViewMock, never()).setLoadingIndicator(eq(true));
@@ -128,7 +128,7 @@ public class OverviewPresenterTest
         setUseCaseItemsAvailable(FRUITS);
 
         // When
-        presenter.loadItems(true);
+        presenter.loadFruits(true);
 
         // Then first loading indicator is shown
         InOrder inOrder = inOrder(overviewViewMock);
@@ -145,10 +145,10 @@ public class OverviewPresenterTest
         setUseCaseItemsAvailable(FRUITS);
 
         // When
-        presenter.loadItems(true);
+        presenter.loadFruits(true);
 
         // Then
-        verify(overviewViewMock).showItems(FRUITS);
+        verify(overviewViewMock).showFruits(FRUITS);
     }
 
     @Test
@@ -158,10 +158,10 @@ public class OverviewPresenterTest
         setUseCaseItemsEmptyList();
 
         // When
-        presenter.loadItems(true);
+        presenter.loadFruits(true);
 
         // Then
-        verify(overviewViewMock).showNoItemsAvailable();
+        verify(overviewViewMock).showNoFruitsAvailable();
     }
     //endregion [Test LoadItems]
 
