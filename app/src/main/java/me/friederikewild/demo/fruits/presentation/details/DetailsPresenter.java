@@ -45,12 +45,25 @@ public class DetailsPresenter implements DetailsContract.Presenter
         compositeDisposable.clear();
     }
 
+    @Override
+    public void onImageCreditsInfoClicked(@NonNull String imageCredits)
+    {
+        // Check if view is still able to handle UI updates
+        if (!detailsView.isActive())
+        {
+            return;
+        }
+
+        detailsView.showImageCreditsDialog(imageCredits);
+    }
+
     @SuppressWarnings("Convert2MethodRef")
     private void openFruitItem()
     {
         if (detailsView.isActive())
         {
             detailsView.setLoadingIndicator(true);
+            detailsView.hideImageCredits();
         }
 
         final GetFruitUseCase.RequestParams params = new GetFruitUseCase.RequestParams(fruitId);
@@ -80,6 +93,7 @@ public class DetailsPresenter implements DetailsContract.Presenter
 
         detailsView.showFruitImage(fruit.getImageUrl());
         detailsView.showFruitTitle(fruit.getTitle());
+        detailsView.showImageCredits(fruit.getImageCredits());
     }
 
     private void updateViewWithError()
@@ -91,6 +105,7 @@ public class DetailsPresenter implements DetailsContract.Presenter
         }
 
         detailsView.setLoadingIndicator(false);
+        detailsView.hideImageCredits();
 
         detailsView.showLoadingFruitError();
     }

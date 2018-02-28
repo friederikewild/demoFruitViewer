@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     private View loadingSpinner;
     private ImageView fruitImageView;
     private TextView hintNoDataTextView;
+    private View imageCreditsAction;
 
     public DetailsFragment()
     {
@@ -55,6 +57,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
         loadingSpinner = rootView.findViewById(R.id.detailsLoadingSpinner);
         fruitImageView = rootView.findViewById(R.id.detailsSquareImage);
         hintNoDataTextView = rootView.findViewById(R.id.detailsHintNoFruits);
+        imageCreditsAction = rootView.findViewById(R.id.detailsImageCreditsAction);
 
         return rootView;
     }
@@ -93,6 +96,19 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     }
 
     @Override
+    public void hideImageCredits()
+    {
+        imageCreditsAction.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showImageCredits(@NonNull final String imageCredits)
+    {
+        imageCreditsAction.setVisibility(View.VISIBLE);
+        imageCreditsAction.setOnClickListener(view -> presenter.onImageCreditsInfoClicked(imageCredits));
+    }
+
+    @Override
     public void showFruitImage(@NonNull String imageUrl)
     {
         // Hide error in case visible before
@@ -111,9 +127,18 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
         final ActionBar actionBar = ((DetailsActivity) getActivity()).getSupportActionBar();
         if (actionBar != null)
         {
-
-            actionBar.setSubtitle(title);
+            actionBar.setTitle(title);
         }
+    }
+
+    @Override
+    public void showImageCreditsDialog(@NonNull String imageCredits)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle(getResources().getString(R.string.details_dialog_photo_title));
+        builder.setMessage(imageCredits);
+        builder.setPositiveButton(getResources().getString(android.R.string.ok), null);
+        builder.show();
     }
 
     @Override

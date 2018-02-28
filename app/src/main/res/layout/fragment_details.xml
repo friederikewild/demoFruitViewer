@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dot_double"
         android:padding="@dimen/dot_double"
-        android:text="@string/detail_hint_error"
+        android:text="@string/details_hint_error"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/colorPrimaryTextDark"
         android:gravity="center"
@@ -41,5 +41,15 @@
         app:layout_constraintBottom_toBottomOf="@+id/detailsSquareImage"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/detailsImageCreditsAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dot_double"
+        app:srcCompat="@drawable/ic_info_outline_white_24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage"
+        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage" />
 
 </android.support.constraint.ConstraintLayout>

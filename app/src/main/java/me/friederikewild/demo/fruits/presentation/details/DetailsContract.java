@@ -14,15 +14,21 @@ public class DetailsContract
     {
         void setLoadingIndicator(boolean active);
 
+        void hideImageCredits();
+
+        void showImageCredits(@NonNull String imageCredits);
+
         void showFruitImage(@NonNull String imageUrl);
 
         void showFruitTitle(@NonNull String title);
+
+        void showImageCreditsDialog(@NonNull String imageCredits);
 
         void showLoadingFruitError();
     }
 
     interface Presenter extends BasePresenter
     {
-        // Nothing atm
+        void onImageCreditsInfoClicked(@NonNull String imageCredits);
     }
 }
