@@ -252,7 +252,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.ViewHolder
             rootView = itemView;
             titleTextView = itemView.findViewById(R.id.overviewFruitTitle);
             descriptionTextView = itemView.findViewById(R.id.overviewFruitDescriptionText);
-            moreActionTextView = itemView.findViewById(R.id.overviewFruitMoreText);
+            moreActionTextView = itemView.findViewById(R.id.overviewFruitMoreAction);
             sourceTextView = itemView.findViewById(R.id.overviewFruitSourceProvider);
             imageView = itemView.findViewById(R.id.overviewFruitImage);
         }
