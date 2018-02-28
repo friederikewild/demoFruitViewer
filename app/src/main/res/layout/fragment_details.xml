@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
-    android:padding="@dimen/zero"
+    android:padding="@dimen/dot_double"
     tools:context=".presentation.details.DetailsActivity">
 
     <include
@@ -46,9 +46,11 @@
         android:id="@+id/detailsImageCreditsAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dot_double"
+        android:padding="@dimen/dot_double"
         app:srcCompat="@drawable/ic_info_outline_white_24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:foreground="@drawable/selectable_item_background"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toTopOf="@+id/detailsSquareImage"
         app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage" />
 

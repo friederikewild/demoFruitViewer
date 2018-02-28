@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ripple with oval bound inside the item dimension.
+For placement where unbound circle looks odd and item has some padding to give ripple space. -->
+<ripple
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorNeutralHighlightLight">
+    <item android:id="@android:id/mask">
+        <shape android:shape="oval">
+            <solid android:color="@color/colorNeutralHighlight"/>
+        </shape>
+    </item>
+</ripple>

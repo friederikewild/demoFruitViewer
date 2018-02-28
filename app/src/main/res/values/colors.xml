@@ -5,6 +5,12 @@
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorPrimaryLight">#C8E6C9</color>
     <color name="colorAccent">#03A9F4</color>
+    <color name="colorAccentDark">#0288D1</color>
+
+    <color name="colorNeutralHighlight">#B0BEC5</color>
+    <color name="colorNeutralHighlightLight">#DEB0BEC5</color>
+
+    <color name="colorControlHighlight">@color/colorNeutralHighlight</color>
 
     <color name="colorPrimaryTextLight">#DE000000</color>
     <color name="colorSecondaryTextLight">#8A000000</color>
