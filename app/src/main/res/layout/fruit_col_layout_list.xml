@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="@+id/overviewFruitImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/overviewFruitImage"
-            tools:text="@string/app_name" />
+            tools:text="@string/tools_lorem_short" />
 
         <TextView
             android:id="@+id/overviewFruitDescriptionText"
@@ -51,7 +51,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitImage"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="@string/overview_hint_error"
+            tools:text="@string/tools_lorem_long"
             tools:visibility="visible" />
 
         <TextView
@@ -63,10 +63,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorSecondaryTextLight"
             android:text="@string/fruit_source_provider"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitDescriptionText"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible" />
+            app:layout_constraintEnd_toStartOf="@+id/overviewFruitMoreAction"
+            tools:visibility="visible"
+            tools:text="@string/tools_lorem_short" />
 
         <TextView
             android:id="@+id/overviewFruitMoreAction"

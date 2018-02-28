@@ -66,7 +66,7 @@
             app:layout_constraintTop_toTopOf="@+id/overviewFruitFooterBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="@string/app_name" />
+            tools:text="@string/tools_lorem_short" />
 
     </android.support.constraint.ConstraintLayout>
 
