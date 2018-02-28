@@ -32,3 +32,4 @@ The look follows the Material Design Guidelines with usage of cards and material
 
 * FruitsRepository is currently always fetching the full list from the server when requested. Fruits are only cached on a weak map basis for the detail screen.
 
+* Test data is provided as json and picture assets via Github pages on additional branch [gh-pages](https://github.com/friederikewild/demoFruitViewer/tree/gh-pages)

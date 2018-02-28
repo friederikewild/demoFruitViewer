@@ -3,10 +3,12 @@ package me.friederikewild.demo.fruits.data.entity.mapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
+import me.friederikewild.demo.fruits.data.datasource.remote.FruitsApi;
 import me.friederikewild.demo.fruits.data.entity.FruitEntity;
 import me.friederikewild.demo.fruits.domain.model.Fruit;
 
@@ -21,7 +23,7 @@ public class FruitEntityDataMapper
 {
     private static FruitEntityDataMapper INSTANCE;
 
-    private static final Map<String, String> SOURCE_PROVIDER = ImmutableMap.<String, String>builder()
+    private static final Map<String, String> PROVIDERS = ImmutableMap.<String, String>builder()
             .put("Wikipedia", "https://en.wikipedia.org/wiki/")
             .build();
 
@@ -46,18 +48,9 @@ public class FruitEntityDataMapper
     @NonNull
     public Fruit transform(@NonNull FruitEntity fruitEntity)
     {
-        // Check if additional source url can be provided from source provider
-        final String sourceUrl;
-        if (SOURCE_PROVIDER.containsKey(fruitEntity.getSourceProvider()))
-        {
-            sourceUrl = SOURCE_PROVIDER.get(fruitEntity.getSourceProvider()) + fruitEntity.getTitle();
-        }
-        else
-        {
-            sourceUrl = "";
-        }
-
-        // TODO: Provide image data. ImageProvider + Id will lead to imageUrl and credits html
+        final String sourceUrl = createSourceUrl(fruitEntity);
+        final String imageUrl = createImageUrl(fruitEntity);
+        final String imageProvider = createImageProvider(fruitEntity);
 
         // Note: Title and Description can include html that needs transformation
         return new Fruit(fruitEntity.getId(),
@@ -67,8 +60,32 @@ public class FruitEntityDataMapper
                          fruitEntity.getTags(),
                          fruitEntity.getSourceProvider(),
                          sourceUrl,
-                         fruitEntity.getImageId(), // TODO: Update with real api
-                         fruitEntity.getImageProvider() // TODO: Enhance Credits and create html
+                         imageUrl,
+                         imageProvider
         );
+    }
+
+    @NonNull
+    private String createSourceUrl(@NonNull FruitEntity fruitEntity)
+    {
+        // Check if additional source url can be provided from source provider by combining base url plus title
+        final String provider = fruitEntity.getSourceProvider();
+        return PROVIDERS.containsKey(provider) ? PROVIDERS.get(provider) + fruitEntity.getTitle() : "";
+    }
+
+    @NonNull
+    private String createImageUrl(FruitEntity fruitEntity)
+    {
+        // TODO: Update with real api. Provide image data from photo api result object for imageUrl
+
+        final String imageId = fruitEntity.getImageId();
+        return !Strings.isNullOrEmpty(imageId) ? String.format(FruitsApi.PHOTO_BASE_URL, imageId) : "";
+    }
+
+    @NonNull
+    private String createImageProvider(FruitEntity fruitEntity)
+    {
+        // TODO: Enhance Credits and create html from photo api to allow clickable links
+        return fruitEntity.getImageProvider();
     }
 }
