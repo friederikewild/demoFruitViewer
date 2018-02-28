@@ -12,15 +12,16 @@
     android:focusable="true"
     tools:showIn="@layout/fragment_overview">
 
+    <!-- Note: Margin not attached to container to give ripple on action more room -->
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dot_double">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/overviewFruitImage"
             android:layout_width="@dimen/thumb_icon_size"
             android:layout_height="@dimen/thumb_icon_size"
+            android:layout_margin="@dimen/dot_double"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +45,7 @@
             android:id="@+id/overviewFruitDescriptionText"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dot_double"
+            android:layout_margin="@dimen/dot_double"
             android:lineSpacingExtra="@dimen/dot_half"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorSecondaryTextLight"
@@ -58,7 +59,7 @@
             android:id="@+id/overviewFruitSourceProvider"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dot_double"
+            android:layout_margin="@dimen/dot_double"
             android:lineSpacingExtra="@dimen/dot_half"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorSecondaryTextLight"
@@ -71,15 +72,18 @@
             tools:visibility="visible"
             tools:text="@string/tools_lorem_short" />
 
+        <!-- Note: Padding instead of margin due to ripple selector -->
         <TextView
             android:id="@+id/overviewFruitMoreAction"
             android:layout_width="@dimen/match_constraints"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dot_double"
+            android:padding="@dimen/dot_double"
             android:lineSpacingExtra="@dimen/dot_half"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorAccent"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/fruit_action_more"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitDescriptionText"
             app:layout_constraintEnd_toEndOf="parent"
