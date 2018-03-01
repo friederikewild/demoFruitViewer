@@ -1,6 +1,8 @@
 package me.friederikewild.demo.fruits.presentation.details;
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.google.common.base.Strings;
 
 import me.friederikewild.demo.fruits.R;
 import me.friederikewild.demo.fruits.util.GlideApp;
@@ -28,6 +31,9 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 
     private View loadingSpinner;
     private ImageView fruitImageView;
+    private TextView descriptionTextView;
+    private TextView sourceProviderTextView;
+    private View moreActionView;
     private TextView hintNoDataTextView;
     private View imageCreditsAction;
 
@@ -56,6 +62,9 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
 
         loadingSpinner = rootView.findViewById(R.id.detailsLoadingSpinner);
         fruitImageView = rootView.findViewById(R.id.detailsSquareImage);
+        descriptionTextView = rootView.findViewById(R.id.detailsFruitDescriptionText);
+        sourceProviderTextView = rootView.findViewById(R.id.detailsFruitSourceProvider);
+        moreActionView = rootView.findViewById(R.id.detailsFruitMoreAction);
         hintNoDataTextView = rootView.findViewById(R.id.detailsHintNoFruits);
         imageCreditsAction = rootView.findViewById(R.id.detailsImageCreditsAction);
 
@@ -132,6 +141,38 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
     }
 
     @Override
+    public void showFruitDescription(@NonNull String description)
+    {
+        descriptionTextView.setText(description);
+    }
+
+    @Override
+    public void showFruitSourceProvider(@NonNull String provider)
+    {
+        // Hide view if no source link provided
+        boolean isSourceEmpty = Strings.isNullOrEmpty(provider);
+        sourceProviderTextView.setVisibility(isSourceEmpty ? View.GONE : View.VISIBLE);
+        if (!isSourceEmpty)
+        {
+            sourceProviderTextView.setText(
+                    getResources().getString(R.string.fruit_source_provider, provider));
+        }
+    }
+
+    @Override
+    public void showFruitMoreLink(@NonNull String sourceUrl)
+    {
+        // Hide view if no source link provided
+        boolean isSourceUrlEmpty = Strings.isNullOrEmpty(sourceUrl);
+        moreActionView.setVisibility(isSourceUrlEmpty ? View.GONE : View.VISIBLE);
+        if (!isSourceUrlEmpty)
+        {
+            moreActionView.setOnClickListener(
+                    view -> presenter.onMoreActionClicked(sourceUrl));
+        }
+    }
+
+    @Override
     public void showImageCreditsDialog(@NonNull String imageCredits)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
@@ -139,6 +180,14 @@ public class DetailsFragment extends Fragment implements DetailsContract.View
         builder.setMessage(imageCredits);
         builder.setPositiveButton(getResources().getString(android.R.string.ok), null);
         builder.show();
+    }
+
+    @Override
+    public void showMoreView(@NonNull String moreUrl)
+    {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(moreUrl));
+        startActivity(i);
     }
 
     @Override

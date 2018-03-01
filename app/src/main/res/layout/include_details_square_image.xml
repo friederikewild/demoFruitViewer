@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/match_constraints"
     android:layout_height="@dimen/match_constraints"
+    android:layout_margin="@dimen/dot_double"
     android:scaleType="centerCrop"
     app:layout_constraintDimensionRatio="H,1:1"
     app:layout_constraintStart_toStartOf="parent"

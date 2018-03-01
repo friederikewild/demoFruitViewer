@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:showIn="@layout/fragment_details">
+
+    <include
+        android:id="@+id/detailsSquareImage"
+        layout="@layout/include_details_square_image"/>
+
+    <include
+        android:id="@+id/detailsLoadingSpinner"
+        layout="@layout/include_loading_spinner"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="@dimen/match_constraints"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/detailsSquareImage"
+        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage"
+        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsSquareImage"/>
+
+    <!-- Hide hint by default. Shown by view when needed -->
+    <TextView
+        android:id="@+id/detailsHintNoFruits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dot_double"
+        android:padding="@dimen/dot_double"
+        android:text="@string/details_hint_error"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/colorPrimaryTextDark"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@+id/detailsSquareImage"
+        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage"
+        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsSquareImage"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/detailsImageCreditsAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dot_double"
+        app:srcCompat="@drawable/ic_info_outline_white_24dp"
+        android:foreground="@drawable/selectable_item_background"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="@+id/detailsSquareImage"
+        app:layout_constraintEnd_toEndOf="@+id/detailsSquareImage"/>
+
+</merge>

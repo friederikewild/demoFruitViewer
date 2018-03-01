@@ -110,7 +110,37 @@ public class DetailsPresenterTest
 
         // Then loading indicator is hidden
         inOrder.verify(detailsViewMock).showFruitImage(FRUIT.getImageUrl());
+        inOrder.verify(detailsViewMock).showImageCredits(FRUIT.getImageCredits());
         inOrder.verify(detailsViewMock).showFruitTitle(FRUIT.getTitle());
+        inOrder.verify(detailsViewMock).showFruitDescription(FRUIT.getDescription());
+        inOrder.verify(detailsViewMock).showFruitSourceProvider(FRUIT.getSourceProvider());
+        inOrder.verify(detailsViewMock).showFruitMoreLink(FRUIT.getSourceUrl());
+    }
+
+    @Test
+    public void givenPresenterNotifiedOnCreditsClicked_ThenViewShowsCreditsInfo()
+    {
+        // Given
+        final String expectedCredits = FRUIT.getImageCredits();
+
+        // When
+        presenter.onImageCreditsInfoClicked(expectedCredits);
+
+        // Then
+        verify(detailsViewMock).showImageCreditsDialog(eq(expectedCredits));
+    }
+
+    @Test
+    public void givenPresenterNotifiedOnMoreActionClicked_ThenViewShowsMoreView()
+    {
+        // Given
+        final String expectedMoreUrl = FRUIT.getSourceUrl();
+
+        // When
+        presenter.onMoreActionClicked(expectedMoreUrl);
+
+        // Then
+        verify(detailsViewMock).showMoreView(eq(expectedMoreUrl));
     }
 
     private void setUseCaseItemAvailable(@NonNull Fruit fruit)

@@ -57,6 +57,12 @@ public class DetailsPresenter implements DetailsContract.Presenter
         detailsView.showImageCreditsDialog(imageCredits);
     }
 
+    @Override
+    public void onMoreActionClicked(@NonNull String sourceUrl)
+    {
+        detailsView.showMoreView(sourceUrl);
+    }
+
     @SuppressWarnings("Convert2MethodRef")
     private void openFruitItem()
     {
@@ -92,8 +98,11 @@ public class DetailsPresenter implements DetailsContract.Presenter
         detailsView.setLoadingIndicator(false);
 
         detailsView.showFruitImage(fruit.getImageUrl());
-        detailsView.showFruitTitle(fruit.getTitle());
         detailsView.showImageCredits(fruit.getImageCredits());
+        detailsView.showFruitTitle(fruit.getTitle());
+        detailsView.showFruitDescription(fruit.getDescription());
+        detailsView.showFruitSourceProvider(fruit.getSourceProvider());
+        detailsView.showFruitMoreLink(fruit.getSourceUrl());
     }
 
     private void updateViewWithError()

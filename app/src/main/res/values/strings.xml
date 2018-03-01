@@ -21,7 +21,7 @@
     <string name="overview_hint_error">No data found. \nCheck your internet connection and pull screen to refresh.</string>
     <string name="details_hint_error">No data found. \nCheck your internet connection.</string>
 
-    <string name="tools_lorem_short">Lorem ipsum dolor sit amet. Ut enim ad minim veniam</string>
+    <string name="tools_lorem_short">Lorem ipsum dolor sit amet. Ut enim ad minim</string>
     <string name="tools_lorem_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
 
 </resources>

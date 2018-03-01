@@ -22,7 +22,15 @@ public class DetailsContract
 
         void showFruitTitle(@NonNull String title);
 
+        void showFruitDescription(@NonNull String description);
+
+        void showFruitSourceProvider(@NonNull String provider);
+
+        void showFruitMoreLink(@NonNull String sourceUrl);
+
         void showImageCreditsDialog(@NonNull String imageCredits);
+
+        void showMoreView(@NonNull String moreUrl);
 
         void showLoadingFruitError();
     }
@@ -30,5 +38,7 @@ public class DetailsContract
     interface Presenter extends BasePresenter
     {
         void onImageCreditsInfoClicked(@NonNull String imageCredits);
+
+        void onMoreActionClicked(@NonNull String sourceUrl);
     }
 }
