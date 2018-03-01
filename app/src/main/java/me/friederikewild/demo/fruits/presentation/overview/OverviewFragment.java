@@ -253,16 +253,6 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
         startActivityForResult(intent, presenter.getRequestCodeForDetail());
     }
 
-    @Override
-    public void showMoreView(@NonNull String moreUrl)
-    {
-        assertFruitIdNotNull(moreUrl);
-
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(moreUrl));
-        startActivity(i);
-    }
-
     private void assertFruitIdNotNull(final String fruitId)
     {
         if (fruitId == null || fruitId.isEmpty())
@@ -270,6 +260,14 @@ public class OverviewFragment extends Fragment implements OverviewContract.View
             throw new IllegalStateException(
                     "Details can not be started without a fruit id!");
         }
+    }
+
+    @Override
+    public void showMoreView(@NonNull String moreUrl)
+    {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(moreUrl));
+        startActivity(i);
     }
 
     @Override
