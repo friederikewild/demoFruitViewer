@@ -87,7 +87,6 @@
             android:text="@string/fruit_action_more"
             app:layout_constraintTop_toBottomOf="@+id/overviewFruitDescriptionText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible" />
 
     </android.support.constraint.ConstraintLayout>
