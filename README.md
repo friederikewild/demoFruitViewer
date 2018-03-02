@@ -21,7 +21,13 @@ The look follows the Material Design Guidelines with usage of cards and material
   * Using CardView for fruits in list since content is more than three lines of text
   * Card layouts follow [Material Design Guidelines](https://material.io/guidelines/components/cards.html#cards-content)
 
+<img src="https://github.com/friederikewild/demoFruitViewer/blob/gh-pages/docs/overview_list.png" width="300" alt="Overview List" />  <img src="https://github.com/friederikewild/demoFruitViewer/blob/gh-pages/docs/overview_grid.png" width="300" alt="Overview Grid" />
+
+<img src="https://github.com/friederikewild/demoFruitViewer/blob/gh-pages/docs/overview_grid_land.png" height="300" alt="Overview Grid Landscape" />
+
 * **Detail** provides larger image of one entry, square and fully visible in both portrait and landscape
+
+<img src="https://github.com/friederikewild/demoFruitViewer/blob/gh-pages/docs/detail.png" width="300" alt="Detail Portrait" />  <img src="https://github.com/friederikewild/demoFruitViewer/blob/gh-pages/docs/detail_land.png" height="300" alt="Detail Ladscape" />
 
 
 ### Notes
